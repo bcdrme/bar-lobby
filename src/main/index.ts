@@ -1,6 +1,6 @@
 import { safeStorage } from "electron";
 import { app, ipcMain, protocol, screen } from "electron";
-import unhandled from "electron-unhandled";
+import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
 import { autoUpdater } from "electron-updater";
 import envPaths from "env-paths";
 import os from "os";
@@ -77,7 +77,7 @@ export class Application {
     protected async onReady() {
         if (process.env.NODE_ENV !== "production") {
             try {
-                // await installExtension(VUEJS_DEVTOOLS);
+                await installExtension(VUEJS_DEVTOOLS);
             } catch (err) {
                 console.error("Vue Devtools failed to install:", err?.toString());
             }
@@ -206,6 +206,6 @@ const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
     app.quit();
 } else {
-    unhandled();
+    //unhandled(); -- do something similar to what was done with this dependency
     new Application();
 }

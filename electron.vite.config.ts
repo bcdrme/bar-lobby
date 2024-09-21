@@ -38,7 +38,7 @@ export default defineConfig({
         build: {
             assetsDir: ".",
             rollupOptions: {
-                external: ["better-sqlite3"],
+                external: [],
             },
             sourcemap: true,
         },
@@ -63,22 +63,40 @@ export default defineConfig({
             }),
             vue(),
             renderer({
-                nodeIntegration: true,
-                optimizeDeps: {
-                    include: [
-                        { name: "path", type: "commonjs" },
-                        { name: "fs", type: "commonjs" },
-                        { name: "child_process", type: "commonjs" },
-                        { name: "stream", type: "commonjs" },
-                        { name: "os", type: "commonjs" },
-                        { name: "node-fetch", type: "module" },
-                        { name: "spring-map-parser", type: "commonjs" },
-                        { name: "better-sqlite3", type: "commonjs" },
-                        { name: "tachyon-client", type: "commonjs" },
-                        { name: "octokit", type: "commonjs" },
-                        { name: "axios", type: "commonjs" },
-                        { name: "glob-promise", type: "commonjs" },
-                    ],
+                resolve: {
+                    path: {
+                        type: "cjs",
+                    },
+                    fs: {
+                        type: "cjs",
+                    },
+                    child_process: {
+                        type: "cjs",
+                    },
+                    stream: {
+                        type: "cjs",
+                    },
+                    os: {
+                        type: "cjs",
+                    },
+                    "node-fetch": {
+                        type: "esm",
+                    },
+                    "spring-map-parser": {
+                        type: "cjs",
+                    },
+                    "tachyon-client": {
+                        type: "esm",
+                    },
+                    octokit: {
+                        type: "esm",
+                    },
+                    axios: {
+                        type: "cjs",
+                    },
+                    "glob-promise": {
+                        type: "cjs",
+                    },
                 },
             }),
         ],

@@ -19,7 +19,7 @@ export const gitEngineTagRegex = /^.*?\{(?<branch>.*?)\}(?<major>\d+)\.(?<minor>
 
 export class EngineContentAPI extends AbstractContentAPI<EngineVersion> {
     protected readonly engineDirs = path.join(api.info.contentPath, "engine");
-    protected readonly ocotokit = new Octokit();
+    protected readonly octokit = new Octokit();
 
     public override async init() {
         await fs.promises.mkdir(this.engineDirs, { recursive: true });
@@ -56,7 +56,7 @@ export class EngineContentAPI extends AbstractContentAPI<EngineVersion> {
 
         const releaseTag = this.engineVersionToGitEngineTag(engineVersion);
 
-        const { data } = await this.ocotokit.rest.repos.getReleaseByTag({
+        const { data } = await this.octokit.rest.repos.getReleaseByTag({
             owner: contentSources.engineGitHub.owner,
             repo: contentSources.engineGitHub.repo,
             tag: releaseTag,

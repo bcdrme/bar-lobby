@@ -1,5 +1,5 @@
 import "node-self";
-import "primevue/resources/primevue.min.css";
+// import "primevue/resources/primevue.min.css";
 import "flag-icons/css/flag-icons.min.css";
 import "primeicons/primeicons.css";
 import "@/styles/styles.scss";

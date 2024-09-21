@@ -3,7 +3,7 @@
  * @see https://www.electron.build/configuration/configuration
  */
 const config = {
-    files: ["out/main", "out/renderer", "node_modules/better-sqlite3"],
+    files: ["out/main", "out/renderer"],
     asarUnpack: ["**/*.{node,dll}"],
     directories: {
         buildResources: "buildResources",
@@ -32,11 +32,11 @@ const config = {
     publish: null,
     fileAssociations: [
         {
-            "ext": "sdfz",
-            "description": "BAR Replay File",
-            "role": "Viewer"
-        }
-    ]
+            ext: "sdfz",
+            description: "BAR Replay File",
+            role: "Viewer",
+        },
+    ],
 };
 
-module.exports = config;
+export default config;
