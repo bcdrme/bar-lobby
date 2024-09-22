@@ -1,7 +1,8 @@
 import { defineConfig } from "vite";
 import vue from "@vitejs/plugin-vue";
 import path from "path";
-// import VueRouter from "unplugin-vue-router/vite";
+import renderer from 'vite-plugin-electron-renderer'
+import VueRouter from "unplugin-vue-router/vite";
 
 // https://vitejs.dev/config
 export default defineConfig({
@@ -33,11 +34,12 @@ export default defineConfig({
         },
     },
     plugins: [
-        // VueRouter({
-        //     routesFolder: "src/renderer/views",
-        //     dts: "src/renderer/typed-router.d.ts",
-        //     importMode: "sync",
-        // }),
+        VueRouter({
+            routesFolder: "src/renderer/views",
+            dts: "src/renderer/typed-router.d.ts",
+            importMode: "sync",
+        }),
         vue(),
+        renderer(),
     ],
 });

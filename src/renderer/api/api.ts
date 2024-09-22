@@ -17,6 +17,7 @@ import { serverConfig } from "@/config/server";
 import { accountSchema } from "@/model/account";
 import type { Info } from "$/model/info";
 import { settingsSchema } from "$/model/settings";
+import { routes } from 'vue-router/auto-routes'
 
 interface API {
     account: StoreAPI<typeof accountSchema>;
@@ -59,20 +60,8 @@ export async function apiInit() {
     api.session = new SessionAPI();
 
     api.router = createRouter({
-        // https://github.com/posva/unplugin-vue-router/discussions/63#discussioncomment-3632637
-        extendRoutes: (routes) => {
-            for (const route of routes) {
-                if (route.children) {
-                    for (const childRoute of route.children) {
-                        if (childRoute.meta?.redirect && typeof childRoute.meta?.redirect === "string") {
-                            childRoute.redirect = { path: childRoute.meta.redirect };
-                        }
-                    }
-                }
-            }
-            return routes;
-        },
         history: createMemoryHistory(),
+        routes,
     });
 
     api.cacheDb = await new CacheDbAPI().init();
