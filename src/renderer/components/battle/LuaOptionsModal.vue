@@ -68,8 +68,8 @@ import Checkbox from "@/components/controls/Checkbox.vue";
 import Range from "@/components/controls/Range.vue";
 import Select from "@/components/controls/Select.vue";
 import Textbox from "@/components/controls/Textbox.vue";
-import { LuaOptionBoolean, LuaOptionList, LuaOptionNumber, LuaOptionSection, LuaOptionString } from "@/model/lua-options";
-import { setObject } from "@/utils/temp";
+import { LuaOptionBoolean, LuaOptionList, LuaOptionNumber, LuaOptionSection, LuaOptionString } from "$/model/lua-options";
+import { setObject } from "$/utils/temp";
 
 const props = defineProps<{
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

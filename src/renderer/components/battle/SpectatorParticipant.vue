@@ -16,8 +16,8 @@ import { inject, Ref, ref } from "vue";
 import TeamParticipant from "@/components/battle/TeamParticipant.vue";
 import ContextMenu from "@/components/common/ContextMenu.vue";
 import Flag from "@/components/misc/Flag.vue";
-import { AbstractBattle } from "@/model/battle/abstract-battle";
-import { User } from "@/model/user";
+import { AbstractBattle } from "$/model/battle/abstract-battle";
+import { User } from "$/model/user";
 
 const props = defineProps<{
     battle: AbstractBattle;

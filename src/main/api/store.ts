@@ -1,19 +1,19 @@
-import { Static, TObject } from "@sinclair/typebox";
-import { ipcMain } from "electron";
-import { assign } from "jaz-ts-utils";
+import { TObject } from "@sinclair/typebox";
+import { ipcRenderer } from "electron";
 import path from "path";
 
-import { AsbtractStoreAPI } from "$/api/abstract-store";
+import { AsbtractStoreAPI } from "@/api/abstract-store";
 
+// TODO I don't really understant how this was supposed to work
 export class StoreAPI<T extends TObject> extends AsbtractStoreAPI<T> {
-    public async init() {
+    public override async init() {
         await super.init();
 
         const name = path.parse(this.filePath).name;
 
-        ipcMain.on(`store-update:${name}`, (event, model: Static<T>) => {
-            assign(this.model, model);
-        });
+        // watch(this.model, () => {
+        //     ipcRenderer.send(`store-update:${name}`, toRaw(this.model));
+        // });
 
         return this;
     }

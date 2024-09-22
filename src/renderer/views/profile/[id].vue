@@ -109,7 +109,7 @@ import Textbox from "@/components/controls/Textbox.vue";
 import Flag from "@/components/misc/Flag.vue";
 // replace with real api call
 // eslint-disable-next-line no-restricted-imports
-import { SeasonData, seasonsData, seasonsList } from "@/utils/temp-seasons-data.js";
+import { SeasonData, seasonsData, seasonsList } from "$/utils/temp-seasons-data.js";
 
 const props = defineProps<{
     id: string;

@@ -31,7 +31,7 @@ import Loader from "@/components/common/Loader.vue";
 import Button from "@/components/controls/Button.vue";
 import Checkbox from "@/components/controls/Checkbox.vue";
 import Textbox from "@/components/controls/Textbox.vue";
-import { linkify } from "@/utils/linkify";
+import { linkify } from "$/utils/linkify";
 
 const loading = ref(false);
 const email = ref("");

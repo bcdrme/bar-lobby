@@ -211,12 +211,12 @@ import Checkbox from "@/components/controls/Checkbox.vue";
 import Select from "@/components/controls/Select.vue";
 import MapPreview from "@/components/maps/MapPreview.vue";
 import Flag from "@/components/misc/Flag.vue";
-import { AbstractBattle } from "@/model/battle/abstract-battle";
-import { StartPosType } from "@/model/battle/battle-types";
-import { LuaOptionSection } from "@/model/lua-options";
-import { CurrentUser } from "@/model/user";
-import { StartBoxOrientation } from "@/utils/start-boxes";
-import { isOfflineBattle, isSpadsBattle } from "@/utils/type-checkers";
+import { AbstractBattle } from "$/model/battle/abstract-battle";
+import { StartPosType } from "$/model/battle/battle-types";
+import { LuaOptionSection } from "$/model/lua-options";
+import { CurrentUser } from "$/model/user";
+import { StartBoxOrientation } from "$/utils/start-boxes";
+import { isOfflineBattle, isSpadsBattle } from "$/utils/type-checkers";
 
 const props = defineProps<{
     battle: AbstractBattle;

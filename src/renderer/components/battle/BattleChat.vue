@@ -33,7 +33,7 @@ import { onMounted, onUnmounted, reactive, ref, watch } from "vue";
 import { Command, getAutoSuggestions, serverCommandList } from "@/api/commands";
 import BattleMessage from "@/components/battle/BattleMessage.vue";
 import AutoSuggest from "@/components/controls/AutoSuggest.vue";
-import AutoSuggestionOption from "@/utils/auto-suggestion-option";
+import AutoSuggestionOption from "$/utils/auto-suggestion-option";
 
 const optionList: Ref<AutoSuggestionOption[]> = ref([]);
 const commandList = reactive<Command[]>(structuredClone(serverCommandList));

@@ -106,9 +106,9 @@ import BattlePreview from "@/components/battle/BattlePreview.vue";
 import Button from "@/components/controls/Button.vue";
 import Checkbox from "@/components/controls/Checkbox.vue";
 import TriStateCheckbox from "@/components/controls/TriStateCheckbox.vue";
-import { Replay } from "@/model/cache/replay";
-import { getFriendlyDuration } from "@/utils/misc";
-import { isBattle, isReplay } from "@/utils/type-checkers";
+import { Replay } from "$/model/cache/replay";
+import { getFriendlyDuration } from "$/utils/misc";
+import { isBattle, isReplay } from "$/utils/type-checkers";
 
 const endedNormally: Ref<boolean | null> = ref(true);
 const showSpoilers = ref(true);

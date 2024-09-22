@@ -1,4 +1,3 @@
-import "node-self";
 import "primevue/resources/primevue.min.css";
 import "flag-icons/css/flag-icons.min.css";
 import "primeicons/primeicons.css";
@@ -12,10 +11,16 @@ import type { TransitionProps } from "vue";
 import { createApp } from "vue";
 import { createI18n } from "vue-i18n";
 
-import { apiInit } from "@/api/api";
 import App from "@/App.vue";
-import { clickAwayDirective } from "@/utils/click-away-directive";
-import { elementInViewDirective } from "@/utils/element-in-view-directive";
+import { clickAwayDirective } from "$/utils/click-away-directive";
+import { elementInViewDirective } from "$/utils/element-in-view-directive";
+
+declare global {
+    const api: any;
+    interface Window {
+        api: any;
+    }
+}
 
 declare module "vue-router" {
     interface RouteMeta {
@@ -32,10 +37,7 @@ declare module "vue-router" {
 }
 
 (async () => {
-    await apiInit();
-
     await setupVue();
-
     api.router.replace("/");
 
     window.addEventListener("keydown", (event) => {

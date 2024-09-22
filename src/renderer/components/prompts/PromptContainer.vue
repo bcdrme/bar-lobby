@@ -25,9 +25,8 @@
 import { Icon } from "@iconify/vue";
 import closeThick from "@iconify-icons/mdi/close-thick";
 import { ref, watch } from "vue";
-
-import { promptRef } from "@/api/prompt";
 import Panel from "@/components/common/Panel.vue";
+import { promptRef } from "./prompt";
 
 const promptInstance = ref();
 watch(promptInstance, () => {

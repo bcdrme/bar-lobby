@@ -13,8 +13,8 @@ import { computed } from "vue";
 
 import Modal from "@/components/common/Modal.vue";
 import Button from "@/components/controls/Button.vue";
-import { EngineAI } from "@/model/cache/engine-version";
-import { GameAI } from "@/model/cache/game-version";
+import { EngineAI } from "$/model/cache/engine-version";
+import { GameAI } from "$/model/cache/game-version";
 
 const props = defineProps<{
     engineVersion: string;

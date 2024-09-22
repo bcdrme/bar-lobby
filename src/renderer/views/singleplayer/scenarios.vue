@@ -49,7 +49,7 @@ import Button from "@/components/controls/Button.vue";
 import Select from "@/components/controls/Select.vue";
 import ScenarioTile from "@/components/misc/ScenarioTile.vue";
 import { defaultGameVersion } from "@/config/default-versions";
-import { Scenario } from "@/model/scenario";
+import { Scenario } from "$/model/scenario";
 
 const route = api.router.currentRoute.value;
 const scenarios = await api.content.game.getScenarios();

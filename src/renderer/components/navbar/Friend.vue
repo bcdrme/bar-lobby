@@ -66,8 +66,8 @@ import { inject, Ref } from "vue";
 
 import Button from "@/components/controls/Button.vue";
 import Flag from "@/components/misc/Flag.vue";
-import { User } from "@/model/user";
-import { attemptJoinBattle } from "@/utils/attempt-join-battle";
+import { User } from "$/model/user";
+import { attemptJoinBattle } from "$/utils/attempt-join-battle";
 
 const props = defineProps<{
     user: User;

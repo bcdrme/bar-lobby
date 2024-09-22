@@ -117,10 +117,10 @@ import Loader from "@/components/common/Loader.vue";
 import Button from "@/components/controls/Button.vue";
 import Checkbox from "@/components/controls/Checkbox.vue";
 import SearchBox from "@/components/controls/SearchBox.vue";
-import { SpadsBattle } from "@/model/battle/spads-battle";
-import { attemptJoinBattle } from "@/utils/attempt-join-battle";
-import { getFriendlyDuration } from "@/utils/misc";
-import { isSpadsBattle } from "@/utils/type-checkers";
+import { SpadsBattle } from "$/model/battle/spads-battle";
+import { attemptJoinBattle } from "$/utils/attempt-join-battle";
+import { getFriendlyDuration } from "$/utils/misc";
+import { isSpadsBattle } from "$/utils/type-checkers";
 
 const loading = ref(false);
 const intervalId = ref(0);

@@ -12,9 +12,8 @@
 
 <script lang="ts" setup>
 import { ref } from "vue";
-
-import { promptRef } from "@/api/prompt";
 import Button from "@/components/controls/Button.vue";
+import { promptRef } from "./prompt";
 
 const form = ref<HTMLFormElement>();
 

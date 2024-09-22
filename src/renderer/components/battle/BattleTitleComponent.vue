@@ -20,9 +20,9 @@ import squareEditOutline from "@iconify-icons/mdi/square-edit-outline";
 import { ref, computed } from "vue";
 
 import Textbox from "@/components/controls/Textbox.vue";
-import { AbstractBattle } from "@/model/battle/abstract-battle";
-import { CurrentUser } from "@/model/user";
-import { isSpadsBattle } from "@/utils/type-checkers";
+import { AbstractBattle } from "$/model/battle/abstract-battle";
+import { CurrentUser } from "$/model/user";
+import { isSpadsBattle } from "$/utils/type-checkers";
 
 const props = defineProps<{
     battle: AbstractBattle;

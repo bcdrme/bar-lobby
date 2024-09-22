@@ -25,12 +25,14 @@ export class MainWindow {
             minHeight: 900,
             paintWhenInitiallyHidden: true,
             webPreferences: {
+                preload: path.join(__dirname, "preload.js"),
+                sandbox: false,
                 nodeIntegration: true,
-                contextIsolation: false,
-                nodeIntegrationInSubFrames: true,
-                nodeIntegrationInWorker: true,
-                webSecurity: false,
-                backgroundThrottling: false,
+                // contextIsolation: false,
+                // nodeIntegrationInSubFrames: true,
+                // nodeIntegrationInWorker: true,
+                // webSecurity: false,
+                // backgroundThrottling: false,
             },
         });
 

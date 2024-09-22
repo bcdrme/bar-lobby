@@ -73,7 +73,7 @@ import Notifications from "@/components/notifications/Notifications.vue";
 import PromptContainer from "@/components/prompts/PromptContainer.vue";
 import { defaultMaps } from "@/config/default-maps";
 import { defaultEngineVersion, defaultGameVersion } from "@/config/default-versions";
-import { playRandomMusic } from "@/utils/play-random-music";
+import { playRandomMusic } from "$/utils/play-random-music";
 
 const router = useRouter();
 const settings = api.settings.model;

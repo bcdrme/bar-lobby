@@ -13,9 +13,9 @@ import { DemoModel } from "sdfz-demo-parser";
 import { computed } from "vue";
 
 import Flag from "@/components/misc/Flag.vue";
-import { Bot } from "@/model/battle/battle-types";
-import { User } from "@/model/user";
-import { isUser } from "@/utils/type-checkers";
+import { Bot } from "$/model/battle/battle-types";
+import { User } from "$/model/user";
+import { isUser } from "$/utils/type-checkers";
 
 const props = defineProps<{
     contender: DemoModel.Info.Player | DemoModel.Info.AI | DemoModel.Info.Spectator | User | Bot;

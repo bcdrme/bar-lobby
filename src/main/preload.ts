@@ -15,7 +15,10 @@ export const createDb = () => {
   return "db created";
 };
 
-contextBridge.exposeInMainWorld("myAPI", {
+
+
+
+contextBridge.exposeInMainWorld("api", {
   desktop: true,
   doAThing: () => {
     const result = createDb();

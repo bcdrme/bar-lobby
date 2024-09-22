@@ -36,10 +36,10 @@ import BotParticipant from "@/components/battle/BotParticipant.vue";
 import PlayerParticipant from "@/components/battle/PlayerParticipant.vue";
 import SpectatorParticipant from "@/components/battle/SpectatorParticipant.vue";
 import Button from "@/components/controls/Button.vue";
-import { AbstractBattle } from "@/model/battle/abstract-battle";
-import { Bot } from "@/model/battle/battle-types";
-import { CurrentUser, User } from "@/model/user";
-import { isBot, isUser } from "@/utils/type-checkers";
+import { AbstractBattle } from "$/model/battle/abstract-battle";
+import { Bot } from "$/model/battle/battle-types";
+import { CurrentUser, User } from "$/model/user";
+import { isBot, isUser } from "$/utils/type-checkers";
 
 const props = defineProps<{
     battle: AbstractBattle;

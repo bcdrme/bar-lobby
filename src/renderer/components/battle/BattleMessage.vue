@@ -11,7 +11,7 @@
 <script lang="ts" setup>
 import Flag from "@/components/misc/Flag.vue";
 import MarkDown from "@/components/misc/MarkDown.vue";
-import { Message } from "@/model/messages";
+import { Message } from "$/model/messages";
 
 const props = defineProps<{
     message: Message;
