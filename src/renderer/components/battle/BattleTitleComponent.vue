@@ -17,8 +17,7 @@
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
 import squareEditOutline from "@iconify-icons/mdi/square-edit-outline";
-import { computed } from "@vue/reactivity";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 import Textbox from "@/components/controls/Textbox.vue";
 import { AbstractBattle } from "@/model/battle/abstract-battle";

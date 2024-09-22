@@ -1,4 +1,4 @@
-import { computed, Ref, ref } from "@vue/reactivity";
+import { computed, Ref, ref } from "vue";
 import type { ChildProcess } from "child_process";
 import { spawn } from "child_process";
 import * as fs from "fs";
