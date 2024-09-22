@@ -1,13 +1,11 @@
 import { ipcRenderer } from "electron";
 import * as fs from "fs";
 import * as path from "path";
-import { Router } from "vue-router/auto";
-import { createRouter } from "vue-router/auto";
-import { createMemoryHistory } from "vue-router/auto";
+import { Router, createRouter, createMemoryHistory } from "vue-router";
 
 import { AudioAPI } from "@/api/audio";
 import { CacheDbAPI } from "@/api/cache-db";
-import { CommsAPI } from "@/api/comms";
+// import { CommsAPI } from "@/api/comms";
 import { ContentAPI } from "@/api/content/content";
 import { GameAPI } from "@/api/game";
 import { NotificationsAPI } from "@/api/notifications";
@@ -24,7 +22,7 @@ interface API {
     account: StoreAPI<typeof accountSchema>;
     audio: AudioAPI;
     cacheDb: CacheDbAPI;
-    comms: CommsAPI;
+    // comms: CommsAPI;
     content: ContentAPI;
     game: GameAPI;
     info: Info;
@@ -86,7 +84,7 @@ export async function apiInit() {
 
     api.game = new GameAPI();
 
-    api.comms = new CommsAPI(serverConfig);
+    // api.comms = new CommsAPI(serverConfig);
 
     api.content = await new ContentAPI().init();
 

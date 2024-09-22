@@ -5,7 +5,7 @@ import path from "path";
 
 // https://vitejs.dev/config
 export default defineConfig({
-    // publicDir: "assets",
+    publicDir: "assets",
     resolve: {
         alias: {
             "@": path.join(__dirname, "src/renderer"),
@@ -17,21 +17,21 @@ export default defineConfig({
         rollupOptions: {
             external: ["better-sqlite3"],
         },
-        // sourcemap: true,
+        sourcemap: true,
     },
     // optimizeDeps: {
     //     esbuildOptions: {
     //         target: "esnext",
     //     },
     // },
-    // css: {
-    //     modules: false,
-    //     preprocessorOptions: {
-    //         scss: {
-    //             additionalData: `@use "@/styles/_utils.scss";`,
-    //         },
-    //     },
-    // },
+    css: {
+        modules: false,
+        preprocessorOptions: {
+            scss: {
+                additionalData: `@use "@/styles/_utils.scss";`,
+            },
+        },
+    },
     plugins: [
         // VueRouter({
         //     routesFolder: "src/renderer/views",

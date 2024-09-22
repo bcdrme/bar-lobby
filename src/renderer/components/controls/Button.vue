@@ -22,8 +22,7 @@ import { computed } from "vue";
 
 import Control from "@/components/controls/Control.vue";
 
-// eslint-disable-next-line
-export interface Props extends ButtonProps {
+export interface Props extends /* @vue-ignore */ ButtonProps {
     to?: string;
     disabled?: boolean;
 }
