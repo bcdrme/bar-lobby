@@ -1,15 +1,15 @@
 import { safeStorage } from "electron";
 import { app, ipcMain, protocol, screen } from "electron";
 import installExtension, { VUEJS_DEVTOOLS } from "electron-devtools-installer";
-import { autoUpdater } from "electron-updater";
+// import { autoUpdater } from "electron-updater";
 import envPaths from "env-paths";
 import os from "os";
 import path from "path";
 
-import { StoreAPI } from "@/api/store";
+// import { StoreAPI } from "@/api/store";
 import { MainWindow } from "@/main-window";
 import type { Info } from "$/model/info";
-import { settingsSchema } from "$/model/settings";
+// import { settingsSchema } from "$/model/settings";
 
 /** Steam integration, commented out until we have a dedicated app id */
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -20,13 +20,13 @@ import { settingsSchema } from "$/model/settings";
 
 export class Application {
     protected mainWindow?: MainWindow;
-    protected settings?: StoreAPI<typeof settingsSchema>;
+    // protected settings?: StoreAPI<typeof settingsSchema>;
     protected initialised = false;
 
     constructor() {
         app.setName("Beyond All Reason");
 
-        process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
+        // process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = "true";
 
         protocol.registerSchemesAsPrivileged([
             {
@@ -82,7 +82,7 @@ export class Application {
                 console.error("Vue Devtools failed to install:", err?.toString());
             }
         } else if (app.isPackaged && process.env.NODE_ENV === "production") {
-            autoUpdater.checkForUpdatesAndNotify();
+            // autoUpdater.checkForUpdatesAndNotify();
         }
 
         if (!this.initialised) {
@@ -92,11 +92,11 @@ export class Application {
     }
 
     protected async init() {
-        const info = this.getInfo();
-        const settingsFilePath = path.join(info.configPath, "settings.json");
-        this.settings = await new StoreAPI(settingsFilePath, settingsSchema).init();
+        // const info = this.getInfo();
+        // const settingsFilePath = path.join(info.configPath, "settings.json");
+        // this.settings = await new StoreAPI(settingsFilePath, settingsSchema).init();
 
-        this.mainWindow = new MainWindow(this.settings);
+        this.mainWindow = new MainWindow();
 
         this.mainWindow.window.on("restore", () => this.mainWindow?.window.flashFrame(false));
 
@@ -206,6 +206,6 @@ const gotTheLock = app.requestSingleInstanceLock();
 if (!gotTheLock) {
     app.quit();
 } else {
-    //unhandled(); -- do something similar to what was done with this dependency
+    // unhandled();
     new Application();
 }

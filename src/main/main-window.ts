@@ -1,21 +1,24 @@
 import { BrowserWindow, screen, shell } from "electron";
 import path from "path";
-import { watch } from "vue";
+// import { watch } from "vue";
 
-import { StoreAPI } from "@/api/store";
-import { settingsSchema } from "$/model/settings";
+// import { StoreAPI } from "@/api/store";
+// import { settingsSchema } from "$/model/settings";
+
+declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string;
+declare const MAIN_WINDOW_VITE_NAME: string;
 
 export class MainWindow {
     public window: BrowserWindow;
 
-    protected settings: StoreAPI<typeof settingsSchema>;
+    // protected settings: StoreAPI<typeof settingsSchema>;
 
-    constructor(settings: StoreAPI<typeof settingsSchema>) {
-        this.settings = settings;
+    constructor() {
+        // this.settings = settings;
 
         this.window = new BrowserWindow({
             title: "Beyond All Reason",
-            fullscreen: this.settings.model.fullscreen,
+            fullscreen: false,
             frame: true,
             show: false,
             minWidth: 1440,
@@ -30,6 +33,12 @@ export class MainWindow {
                 backgroundThrottling: false,
             },
         });
+
+        // if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
+        //   this.window.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
+        // } else {
+        //   this.window.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
+        // };
 
         this.window.once("ready-to-show", () => this.show());
 
@@ -54,32 +63,39 @@ export class MainWindow {
             callback(obj);
         });
 
-        watch(
-            () => this.settings.model.displayIndex,
-            (displayIndex) => this.setDisplay(displayIndex)
-        );
+        // watch(
+        //     () => this.settings.model.displayIndex,
+        //     (displayIndex) => this.setDisplay(displayIndex)
+        // );
 
-        watch(
-            () => this.settings.model.fullscreen,
-            (fullscreen) => {
-                this.window.setFullScreen(fullscreen);
-                this.window.maximize();
-            }
-        );
-
-        if (process.env.ELECTRON_RENDERER_URL) {
-            this.window.loadURL(process.env.ELECTRON_RENDERER_URL);
-            this.window.webContents.openDevTools();
+        // watch(
+        //     () => this.settings.model.fullscreen,
+        //     (fullscreen) => {
+        //         this.window.setFullScreen(fullscreen);
+        //         this.window.maximize();
+        //     }
+        // );
+        //
+        if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
+          this.window.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
+          this.window.webContents.openDevTools();
         } else {
-            this.window.loadFile(path.join(__dirname, "../renderer/index.html"));
+          this.window.loadFile(
+            path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`),
+          );
         }
+
+        // if (process.env.ELECTRON_RENDERER_URL) {
+        //     this.window.loadURL(process.env.ELECTRON_RENDERER_URL);
+        //     this.window.webContents.openDevTools();
+        // } else {
+        //     this.window.loadFile(path.join(__dirname, "../renderer/index.html"));
+        // }
     }
 
     public show() {
-        this.setDisplay(this.settings.model.displayIndex);
-
-        this.window.setMenuBarVisibility(false);
-
+        // this.setDisplay(this.settings.model.displayIndex);
+        this.window.setMenuBarVisibility(false)
         this.window.show();
         this.window.focus();
     }
@@ -91,7 +107,7 @@ export class MainWindow {
             this.window.setPosition(x, y);
             this.window.setSize(width, height);
             this.window.maximize();
-            this.settings.model.displayIndex = displayIndex;
+            // this.settings.model.displayIndex = displayIndex;
         }
     }
 }

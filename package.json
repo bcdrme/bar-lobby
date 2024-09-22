@@ -8,7 +8,7 @@
         "type": "git",
         "url": "git+https://github.com/beyond-all-reason/bar-lobby.git"
     },
-    "main": ".vite/build/index.js",
+    "main": ".vite/build/main.js",
     "scripts": {
         "start": "electron-forge start",
         "package": "electron-forge package",

@@ -10,16 +10,16 @@ export default defineConfig({
         },
     },
     build: {
-        assetsDir: ".",
+        // assetsDir: ".",
         rollupOptions: {
-            output: {
-                manualChunks(id) {
-                    if (id.includes("env-paths")) {
-                        return "env-paths";
-                    }
-                    return;
-                },
-            },
+            // output: {
+            //     manualChunks(id) {
+            //         if (id.includes("env-paths")) {
+            //             return "env-paths";
+            //         }
+            //         return;
+            //     },
+            // },
         },
     },
 });
