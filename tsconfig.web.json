@@ -14,9 +14,6 @@
             "$/*": [
                 "src/common/*"
             ],
-            "jaz-ts-utils": [
-                "node_modules/jaz-ts-utils"
-            ]
         },
         "moduleResolution": "Bundler",
         "types": [
