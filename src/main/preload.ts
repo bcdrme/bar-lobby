@@ -3,6 +3,7 @@
 import { contextBridge } from "electron";
 
 import Database from "better-sqlite3";
+import { apiInit } from "./api/api";
 
 export const createDb = () => {
   const db = new Database("foobar.db", {});
@@ -15,13 +16,4 @@ export const createDb = () => {
   return "db created";
 };
 
-
-
-
-contextBridge.exposeInMainWorld("api", {
-  desktop: true,
-  doAThing: () => {
-    const result = createDb();
-    console.log("result", result);
-  },
-});
+contextBridge.exposeInMainWorld("api", await apiInit());

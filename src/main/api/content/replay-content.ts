@@ -1,6 +1,5 @@
 import fs from "fs";
 import { delay, Optionals, Signal } from "jaz-ts-utils";
-import path from "path";
 import { reactive } from "vue";
 
 import { Replay } from "$/model/cache/replay";
@@ -25,7 +24,7 @@ export const defaultReplayQueryOptions: Optionals<ReplayQueryOptions> = {
 };
 
 export class ReplayContentAPI {
-    public readonly replaysDir = path.join(api.info.contentPath, "demos");
+    public readonly replaysDir = "" //path.join(api.info.contentPath, "demos");
     public readonly onReplayCached = new Signal();
 
     protected readonly parseReplay = hookWorkerFunction(new Worker(new URL(`../../workers/parse-replay.ts`, import.meta.url), { type: "module" }), parseReplayWorkerFunction);
@@ -96,7 +95,7 @@ export class ReplayContentAPI {
     public async deleteReplay(replayId: number) {
         try {
             const { fileName } = await api.cacheDb.deleteFrom("replay").where("replayId", "=", replayId).returning("fileName").executeTakeFirstOrThrow();
-            const filePath = path.join(api.info.contentPath, "demos", fileName);
+            const filePath = "" //path.join(api.info.contentPath, "demos", fileName);
             await fs.promises.rm(filePath);
         } catch (err) {
             console.error("Error deleting replay", err);
@@ -116,7 +115,7 @@ export class ReplayContentAPI {
             const [replayToCache] = this.replayCacheQueue;
 
             if (replayToCache) {
-                const replayFilePath = path.join(api.info.contentPath, "demos", replayToCache);
+                const replayFilePath = '' //path.join(api.info.contentPath, "demos", replayToCache);
                 const fileInUse = await isFileInUse(replayFilePath);
                 if (fileInUse) {
                     console.debug(`Cannot parse replay yet because it is still being written: ${replayToCache}`);
@@ -130,7 +129,7 @@ export class ReplayContentAPI {
         }
     }
     protected async cacheReplay(replayFilePath: string) {
-        const replayFileName = path.parse(replayFilePath).base;
+        const replayFileName = '' //path.parse(replayFilePath).base;
         console.debug(`Caching: ${replayFileName}`);
         try {
             const replayData = await this.parseReplay(replayFilePath);
@@ -145,7 +144,7 @@ export class ReplayContentAPI {
                 if (conflictingReplay.gameDurationMs > replayData.gameDurationMs) {
                     await fs.promises.rm(replayFilePath);
                 } else {
-                    const filePath = path.join(api.info.contentPath, "demos", conflictingReplay.fileName);
+                    const filePath = '' //path.join(api.info.contentPath, "demos", conflictingReplay.fileName);
                     await fs.promises.rm(filePath);
 
                     await api.cacheDb

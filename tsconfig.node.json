@@ -14,7 +14,7 @@
                 "src/common/*"
             ]
         },
-        "moduleResolution": "Bundler",
+        "moduleResolution": "node",
         "types": [
             "unplugin-vue-router/client"
         ]

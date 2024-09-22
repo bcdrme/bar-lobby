@@ -3,8 +3,6 @@ import "flag-icons/css/flag-icons.min.css";
 import "primeicons/primeicons.css";
 import "@/styles/styles.scss";
 
-import { ipcRenderer } from "electron";
-import path from "path";
 import PrimeVue from "primevue/config";
 import Tooltip from "primevue/tooltip";
 import type { TransitionProps } from "vue";
@@ -71,14 +69,14 @@ async function setupVue() {
 }
 
 async function replayOpenedHandlers() {
-    const replay = await ipcRenderer.invoke("opened-replay");
-    if (replay) {
-        api.content.replays.parseAndLaunchReplay(replay);
-    }
-    ipcRenderer.on("open-replay", (_event, arg) => {
-        console.log("renderer recaeived replay to launch:" + arg);
-        api.content.replays.parseAndLaunchReplay(arg);
-    });
+    // const replay = await ipcRenderer.invoke("opened-replay");
+    // if (replay) {
+    //     api.content.replays.parseAndLaunchReplay(replay);
+    // }
+    // ipcRenderer.on("open-replay", (_event, arg) => {
+    //     console.log("renderer recaeived replay to launch:" + arg);
+    //     api.content.replays.parseAndLaunchReplay(arg);
+    // });
 }
 
 async function setupI18n() {
@@ -86,11 +84,11 @@ async function setupI18n() {
 
     const messages: Record<string, Record<string, string>> = {};
 
-    const localeFilePaths = import.meta.glob<Record<string, string>>("$/language/*.json", { import: "default" });
-    for (const filePath in localeFilePaths) {
-        const localeCode = path.parse(filePath).name;
-        messages[localeCode] = await localeFilePaths[filePath]();
-    }
+    // const localeFilePaths = import.meta.glob<Record<string, string>>("$/language/*.json", { import: "default" });
+    // for (const filePath in localeFilePaths) {
+    //     const localeCode = path.parse(filePath).name;
+    //     messages[localeCode] = await localeFilePaths[filePath]();
+    // }
 
     return createI18n({
         locale: myLocale,

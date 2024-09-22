@@ -10,7 +10,7 @@ import { AbstractContentAPI } from "@/api/content/abstract-content";
 import { contentSources } from "@/config/content-sources";
 import { EngineAI, EngineVersion } from "$/model/cache/engine-version";
 import { DownloadInfo } from "$/model/downloads";
-import { extract7z } from "$/utils/extract7z";
+import { extract7z } from "@/utils/extract7z";
 import { parseLuaOptions } from "$/utils/parse-lua-options";
 import { parseLuaTable } from "$/utils/parse-lua-table";
 
