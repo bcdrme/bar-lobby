@@ -24,7 +24,7 @@
             <InitialSetup v-else-if="state === 'initial-setup'" @complete="onInitialSetupDone" />
             <div v-else class="fullsize">
                 <NavBar :class="{ hidden: empty }" />
-                <div :class="`view view--${$router.currentRoute.value.name?.toString()}`">
+                <div :class="`view view--${router.currentRoute.value.name?.toString()}`">
                     <Panel :empty="empty" class="flex-grow">
                         <Breadcrumbs :class="{ hidden: empty }" />
                         <router-view v-slot="{ Component, route }">
@@ -55,7 +55,7 @@ import closeThick from "@iconify-icons/mdi/close-thick";
 import cog from "@iconify-icons/mdi/cog";
 import { computed, provide, Ref } from "vue";
 import { ref } from "vue";
-import { useRouter } from "vue-router/auto";
+import { useRouter } from "vue-router";
 
 import StickyBattle from "@/components/battle/StickyBattle.vue";
 import Loader from "@/components/common/Loader.vue";

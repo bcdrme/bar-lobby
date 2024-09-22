@@ -1,7 +1,8 @@
 {
     "compilerOptions": {
         "target": "ESNext",
-        "module": "commonjs",
+        "module": "esnext",
+        "types": ["vite/client"],
         "allowJs": true,
         "skipLibCheck": true,
         "esModuleInterop": true,
