@@ -6,7 +6,7 @@ import VueRouter from "unplugin-vue-router/vite";
 
 // https://vitejs.dev/config
 export default defineConfig({
-    publicDir: "assets",
+    // publicDir: "assets",
     resolve: {
         alias: {
             "@": path.join(__dirname, "src/renderer"),
@@ -15,9 +15,6 @@ export default defineConfig({
     },
     build: {
         // assetsDir: ".",
-        rollupOptions: {
-            external: ["better-sqlite3"],
-        },
         sourcemap: true,
     },
     // optimizeDeps: {
