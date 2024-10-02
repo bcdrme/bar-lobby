@@ -7,14 +7,14 @@
 </template>
 
 <script lang="ts" setup>
-import { randomFromArray } from "jaz-ts-utils";
+import { randomFromArray } from "$/jaz-ts-utils";
 import { onMounted, Ref, ref } from "vue";
 
 const videoEl: Ref<HTMLVideoElement | null> = ref(null);
 
 const emit = defineEmits(["complete"]);
 
-const introVideos = import.meta.glob("@/assets/videos/intros/**/*", { as: "url" });
+const introVideos = import.meta.glob("@renderer/assets/videos/intros/**/*", { as: "url" });
 const randomIntroVideo = randomFromArray(Object.keys(introVideos))?.split("/assets/")[1];
 
 onMounted(async () => {

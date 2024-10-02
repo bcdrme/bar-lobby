@@ -1,12 +1,12 @@
 import { Static } from "@sinclair/typebox";
-import { assign } from "jaz-ts-utils";
-import { lobbySchema, myUserSchema, playerSchema, ResponseType, userSchema } from "tachyon-client";
+import { assign } from "$/jaz-ts-utils";
+// import { lobbySchema, myUserSchema, playerSchema, ResponseType, userSchema } from "tachyon-client";
 import { computed, ComputedRef, nextTick, reactive, Ref, ref, shallowReactive, shallowRef } from "vue";
 
-import { OfflineBattle } from "@/model/battle/offline-battle";
-import { SpadsBattle } from "@/model/battle/spads-battle";
-import { Message } from "@/model/messages";
-import { CurrentUser, User } from "@/model/user";
+import { OfflineBattle } from "@renderer/model/battle/offline-battle";
+import { SpadsBattle } from "@renderer/model/battle/spads-battle";
+import { Message } from "@renderer/model/messages";
+import { CurrentUser, User } from "@renderer/model/user";
 
 export class SessionAPI {
     public readonly offlineMode: Ref<boolean> = ref(false);

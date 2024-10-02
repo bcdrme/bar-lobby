@@ -1,21 +1,20 @@
-import "node-self";
 import "primevue/resources/primevue.min.css";
 import "flag-icons/css/flag-icons.min.css";
 import "primeicons/primeicons.css";
-import "@/styles/styles.scss";
+import "@renderer/styles/styles.scss";
 
-import { ipcRenderer } from "electron";
-import path from "path";
 import PrimeVue from "primevue/config";
 import Tooltip from "primevue/tooltip";
 import type { TransitionProps } from "vue";
 import { createApp } from "vue";
 import { createI18n } from "vue-i18n";
 
-import { apiInit } from "@/api/api";
-import App from "@/App.vue";
-import { clickAwayDirective } from "@/utils/click-away-directive";
-import { elementInViewDirective } from "@/utils/element-in-view-directive";
+import App from "@renderer/App.vue";
+import { clickAwayDirective } from "@renderer/utils/click-away-directive";
+import { elementInViewDirective } from "@renderer/utils/element-in-view-directive";
+import { createRouter } from "vue-router/auto";
+import { createMemoryHistory } from "vue-router/auto";
+import { apiInit } from "./api/api";
 
 declare module "vue-router" {
     interface RouteMeta {
@@ -32,64 +31,72 @@ declare module "vue-router" {
 }
 
 (async () => {
+    //TODO replace this
     await apiInit();
-
     await setupVue();
-
-    api.router.replace("/");
-
     window.addEventListener("keydown", (event) => {
         if (event.code === "F11") {
             event.preventDefault();
-            api.settings.model.fullscreen = !api.settings.model.fullscreen;
+            window.mainWindow.toggleFullscreen();
+            window.settings.toggleFullscreen();
         }
     });
-
-    await replayOpenedHandlers();
+    //TODO implement this
+    // await replayOpenedHandlers();
 })();
 
 async function setupVue() {
     const app = createApp(App);
-
-    app.use(api.router);
+    const router = createRouter({
+        // https://github.com/posva/unplugin-vue-router/discussions/63#discussioncomment-3632637
+        extendRoutes: (routes) => {
+            for (const route of routes) {
+                if (route.children) {
+                    for (const childRoute of route.children) {
+                        if (childRoute.meta?.redirect && typeof childRoute.meta?.redirect === "string") {
+                            childRoute.redirect = { path: childRoute.meta.redirect };
+                        }
+                    }
+                }
+            }
+            return routes;
+        },
+        history: createMemoryHistory(),
+    });
+    app.use(router);
     app.use(PrimeVue, {
         ripple: true,
     });
     app.use(await setupI18n());
-
     app.directive("click-away", clickAwayDirective);
     app.directive("in-view", elementInViewDirective);
     app.directive("tooltip", Tooltip);
-
     app.mount("#app");
-
     if (process.env.NODE_ENV !== "production") {
         app.config.globalProperties.window = window;
     }
 }
 
-async function replayOpenedHandlers() {
-    const replay = await ipcRenderer.invoke("opened-replay");
-    if (replay) {
-        api.content.replays.parseAndLaunchReplay(replay);
-    }
-    ipcRenderer.on("open-replay", (_event, arg) => {
-        console.log("renderer recaeived replay to launch:" + arg);
-        api.content.replays.parseAndLaunchReplay(arg);
-    });
-}
+//TODO implement this
+// async function replayOpenedHandlers() {
+//     const replay = await ipcRenderer.invoke("opened-replay");
+//     if (replay) {
+//         api.content.replays.parseAndLaunchReplay(replay);
+//     }
+//     ipcRenderer.on("open-replay", (_event, arg) => {
+//         console.log("renderer recaeived replay to launch:" + arg);
+//         api.content.replays.parseAndLaunchReplay(arg);
+//     });
+// }
 
 async function setupI18n() {
     const myLocale = Intl.DateTimeFormat().resolvedOptions().locale.split("-")[0];
-
     const messages: Record<string, Record<string, string>> = {};
-
     const localeFilePaths = import.meta.glob<Record<string, string>>("$/language/*.json", { import: "default" });
     for (const filePath in localeFilePaths) {
-        const localeCode = path.parse(filePath).name;
+        const localeCode = filePath.match(/([a-z]{2})\.json$/)![1];
         messages[localeCode] = await localeFilePaths[filePath]();
     }
-
     return createI18n({
         locale: myLocale,
         fallbackLocale: "en",

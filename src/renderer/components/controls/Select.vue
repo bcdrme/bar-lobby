@@ -12,7 +12,7 @@
 // https://primefaces.org/primevue/dropdown
 import Dropdown, { DropdownProps } from "primevue/dropdown";
 
-import Control from "@/components/controls/Control.vue";
+import Control from "@renderer/components/controls/Control.vue";
 
 export interface Props extends DropdownProps {
     disabled?: boolean;

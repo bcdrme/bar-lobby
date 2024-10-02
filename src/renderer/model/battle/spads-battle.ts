@@ -1,13 +1,13 @@
 import { Static } from "@sinclair/typebox";
-import { assign, entries, objectKeys } from "jaz-ts-utils";
-import { battleSchema, lobbySchema } from "tachyon-client";
+import { assign, entries, objectKeys } from "$/jaz-ts-utils";
+// import { battleSchema, lobbySchema } from "tachyon-client";
 import { computed, ComputedRef, Ref, ref } from "vue";
 
-import { AbstractBattle } from "@/model/battle/abstract-battle";
-import { Bot, SpadsBattleOptions, StartBox, StartPosType } from "@/model/battle/battle-types";
-import { SpadsVote } from "@/model/spads/spads-types";
-import { User } from "@/model/user";
-import { spadsBoxToStartBox, StartBoxOrientation } from "@/utils/start-boxes";
+import { AbstractBattle } from "@renderer/model/battle/abstract-battle";
+import { Bot, SpadsBattleOptions, StartBox, StartPosType } from "@renderer/model/battle/battle-types";
+import { SpadsVote } from "@renderer/model/spads/spads-types";
+import { User } from "@renderer/model/user";
+import { spadsBoxToStartBox, StartBoxOrientation } from "@renderer/utils/start-boxes";
 
 type LobbyType = Static<typeof lobbySchema>;
 type BattleType = Static<typeof battleSchema>;

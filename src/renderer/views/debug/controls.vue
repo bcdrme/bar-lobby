@@ -88,13 +88,13 @@
 <script lang="ts" setup>
 import { Ref, ref } from "vue";
 
-import Button from "@/components/controls/Button.vue";
-import Checkbox from "@/components/controls/Checkbox.vue";
-import Number from "@/components/controls/Number.vue";
-import Options from "@/components/controls/Options.vue";
-import Range from "@/components/controls/Range.vue";
-import Select from "@/components/controls/Select.vue";
-import Textbox from "@/components/controls/Textbox.vue";
+import Button from "@renderer/components/controls/Button.vue";
+import Checkbox from "@renderer/components/controls/Checkbox.vue";
+import Number from "@renderer/components/controls/Number.vue";
+import Options from "@renderer/components/controls/Options.vue";
+import Range from "@renderer/components/controls/Range.vue";
+import Select from "@renderer/components/controls/Select.vue";
+import Textbox from "@renderer/components/controls/Textbox.vue";
 
 const text = ref("textbox");
 function onUpdateText(newText: string) {

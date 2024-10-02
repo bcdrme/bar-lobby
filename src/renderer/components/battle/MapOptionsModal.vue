@@ -43,15 +43,15 @@
 <script lang="ts" setup>
 import { Ref, ref, watch } from "vue";
 
-import Modal from "@/components/common/Modal.vue";
-import Button from "@/components/controls/Button.vue";
-import Options from "@/components/controls/Options.vue";
-import Range from "@/components/controls/Range.vue";
-import MapPreview from "@/components/maps/MapPreview.vue";
-import { StartBox, StartPosType } from "@/model/battle/battle-types";
-import { MapData } from "@/model/cache/map-data";
-import { CurrentUser } from "@/model/user";
-import { getBoxes, StartBoxOrientation } from "@/utils/start-boxes";
+import Modal from "@renderer/components/common/Modal.vue";
+import Button from "@renderer/components/controls/Button.vue";
+import Options from "@renderer/components/controls/Options.vue";
+import Range from "@renderer/components/controls/Range.vue";
+import MapPreview from "@renderer/components/maps/MapPreview.vue";
+import { StartBox, StartPosType } from "@renderer/model/battle/battle-types";
+import { MapData } from "@renderer/model/cache/map-data";
+import { CurrentUser } from "@renderer/model/user";
+import { getBoxes, StartBoxOrientation } from "@renderer/utils/start-boxes";
 
 const modal: Ref<null | InstanceType<typeof Modal>> = ref(null);
 

@@ -45,9 +45,9 @@
 
 import { computed } from "vue";
 
-import Button from "@/components/controls/Button.vue";
-import MapPreview from "@/components/maps/MapPreview.vue";
-import { defaultBattle } from "@/config/default-battle";
+import Button from "@renderer/components/controls/Button.vue";
+import MapPreview from "@renderer/components/maps/MapPreview.vue";
+import { defaultBattle } from "@renderer/config/default-battle";
 
 const props = defineProps<{
     id: string;

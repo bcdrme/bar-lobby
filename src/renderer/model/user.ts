@@ -1,4 +1,4 @@
-import { BattleContenderConfig } from "@/model/battle/battle-types";
+import { BattleContenderConfig } from "@renderer/model/battle/battle-types";
 
 export type User = {
     userId: number;

@@ -35,17 +35,17 @@
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
 import replayIcon from "@iconify-icons/mdi/replay";
-import { delay } from "jaz-ts-utils";
+import { delay } from "$/jaz-ts-utils";
 import TabPanel from "primevue/tabpanel";
 import { ref } from "vue";
 
-import Loader from "@/components/common/Loader.vue";
-import Panel from "@/components/common/Panel.vue";
-import TabView from "@/components/common/TabView.vue";
-import Button from "@/components/controls/Button.vue";
-import LoginForm from "@/components/login/LoginForm.vue";
-import RegisterForm from "@/components/login/RegisterForm.vue";
-import ResetPasswordForm from "@/components/login/ResetPasswordForm.vue";
+import Loader from "@renderer/components/common/Loader.vue";
+import Panel from "@renderer/components/common/Panel.vue";
+import TabView from "@renderer/components/common/TabView.vue";
+import Button from "@renderer/components/controls/Button.vue";
+import LoginForm from "@renderer/components/login/LoginForm.vue";
+import RegisterForm from "@renderer/components/login/RegisterForm.vue";
+import ResetPasswordForm from "@renderer/components/login/ResetPasswordForm.vue";
 
 const activeIndex = ref(0);
 const isConnected = api.comms.isConnected;

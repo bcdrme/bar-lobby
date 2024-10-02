@@ -1,7 +1,7 @@
-import { AbstractBattle } from "@/model/battle/abstract-battle";
-import { Bot, StartPosType } from "@/model/battle/battle-types";
-import { User } from "@/model/user";
-import { defaultMapBoxes, getBoxes, StartBoxOrientation } from "@/utils/start-boxes";
+import { AbstractBattle } from "@renderer/model/battle/abstract-battle";
+import { Bot, StartPosType } from "@renderer/model/battle/battle-types";
+import { User } from "@renderer/model/user";
+import { defaultMapBoxes, getBoxes, StartBoxOrientation } from "@renderer/utils/start-boxes";
 
 export class OfflineBattle extends AbstractBattle {
     public override leave() {

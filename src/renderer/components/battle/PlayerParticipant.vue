@@ -25,16 +25,16 @@
 import { Icon } from "@iconify/vue";
 import checkBold from "@iconify-icons/mdi/check-bold";
 import cloudDownload from "@iconify-icons/mdi/cloud-download";
-import { delay } from "jaz-ts-utils";
+import { delay } from "$/jaz-ts-utils";
 import { MenuItem } from "primevue/menuitem";
 import { computed, inject, Ref, ref } from "vue";
 
-import TeamParticipant from "@/components/battle/TeamParticipant.vue";
-import ContextMenu from "@/components/common/ContextMenu.vue";
-import Flag from "@/components/misc/Flag.vue";
-import { AbstractBattle } from "@/model/battle/abstract-battle";
-import { User } from "@/model/user";
-import { isSpadsBattle } from "@/utils/type-checkers";
+import TeamParticipant from "@renderer/components/battle/TeamParticipant.vue";
+import ContextMenu from "@renderer/components/common/ContextMenu.vue";
+import Flag from "@renderer/components/misc/Flag.vue";
+import { AbstractBattle } from "@renderer/model/battle/abstract-battle";
+import { User } from "@renderer/model/user";
+import { isSpadsBattle } from "@renderer/utils/type-checkers";
 
 const props = defineProps<{
     battle: AbstractBattle;

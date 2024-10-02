@@ -1,7 +1,7 @@
 <template>
-    <div id="wrapper" class="wrapper fullsize" @click.left="leftClick" @click.right="rightClick">
+    <div v-if="settings != null" id="wrapper" class="wrapper fullsize" @click.left="leftClick" @click.right="rightClick">
         <transition mode="in-out" name="intro">
-            <IntroVideo v-if="!skipIntro && videoVisible" @complete="onIntroEnd" />
+            <IntroVideo v-if="!settings.skipIntro && videoVisible" @complete="onIntroEnd" />
         </transition>
         <DebugSidebar v-if="settings.devMode" />
         <StickyBattle />
@@ -24,7 +24,7 @@
             <InitialSetup v-else-if="state === 'initial-setup'" @complete="onInitialSetupDone" />
             <div v-else class="fullsize">
                 <NavBar :class="{ hidden: empty }" />
-                <div :class="`view view--${$router.currentRoute.value.name?.toString()}`">
+                <div :class="`view view--${router.currentRoute.value.name?.toString()}`">
                     <Panel :empty="empty" class="flex-grow">
                         <Breadcrumbs :class="{ hidden: empty }" />
                         <router-view v-slot="{ Component, route }">
@@ -57,32 +57,37 @@ import { computed, provide, Ref } from "vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router/auto";
 
-import StickyBattle from "@/components/battle/StickyBattle.vue";
-import Loader from "@/components/common/Loader.vue";
-import Panel from "@/components/common/Panel.vue";
-import Background from "@/components/misc/Background.vue";
-import DebugSidebar from "@/components/misc/DebugSidebar.vue";
-import Error from "@/components/misc/Error.vue";
-import InitialSetup from "@/components/misc/InitialSetup.vue";
-import IntroVideo from "@/components/misc/IntroVideo.vue";
-import Preloader from "@/components/misc/Preloader.vue";
-import Breadcrumbs from "@/components/navbar/Breadcrumbs.vue";
-import NavBar from "@/components/navbar/NavBar.vue";
-import Settings from "@/components/navbar/Settings.vue";
-import Notifications from "@/components/notifications/Notifications.vue";
-import PromptContainer from "@/components/prompts/PromptContainer.vue";
-import { defaultMaps } from "@/config/default-maps";
-import { defaultEngineVersion, defaultGameVersion } from "@/config/default-versions";
-import { playRandomMusic } from "@/utils/play-random-music";
+import StickyBattle from "@renderer/components/battle/StickyBattle.vue";
+import Loader from "@renderer/components/common/Loader.vue";
+import Panel from "@renderer/components/common/Panel.vue";
+import Background from "@renderer/components/misc/Background.vue";
+import DebugSidebar from "@renderer/components/misc/DebugSidebar.vue";
+import Error from "@renderer/components/misc/Error.vue";
+import InitialSetup from "@renderer/components/misc/InitialSetup.vue";
+import IntroVideo from "@renderer/components/misc/IntroVideo.vue";
+import Preloader from "@renderer/components/misc/Preloader.vue";
+import Breadcrumbs from "@renderer/components/navbar/Breadcrumbs.vue";
+import NavBar from "@renderer/components/navbar/NavBar.vue";
+import Settings from "@renderer/components/navbar/Settings.vue";
+import Notifications from "@renderer/components/notifications/Notifications.vue";
+import PromptContainer from "@renderer/components/prompts/PromptContainer.vue";
+import { defaultMaps } from "@renderer/config/default-maps";
+import { defaultEngineVersion, defaultGameVersion } from "@renderer/config/default-versions";
+import { playRandomMusic } from "@renderer/utils/play-random-music";
+import { asyncComputed, computedAsync } from "@vueuse/core";
 
 const router = useRouter();
-const settings = api.settings.model;
-const skipIntro = settings.skipIntro;
-const videoVisible = ref(!settings.skipIntro);
+const settings = computedAsync(
+  async () => {
+    return await window.settings.getSettings()
+  },
+  null,
+);
+const videoVisible = ref(true);
 const state: Ref<"preloader" | "initial-setup" | "default"> = ref("preloader");
 const empty = ref(false);
 const blurBg = ref(true);
-const lobbyVersion = api.info.lobby.version;
+const lobbyVersion = asyncComputed(async () => (await window.info.getInfo()).lobby.version);
 const viewOverflowY = computed(() => (router.currentRoute.value.meta.overflowY ? router.currentRoute.value.meta.overflowY : "auto"));
 
 const settingsOpen = ref(false);
@@ -111,21 +116,21 @@ function onIntroEnd() {
     videoVisible.value = false;
 }
 
+//TODO: fix this next (API content, file downloading etc)
 async function onPreloadDone() {
     console.time("onPreloadDone");
-
+    state.value = "initial-setup";
     // TODO: should also check to see if game and maps are installed (need to fix bug where interrupted game dl reports as successful install)
-    if (api.content.engine.installedVersions.length === 0) {
+    const installedEngines = await window.engine.getInstalledVersions();
+    if (installedEngines.length === 0) {
         state.value = "initial-setup";
     } else {
         // TODO: fix the slight delay these cause on startup, probably best to move them into worker threads
-        api.content.engine.downloadEngine(defaultEngineVersion);
-        api.content.game.downloadGame(defaultGameVersion);
-        api.content.maps.downloadMaps(defaultMaps);
-
+        // api.content.engine.downloadEngine(defaultEngineVersion);
+        // api.content.game.downloadGame(defaultGameVersion);
+        // api.content.maps.downloadMaps(defaultMaps);
         state.value = "default";
     }
-
     console.timeEnd("onPreloadDone");
 }
 
@@ -136,6 +141,7 @@ function onInitialSetupDone() {
 function leftClick() {
     return api.utils.onLeftClick.dispatch();
 }
+
 function rightClick() {
     return api.utils.onRightClick.dispatch();
 }

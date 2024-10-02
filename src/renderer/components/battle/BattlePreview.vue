@@ -65,15 +65,15 @@
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
 import trophyVariant from "@iconify-icons/mdi/trophy-variant";
-import { groupBy } from "jaz-ts-utils";
+import { groupBy } from "$/jaz-ts-utils";
 import { computed, ComputedRef } from "vue";
 
-import BattlePreviewParticipant from "@/components/battle/BattlePreviewParticipant.vue";
-import MapOverviewCard from "@/components/maps/MapOverviewCard.vue";
-import { AbstractBattle } from "@/model/battle/abstract-battle";
-import { StartBox, StartPosType } from "@/model/battle/battle-types";
-import { Replay } from "@/model/cache/replay";
-import { isBattle, isReplay, isUser } from "@/utils/type-checkers";
+import BattlePreviewParticipant from "@renderer/components/battle/BattlePreviewParticipant.vue";
+import MapOverviewCard from "@renderer/components/maps/MapOverviewCard.vue";
+import { AbstractBattle } from "@renderer/model/battle/abstract-battle";
+import { StartBox, StartPosType } from "@renderer/model/battle/battle-types";
+import { Replay } from "@renderer/model/cache/replay";
+import { isBattle, isReplay, isUser } from "@renderer/utils/type-checkers";
 
 const props = defineProps<{
     battle: AbstractBattle | Replay;

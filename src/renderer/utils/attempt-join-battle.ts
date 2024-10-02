@@ -1,5 +1,5 @@
-import Password from "@/components/prompts/Password.vue";
-import { SpadsBattle } from "@/model/battle/spads-battle";
+import Password from "@renderer/components/prompts/Password.vue";
+import { SpadsBattle } from "@renderer/model/battle/spads-battle";
 
 export async function attemptJoinBattle(battle: SpadsBattle) {
     if (battle.battleOptions.passworded) {

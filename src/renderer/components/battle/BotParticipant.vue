@@ -22,12 +22,12 @@ import robot from "@iconify-icons/mdi/robot";
 import { MenuItem } from "primevue/menuitem";
 import { Ref, ref, toRaw } from "vue";
 
-import LuaOptionsModal from "@/components/battle/LuaOptionsModal.vue";
-import TeamParticipant from "@/components/battle/TeamParticipant.vue";
-import ContextMenu from "@/components/common/ContextMenu.vue";
-import { AbstractBattle } from "@/model/battle/abstract-battle";
-import { Bot } from "@/model/battle/battle-types";
-import { LuaOptionSection } from "@/model/lua-options";
+import LuaOptionsModal from "@renderer/components/battle/LuaOptionsModal.vue";
+import TeamParticipant from "@renderer/components/battle/TeamParticipant.vue";
+import ContextMenu from "@renderer/components/common/ContextMenu.vue";
+import { AbstractBattle } from "@renderer/model/battle/abstract-battle";
+import { Bot } from "@renderer/model/battle/battle-types";
+import { LuaOptionSection } from "@renderer/model/lua-options";
 
 const props = defineProps<{
     battle: AbstractBattle;

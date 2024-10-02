@@ -24,9 +24,9 @@
 <script lang="ts" setup>
 import { computed, onMounted, onUnmounted, reactive, Ref, ref } from "vue";
 
-import { Command, serverCommandList } from "@/api/commands";
-import SearchBox from "@/components/controls/SearchBox.vue";
-import Select from "@/components/controls/Select.vue";
+import { Command, serverCommandList } from "@renderer/api/commands";
+import SearchBox from "@renderer/components/controls/SearchBox.vue";
+import Select from "@renderer/components/controls/Select.vue";
 
 type FilterMethod = "All" | "Spads" | "Server";
 const filterMethods: FilterMethod[] = ["All", "Spads", "Server"];

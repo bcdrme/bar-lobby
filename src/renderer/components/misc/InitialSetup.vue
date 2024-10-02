@@ -9,8 +9,8 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from "vue";
 
-import { defaultMaps } from "@/config/default-maps";
-import { defaultEngineVersion, defaultGameVersion } from "@/config/default-versions";
+import { defaultMaps } from "@renderer/config/default-maps";
+import { defaultEngineVersion, defaultGameVersion } from "@renderer/config/default-versions";
 
 const emit = defineEmits<{
     (event: "complete"): void;
@@ -20,29 +20,33 @@ const text = ref("");
 
 onMounted(async () => {
     console.debug("Initial setup");
-
-    if (api.content.engine.installedVersions.length === 0) {
+    const installedEngineVersions = await window.engine.getInstalledVersions();
+    if (installedEngineVersions.length === 0) {
         text.value = "Downloading engine";
-        await api.content.engine.downloadEngine(defaultEngineVersion);
+        // await api.content.engine.downloadEngine(defaultEngineVersion);
         text.value = "Installing engine";
     }
 
-    if (api.content.game.installedVersions.length === 0) {
+    const installedGameVersions = await window.game.getInstalledVersions();
+    if (installedGameVersions.length === 0) {
         text.value = "Downloading game";
-        await api.content.game.downloadGame(defaultGameVersion);
+        // await api.content.game.downloadGame(defaultGameVersion);
         text.value = "Installing game";
     }
 
-    if (Object.keys(api.content.maps.installedVersions).length === 0) {
+    const installedMaps = await window.map.getInstalledVersions();
+    if (Object.keys(installedMaps).length === 0) {
         text.value = "Downloading maps";
-        await api.content.maps.downloadMaps(defaultMaps);
+        // await api.content.maps.downloadMaps(defaultMaps);
     }
 
     emit("complete");
 });
 
 const downloadPercent = computed(() => {
-    const downloads = api.content.engine.currentDownloads.concat(api.content.game.currentDownloads, api.content.maps.currentDownloads);
+    //TODO
+    // const downloads = api.content.engine.currentDownloads.concat(api.content.game.currentDownloads, api.content.maps.currentDownloads);
+    const downloads = [];
 
     if (downloads.length === 0) {
         return 1;

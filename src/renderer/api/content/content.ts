@@ -1,16 +1,16 @@
 import { computed, ComputedRef } from "vue";
 
-import { EngineContentAPI } from "@/api/content/engine-content";
-import { GameContentAPI } from "@/api/content/game-content";
-import { MapContentAPI } from "@/api/content/map-content";
-import { ReplayContentAPI } from "@/api/content/replay-content";
-import { DownloadInfo } from "@/model/downloads";
+import { EngineContentAPI } from "@renderer/api/content/engine-content";
+import { GameContentAPI } from "@renderer/api/content/game-content";
+import { MapContentAPI } from "@renderer/api/content/map-content";
+import { DownloadInfo } from "@renderer/model/downloads";
 
+//TODO register onDownloadStart and onDownloadComplete events using 
+// https://www.electronjs.org/docs/latest/tutorial/ipc#pattern-3-main-to-renderer
 export class ContentAPI {
     public engine: EngineContentAPI;
     public game: GameContentAPI;
     public maps: MapContentAPI;
-    public replays: ReplayContentAPI;
 
     public downloads: ComputedRef<DownloadInfo[]>;
     public currentDownloadCurrent: ComputedRef<number>;
@@ -21,7 +21,6 @@ export class ContentAPI {
         this.engine = new EngineContentAPI();
         this.game = new GameContentAPI();
         this.maps = new MapContentAPI();
-        this.replays = new ReplayContentAPI();
 
         this.downloads = computed(() => [...this.engine.currentDownloads, ...this.game.currentDownloads, ...this.maps.currentDownloads]);
         this.currentDownloadCurrent = computed(() => this.downloads.value.reduce((acc, cur) => acc + cur.currentBytes, 0));
@@ -133,7 +132,6 @@ export class ContentAPI {
         await this.engine.init();
         await this.game.init();
         await this.maps.init();
-        await this.replays.init();
 
         return this;
     }

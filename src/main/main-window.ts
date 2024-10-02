@@ -1,97 +1,108 @@
-import { BrowserWindow, screen, shell } from "electron";
+import { app, BrowserWindow, ipcMain, screen, shell } from "electron";
 import path from "path";
-import { watch } from "vue";
+import { settingsService } from "./services/settings.service";
 
-import { StoreAPI } from "@/api/store";
-import { settingsSchema } from "$/model/settings";
+export function createWindow() {
+    const settings = settingsService.getSettings();
+    const mainWindow = new BrowserWindow({
+        title: "Beyond All Reason",
+        fullscreen: settings.fullscreen,
+        frame: true,
+        show: true,
+        minWidth: 1440,
+        minHeight: 900,
+        paintWhenInitiallyHidden: true,
+        webPreferences: {
+            preload: path.join(__dirname, "../preload/preload.js"),
+            // backgroundThrottling: false, // unsure if this is needed
+        },
+    });
+    process.env.MAIN_WINDOW_ID = mainWindow.id.toString();
 
-export class MainWindow {
-    public window: BrowserWindow;
+    console.log("Settings: ", settings);
 
-    protected settings: StoreAPI<typeof settingsSchema>;
-
-    constructor(settings: StoreAPI<typeof settingsSchema>) {
-        this.settings = settings;
-
-        this.window = new BrowserWindow({
-            title: "Beyond All Reason",
-            fullscreen: this.settings.model.fullscreen,
-            frame: true,
-            show: false,
-            minWidth: 1440,
-            minHeight: 900,
-            paintWhenInitiallyHidden: true,
-            webPreferences: {
-                nodeIntegration: true,
-                contextIsolation: false,
-                nodeIntegrationInSubFrames: true,
-                nodeIntegrationInWorker: true,
-                webSecurity: false,
-                backgroundThrottling: false,
-            },
-        });
-
-        this.window.once("ready-to-show", () => this.show());
-
-        this.window.webContents.on("render-process-gone", (event, details) => {
-            console.error(details);
-        });
-
-        this.window.webContents.setWindowOpenHandler(({ url }) => {
-            shell.openExternal(url);
-            return { action: "deny" };
-        });
-
-        this.window.webContents.session.webRequest.onBeforeSendHeaders((details, callback) => {
-            callback({ requestHeaders: { Origin: "*", ...details.requestHeaders } });
-        });
-
-        this.window.webContents.session.webRequest.onHeadersReceived((details, callback) => {
-            const obj = { responseHeaders: { ...details.responseHeaders } };
-            if (!obj.responseHeaders["Access-Control-Allow-Origin"] && !obj.responseHeaders["access-control-allow-origin"]) {
-                obj.responseHeaders["Access-Control-Allow-Origin"] = ["*"];
-            }
-            callback(obj);
-        });
-
-        watch(
-            () => this.settings.model.displayIndex,
-            (displayIndex) => this.setDisplay(displayIndex)
-        );
-
-        watch(
-            () => this.settings.model.fullscreen,
-            (fullscreen) => {
-                this.window.setFullScreen(fullscreen);
-                this.window.maximize();
-            }
-        );
-
-        if (process.env.ELECTRON_RENDERER_URL) {
-            this.window.loadURL(process.env.ELECTRON_RENDERER_URL);
-            this.window.webContents.openDevTools();
-        } else {
-            this.window.loadFile(path.join(__dirname, "../renderer/index.html"));
+    setDisplay(settings.displayIndex || 0);
+    
+    mainWindow.once("ready-to-show", () => {
+        mainWindow.setMenuBarVisibility(false);
+        mainWindow.webContents.openDevTools();
+        mainWindow.show();
+        mainWindow.focus();
+    });
+    
+    mainWindow.webContents.on("render-process-gone", (event, details) => {
+        console.error(details);
+    });
+    
+    mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+        shell.openExternal(url);
+        return { action: "deny" };
+    });
+    
+    mainWindow.webContents.session.webRequest.onBeforeSendHeaders((details, callback) => {
+        callback({ requestHeaders: { Origin: "*", ...details.requestHeaders } });
+    });
+    
+    mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+        const obj = { responseHeaders: { ...details.responseHeaders } };
+        if (!obj.responseHeaders["Access-Control-Allow-Origin"] && !obj.responseHeaders["access-control-allow-origin"]) {
+            obj.responseHeaders["Access-Control-Allow-Origin"] = ["*"];
         }
+        callback(obj);
+    });
+    
+    if (process.env.ELECTRON_RENDERER_URL) {
+        mainWindow.loadURL(process.env.ELECTRON_RENDERER_URL);
+        mainWindow.webContents.openDevTools();
+    } else {
+        mainWindow.loadFile(path.join(__dirname, "../renderer/index.html"));
     }
 
-    public show() {
-        this.setDisplay(this.settings.model.displayIndex);
+    mainWindow.on("restore", () => mainWindow.flashFrame(false));
 
-        this.window.setMenuBarVisibility(false);
+    app.on("browser-window-focus", () => mainWindow.flashFrame(false));
+    app.on("second-instance", (_event, commandLine, _workingDirectory, _additionalData) => {
+        console.log("Second Instance opening with command line: " + commandLine);
+        focusWindows();
+        openFile(commandLine[commandLine.length - 1]);
+    });
+    app.on("open-file", (_, path) => {
+        console.log("Mac OS opening file: " + path);
+        focusWindows();
+        openFile(path);
+    });
 
-        this.window.show();
-        this.window.focus();
+    function focusWindows() {
+        if (mainWindow.isMinimized()) mainWindow.restore();
+        mainWindow.focus();
     }
 
-    public setDisplay(displayIndex: number) {
+    function openFile(path: string) {
+        if (!path.endsWith(".sdfz")) {
+            return;
+        }
+        mainWindow.webContents.send("open-replay", path);
+    }
+
+    function setDisplay(displayIndex: number) {
         const display = screen.getAllDisplays()[displayIndex];
+        console.log("Display: ", display);
+        console.log("Display Index: ", displayIndex);
+        console.log("Display Bounds: ", display.bounds);
         if (display) {
             const { x, y, width, height } = display.bounds;
-            this.window.setPosition(x, y);
-            this.window.setSize(width, height);
-            this.window.maximize();
-            this.settings.model.displayIndex = displayIndex;
+            mainWindow.setPosition(x, y);
+            mainWindow.setSize(width, height);
+            mainWindow.maximize();
         }
     }
+
+    // Register IPC handlers for the main window
+    ipcMain.handle("mainWindow:toggleFullscreen", () => mainWindow.setFullScreen(!mainWindow.isFullScreen()));
+    ipcMain.handle('mainWindow:flashFrame', (_event, flag: boolean) => {
+        mainWindow.flashFrame(flag);
+    });
+    /////////////////////////////////////////////
+
+    return mainWindow;
 }

@@ -1,7 +1,7 @@
 import { Type } from "@sinclair/typebox";
 import { DeepReadonly } from "vue";
 
-import { SpadsCommandDefinition } from "@/model/spads/spads-types";
+import { SpadsCommandDefinition } from "@renderer/model/spads/spads-types";
 
 // TODO
 

@@ -34,8 +34,10 @@ import eyeIcon from "@iconify-icons/mdi/eye";
 import robotIcon from "@iconify-icons/mdi/robot";
 import swordCross from "@iconify-icons/mdi/sword-cross";
 import { computed } from "vue";
+import { useRouter } from "vue-router/auto";
 
-const route = api.router.currentRoute;
+const router = useRouter();
+const route = router.currentRoute;
 const me = api.session.onlineUser;
 const battle = api.session.onlineBattle;
 const playerCount = computed(() => battle.value?.contenders.value.filter((c) => "userId" in c).length);
@@ -52,7 +54,7 @@ const color = computed(() => {
 });
 
 async function openBattle() {
-    await api.router.push("/multiplayer/battle");
+    await router.push("/multiplayer/battle");
 }
 
 function leaveBattle() {

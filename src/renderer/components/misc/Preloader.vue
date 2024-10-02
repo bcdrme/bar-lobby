@@ -5,11 +5,10 @@
 </template>
 
 <script lang="ts" setup>
-import { randomFromArray } from "jaz-ts-utils";
-import * as path from "path";
+import { randomFromArray } from "$/jaz-ts-utils";
 import { computed, onMounted, ref } from "vue";
 
-import Progress from "@/components/common/Progress.vue";
+import Progress from "@renderer/components/common/Progress.vue";
 
 const emit = defineEmits(["complete"]);
 
@@ -17,11 +16,11 @@ const totalFiles = ref(0);
 const loadedFiles = ref(0);
 const loadedPercent = computed(() => loadedFiles.value / totalFiles.value);
 
-const backgroundImages = import.meta.glob("@/assets/images/backgrounds/**/*", { as: "url" });
+const backgroundImages = import.meta.glob("@renderer/assets/images/backgrounds/**/*", { as: "url" });
 const randomBackgroundImage = randomFromArray(Object.keys(backgroundImages))?.split("/assets/")[1];
 document.documentElement.style.setProperty("--background", `url(${randomBackgroundImage})`);
 
-const fontFiles = import.meta.glob("@/assets/fonts/*", { as: "url" });
+const fontFiles = import.meta.glob("@renderer/assets/fonts/*", { as: "url" });
 
 totalFiles.value = Object.keys(fontFiles).length;
 
@@ -31,14 +30,13 @@ onMounted(async () => {
         await loadFont(resolvedUrl);
         loadedFiles.value++;
     }
-
     api.audio.load();
-
     emit("complete");
 });
 
 async function loadFont(url: string) {
-    const fileName = path.parse(url).name.split(".")[0];
+    console.log("Loading font:", url);
+    const fileName = url.split("/").pop()!.split(".")[0];
     const [family, weight, style] = fileName.split("-");
     const font = new FontFace(family, `url(${url})`, { weight, style });
     document.fonts.add(font);

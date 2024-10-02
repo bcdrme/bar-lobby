@@ -9,8 +9,8 @@
 </template>
 
 <script lang="ts" setup>
-import MapPreview from "@/components/maps/MapPreview.vue";
-import { StartBox } from "@/model/battle/battle-types";
+import MapPreview from "@renderer/components/maps/MapPreview.vue";
+import { StartBox } from "@renderer/model/battle/battle-types";
 
 const redComet = api.content.maps.getMapByScriptName("Red Comet Remake 1.8");
 const boxes: Record<number, StartBox | undefined> = {

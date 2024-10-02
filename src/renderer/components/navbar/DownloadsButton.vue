@@ -9,7 +9,7 @@ import { Icon } from "@iconify/vue";
 import download from "@iconify-icons/mdi/download";
 import { computed } from "vue";
 
-import Button from "@/components/controls/Button.vue";
+import Button from "@renderer/components/controls/Button.vue";
 
 const downloadPercent = computed(() => {
     const downloads = api.content.engine.currentDownloads.concat(api.content.game.currentDownloads, api.content.maps.currentDownloads);

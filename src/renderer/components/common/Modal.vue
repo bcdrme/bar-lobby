@@ -36,7 +36,7 @@ import { Icon } from "@iconify/vue";
 import closeThick from "@iconify-icons/mdi/close-thick";
 import { nextTick, Ref, ref, toRef, watch } from "vue";
 
-import Panel from "@/components/common/Panel.vue";
+import Panel from "@renderer/components/common/Panel.vue";
 
 export type PanelProps = InstanceType<typeof Panel>["$props"];
 export interface ModalProps extends PanelProps {

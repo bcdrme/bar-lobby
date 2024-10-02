@@ -8,10 +8,10 @@ import { useElementSize } from "@vueuse/core";
 import { Application, Graphics, Sprite } from "pixi.js";
 import { onMounted, onUnmounted, ref, watch } from "vue";
 
-import { StartBox, StartPosType } from "@/model/battle/battle-types";
-import { MapData } from "@/model/cache/map-data";
-import { CurrentUser } from "@/model/user";
-import { mipmapSize } from "@/workers/parse-map";
+import { StartBox, StartPosType } from "@renderer/model/battle/battle-types";
+import { CurrentUser } from "@renderer/model/user";
+import { MapData } from "@main/cache/model/map-data";
+import { mipmapSize } from "@main/content/parse-map";
 
 const props = defineProps<{
     map?: MapData;

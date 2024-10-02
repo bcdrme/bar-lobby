@@ -1,11 +1,8 @@
-import { ipcRenderer } from "electron";
-import { Signal } from "jaz-ts-utils";
+import { Signal } from "$/jaz-ts-utils";
 
-export class UtilsAPI {
+class UtilsAPI {
     public readonly onRightClick = new Signal();
     public readonly onLeftClick = new Signal();
-
-    public flashFrame(flag: boolean) {
-        return ipcRenderer.invoke("flashFrame", flag);
-    }
 }
+
+export const utilsApi = new UtilsAPI();

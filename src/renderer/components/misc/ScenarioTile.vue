@@ -9,7 +9,7 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 
-import { Scenario } from "@/model/scenario";
+import { Scenario } from "@renderer/model/scenario";
 
 const props = defineProps<{
     scenario: Scenario;

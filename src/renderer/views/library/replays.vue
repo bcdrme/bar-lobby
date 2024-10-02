@@ -96,19 +96,19 @@
 // https://primefaces.org/primevue/datatable/lazy
 
 import { format } from "date-fns";
-import { shell } from "electron";
-import path from "path";
+// import { shell } from "electron";
+// import path from "path";
 import Column from "primevue/column";
 import DataTable, { DataTablePageEvent, DataTableStateEvent } from "primevue/datatable";
 import { Ref, ref, shallowRef } from "vue";
 
-import BattlePreview from "@/components/battle/BattlePreview.vue";
-import Button from "@/components/controls/Button.vue";
-import Checkbox from "@/components/controls/Checkbox.vue";
-import TriStateCheckbox from "@/components/controls/TriStateCheckbox.vue";
-import { Replay } from "@/model/cache/replay";
-import { getFriendlyDuration } from "@/utils/misc";
-import { isBattle, isReplay } from "@/utils/type-checkers";
+import BattlePreview from "@renderer/components/battle/BattlePreview.vue";
+import Button from "@renderer/components/controls/Button.vue";
+import Checkbox from "@renderer/components/controls/Checkbox.vue";
+import TriStateCheckbox from "@renderer/components/controls/TriStateCheckbox.vue";
+import { Replay } from "@renderer/model/cache/replay";
+import { getFriendlyDuration } from "@renderer/utils/misc";
+import { isBattle, isReplay } from "@renderer/utils/type-checkers";
 
 const endedNormally: Ref<boolean | null> = ref(true);
 const showSpoilers = ref(true);
@@ -154,7 +154,7 @@ function onSort(event: DataTableStateEvent) {
 }
 
 function refresh() {
-    api.content.replays.queueReplaysToCache();
+    api.content.replays.refreshCache();
 }
 
 function openReplaysFolder() {

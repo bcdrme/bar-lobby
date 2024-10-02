@@ -12,8 +12,8 @@
 <script lang="ts" setup>
 import { onUnmounted } from "vue";
 
-import BattleComponent from "@/components/battle/BattleComponent.vue";
-import { defaultBattle } from "@/config/default-battle";
+import BattleComponent from "@renderer/components/battle/BattleComponent.vue";
+import { defaultBattle } from "@renderer/config/default-battle";
 
 api.session.offlineBattle.value = defaultBattle();
 api.session.offlineBattle.value.open();

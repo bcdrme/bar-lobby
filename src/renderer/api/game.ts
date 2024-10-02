@@ -1,15 +1,15 @@
 import { computed, Ref, ref } from "@vue/reactivity";
-import type { ChildProcess } from "child_process";
-import { spawn } from "child_process";
+// import type { ChildProcess } from "child_process";
+// import { spawn } from "child_process";
 import * as fs from "fs";
-import { Signal } from "jaz-ts-utils";
-import * as path from "path";
+import { Signal } from "$/jaz-ts-utils";
+// import * as path from "path";
 
-import { defaultEngineVersion } from "@/config/default-versions";
-import { AbstractBattle } from "@/model/battle/abstract-battle";
-import { Replay } from "@/model/cache/replay";
-import { StartScriptConverter } from "@/utils/start-script-converter";
-import { isReplay } from "@/utils/type-checkers";
+import { defaultEngineVersion } from "@renderer/config/default-versions";
+import { AbstractBattle } from "@renderer/model/battle/abstract-battle";
+import { Replay } from "@renderer/model/cache/replay";
+import { StartScriptConverter } from "@renderer/utils/start-script-converter";
+import { isReplay } from "@renderer/utils/type-checkers";
 
 export class GameAPI {
     public readonly isGameRunning = computed(() => this.gameProcess.value !== null);

@@ -27,11 +27,11 @@
 <script lang="ts" setup>
 import { ref, watch } from "vue";
 
-import Loader from "@/components/common/Loader.vue";
-import Button from "@/components/controls/Button.vue";
-import Checkbox from "@/components/controls/Checkbox.vue";
-import Textbox from "@/components/controls/Textbox.vue";
-import { linkify } from "@/utils/linkify";
+import Loader from "@renderer/components/common/Loader.vue";
+import Button from "@renderer/components/controls/Button.vue";
+import Checkbox from "@renderer/components/controls/Checkbox.vue";
+import Textbox from "@renderer/components/controls/Textbox.vue";
+import { linkify } from "@renderer/utils/linkify";
 
 const loading = ref(false);
 const email = ref("");

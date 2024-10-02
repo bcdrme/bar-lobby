@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { AbstractBattle } from "@/model/battle/abstract-battle";
-import { Bot } from "@/model/battle/battle-types";
-import { OfflineBattle } from "@/model/battle/offline-battle";
-import { SpadsBattle } from "@/model/battle/spads-battle";
-import { Replay } from "@/model/cache/replay";
-import { User } from "@/model/user";
+import { AbstractBattle } from "@renderer/model/battle/abstract-battle";
+import { Bot } from "@renderer/model/battle/battle-types";
+import { OfflineBattle } from "@renderer/model/battle/offline-battle";
+import { SpadsBattle } from "@renderer/model/battle/spads-battle";
+import { Replay } from "@renderer/model/cache/replay";
+import { User } from "@renderer/model/user";
 
 export function isReplay(replay: any): replay is Replay {
     return "replayId" in replay;

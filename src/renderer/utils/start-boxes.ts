@@ -1,7 +1,7 @@
 // TODO: add deep readonly type and add a clone method that removes it
-import { roundToMultiple } from "jaz-ts-utils";
+import { roundToMultiple } from "$/jaz-ts-utils";
 
-import { StartBox } from "@/model/battle/battle-types";
+import { StartBox } from "@renderer/model/battle/battle-types";
 
 export function getBoxes(orientation: StartBoxOrientation, percent = 30) {
     const size = percent / 100;

@@ -1,12 +1,12 @@
 import { useNow } from "@vueuse/core";
 import { formatDuration } from "date-fns";
-import { groupBy } from "jaz-ts-utils";
+import { groupBy } from "$/jaz-ts-utils";
 import { computed, ComputedRef, reactive, shallowReactive, watch, WatchStopHandle } from "vue";
 
-import { BattleOptions, Bot, StartPosType } from "@/model/battle/battle-types";
-import { MapData } from "@/model/cache/map-data";
-import { User } from "@/model/user";
-import { StartBoxOrientation } from "@/utils/start-boxes";
+import { BattleOptions, Bot, StartPosType } from "@renderer/model/battle/battle-types";
+import { MapData } from "@renderer/model/cache/map-data";
+import { User } from "@renderer/model/user";
+import { StartBoxOrientation } from "@renderer/utils/start-boxes";
 
 export interface BattleConfig<T extends BattleOptions = BattleOptions> {
     battleOptions: T;

@@ -94,12 +94,12 @@ import closeThick from "@iconify-icons/mdi/close-thick";
 import cog from "@iconify-icons/mdi/cog";
 import { computed, inject, Ref, ref } from "vue";
 
-import Button from "@/components/controls/Button.vue";
-import Downloads from "@/components/navbar/Downloads.vue";
-import DownloadsButton from "@/components/navbar/DownloadsButton.vue";
-import Exit from "@/components/navbar/Exit.vue";
-import Friends from "@/components/navbar/Friends.vue";
-import Messages from "@/components/navbar/Messages.vue";
+import Button from "@renderer/components/controls/Button.vue";
+import Downloads from "@renderer/components/navbar/Downloads.vue";
+import DownloadsButton from "@renderer/components/navbar/DownloadsButton.vue";
+import Exit from "@renderer/components/navbar/Exit.vue";
+import Friends from "@renderer/components/navbar/Friends.vue";
+import Messages from "@renderer/components/navbar/Messages.vue";
 
 const props = defineProps<{
     hidden?: boolean;

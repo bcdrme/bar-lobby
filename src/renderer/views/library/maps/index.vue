@@ -22,8 +22,8 @@
  * - Paginated
  */
 
-import MapListComponent from "@/components/maps/MapListComponent.vue";
-import { MapData } from "@/model/cache/map-data";
+import MapListComponent from "@renderer/components/maps/MapListComponent.vue";
+import { MapData } from "@renderer/model/cache/map-data";
 
 async function onMapSelected(map: MapData) {
     await api.router.push(`/library/maps/${map.scriptName}`);

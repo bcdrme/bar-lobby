@@ -45,11 +45,11 @@
 import { computed, ref, watch } from "vue";
 import Markdown from "vue3-markdown-it";
 
-import Button from "@/components/controls/Button.vue";
-import Select from "@/components/controls/Select.vue";
-import ScenarioTile from "@/components/misc/ScenarioTile.vue";
-import { defaultGameVersion } from "@/config/default-versions";
-import { Scenario } from "@/model/scenario";
+import Button from "@renderer/components/controls/Button.vue";
+import Select from "@renderer/components/controls/Select.vue";
+import ScenarioTile from "@renderer/components/misc/ScenarioTile.vue";
+import { defaultGameVersion } from "@renderer/config/default-versions";
+import { Scenario } from "@renderer/model/scenario";
 
 const route = api.router.currentRoute.value;
 const scenarios = await api.content.game.getScenarios();
