@@ -1,97 +1,114 @@
-import { BrowserWindow, screen, shell } from "electron";
+import { app, BrowserWindow, ipcMain, screen, shell } from "electron";
 import path from "path";
-import { watch } from "vue";
+import { settingsService } from "./services/settings.service";
 
-import { StoreAPI } from "@/api/store";
-import { settingsSchema } from "$/model/settings";
+declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string;
+declare const MAIN_WINDOW_VITE_NAME: string;
 
-export class MainWindow {
-    public window: BrowserWindow;
+export function createWindow() {
+    const settings = settingsService.getSettings();
+    const mainWindow = new BrowserWindow({
+        title: "Beyond All Reason",
+        fullscreen: settings.fullscreen,
+        frame: true,
+        show: true,
+        minWidth: 1440,
+        minHeight: 900,
+        paintWhenInitiallyHidden: true,
+        webPreferences: {
+            preload: path.join(__dirname, "../build/preload.js"),
+            // backgroundThrottling: false, // unsure if this is needed
+        },
+    });
+    process.env.MAIN_WINDOW_ID = mainWindow.id.toString();
 
-    protected settings: StoreAPI<typeof settingsSchema>;
+    console.log("Settings: ", settings);
 
-    constructor(settings: StoreAPI<typeof settingsSchema>) {
-        this.settings = settings;
+    setDisplay(settings.displayIndex || 0);
 
-        this.window = new BrowserWindow({
-            title: "Beyond All Reason",
-            fullscreen: this.settings.model.fullscreen,
-            frame: true,
-            show: false,
-            minWidth: 1440,
-            minHeight: 900,
-            paintWhenInitiallyHidden: true,
-            webPreferences: {
-                nodeIntegration: true,
-                contextIsolation: false,
-                nodeIntegrationInSubFrames: true,
-                nodeIntegrationInWorker: true,
-                webSecurity: false,
-                backgroundThrottling: false,
-            },
-        });
+    mainWindow.once("ready-to-show", () => {
+        mainWindow.setMenuBarVisibility(false);
+        mainWindow.webContents.openDevTools();
+        mainWindow.show();
+        mainWindow.focus();
+    });
 
-        this.window.once("ready-to-show", () => this.show());
+    mainWindow.webContents.on("render-process-gone", (event, details) => {
+        console.error(details);
+    });
 
-        this.window.webContents.on("render-process-gone", (event, details) => {
-            console.error(details);
-        });
+    mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+        shell.openExternal(url);
+        return { action: "deny" };
+    });
 
-        this.window.webContents.setWindowOpenHandler(({ url }) => {
-            shell.openExternal(url);
-            return { action: "deny" };
-        });
+    mainWindow.webContents.session.webRequest.onBeforeSendHeaders((details, callback) => {
+        callback({ requestHeaders: { Origin: "*", ...details.requestHeaders } });
+    });
 
-        this.window.webContents.session.webRequest.onBeforeSendHeaders((details, callback) => {
-            callback({ requestHeaders: { Origin: "*", ...details.requestHeaders } });
-        });
-
-        this.window.webContents.session.webRequest.onHeadersReceived((details, callback) => {
-            const obj = { responseHeaders: { ...details.responseHeaders } };
-            if (!obj.responseHeaders["Access-Control-Allow-Origin"] && !obj.responseHeaders["access-control-allow-origin"]) {
-                obj.responseHeaders["Access-Control-Allow-Origin"] = ["*"];
-            }
-            callback(obj);
-        });
-
-        watch(
-            () => this.settings.model.displayIndex,
-            (displayIndex) => this.setDisplay(displayIndex)
-        );
-
-        watch(
-            () => this.settings.model.fullscreen,
-            (fullscreen) => {
-                this.window.setFullScreen(fullscreen);
-                this.window.maximize();
-            }
-        );
-
-        if (process.env.ELECTRON_RENDERER_URL) {
-            this.window.loadURL(process.env.ELECTRON_RENDERER_URL);
-            this.window.webContents.openDevTools();
-        } else {
-            this.window.loadFile(path.join(__dirname, "../renderer/index.html"));
+    mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
+        const obj = { responseHeaders: { ...details.responseHeaders } };
+        if (!obj.responseHeaders["Access-Control-Allow-Origin"] && !obj.responseHeaders["access-control-allow-origin"]) {
+            obj.responseHeaders["Access-Control-Allow-Origin"] = ["*"];
         }
+        callback(obj);
+    });
+
+    // and load the index.html of the app.
+    if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
+        mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
+    } else {
+        mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
     }
 
-    public show() {
-        this.setDisplay(this.settings.model.displayIndex);
+    // Open the DevTools.
+    mainWindow.webContents.openDevTools();
 
-        this.window.setMenuBarVisibility(false);
+    mainWindow.on("restore", () => mainWindow.flashFrame(false));
 
-        this.window.show();
-        this.window.focus();
+    app.on("browser-window-focus", () => mainWindow.flashFrame(false));
+    app.on("second-instance", (_event, commandLine, _workingDirectory, _additionalData) => {
+        console.log("Second Instance opening with command line: " + commandLine);
+        focusWindows();
+        openFile(commandLine[commandLine.length - 1]);
+    });
+    app.on("open-file", (_, path) => {
+        console.log("Mac OS opening file: " + path);
+        focusWindows();
+        openFile(path);
+    });
+
+    function focusWindows() {
+        if (mainWindow.isMinimized()) mainWindow.restore();
+        mainWindow.focus();
     }
 
-    public setDisplay(displayIndex: number) {
+    function openFile(path: string) {
+        if (!path.endsWith(".sdfz")) {
+            return;
+        }
+        mainWindow.webContents.send("open-replay", path);
+    }
+
+    function setDisplay(displayIndex: number) {
         const display = screen.getAllDisplays()[displayIndex];
+        console.log("Display: ", display);
+        console.log("Display Index: ", displayIndex);
+        console.log("Display Bounds: ", display.bounds);
         if (display) {
             const { x, y, width, height } = display.bounds;
-            this.window.setPosition(x, y);
-            this.window.setSize(width, height);
-            this.window.maximize();
-            this.settings.model.displayIndex = displayIndex;
+            mainWindow.setPosition(x, y);
+            mainWindow.setSize(width, height);
+            mainWindow.maximize();
         }
     }
+
+    // Register IPC handlers for the main window
+    ipcMain.handle("mainWindow:toggleFullscreen", () => mainWindow.setFullScreen(!mainWindow.isFullScreen()));
+    ipcMain.handle("mainWindow:flashFrame", (_event, flag: boolean) => {
+        mainWindow.flashFrame(flag);
+    });
+    /////////////////////////////////////////////
+
+    return mainWindow;
 }

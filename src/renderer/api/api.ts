@@ -1,39 +1,39 @@
-import { ipcRenderer } from "electron";
-import * as fs from "fs";
-import * as path from "path";
-import { Router } from "vue-router/auto";
-import { createRouter } from "vue-router/auto";
-import { createMemoryHistory } from "vue-router/auto";
-
-import { AudioAPI } from "@/api/audio";
-import { CacheDbAPI } from "@/api/cache-db";
-import { CommsAPI } from "@/api/comms";
-import { ContentAPI } from "@/api/content/content";
-import { GameAPI } from "@/api/game";
-import { NotificationsAPI } from "@/api/notifications";
-import { prompt } from "@/api/prompt";
-import { SessionAPI } from "@/api/session";
-import { StoreAPI } from "@/api/store";
-import { UtilsAPI } from "@/api/utils";
-import { serverConfig } from "@/config/server";
-import { accountSchema } from "@/model/account";
-import type { Info } from "$/model/info";
-import { settingsSchema } from "$/model/settings";
+import { audioApi } from "./audio";
+import { notificationsApi } from "./notifications";
+import { utilsApi } from "./utils";
+import { EngineVersion } from "@main/cache/model/engine-version";
+import { GameVersion } from "@main/cache/model/game-version";
+import { MapData } from "@main/cache/model/map-data";
+import { useRouter } from "vue-router";
 
 interface API {
-    account: StoreAPI<typeof accountSchema>;
-    audio: AudioAPI;
-    cacheDb: CacheDbAPI;
-    comms: CommsAPI;
-    content: ContentAPI;
-    game: GameAPI;
-    info: Info;
-    notifications: NotificationsAPI;
+    account: typeof window.account;
+    audio: typeof audioApi;
+    cacheDb: typeof window.replays;
+    content: {
+        engine: {
+            installedVersions: EngineVersion[];
+        };
+        game: {
+            installedVersions: GameVersion[];
+        };
+        maps: {
+            installedVersions: MapData[];
+        };
+    };
+    //TODO implement comms
+    comms: any;
+    // content: ContentAPI;
+    // game: GameAPI;
+    game: any;
+    info: typeof window.info;
+    notifications: typeof notificationsApi;
     prompt: typeof prompt;
-    router: Router;
-    session: SessionAPI;
-    settings: StoreAPI<typeof settingsSchema>;
-    utils: UtilsAPI;
+    router: any;
+    //TODO implement sesssion
+    session: any;
+    settings: typeof window.settings;
+    utils: typeof utilsApi;
 }
 
 declare global {
@@ -47,50 +47,131 @@ export async function apiInit() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const api: API = (window.api = {} as any);
 
-    api.utils = new UtilsAPI();
+    // replaced by utilsApi
+    // api.utils = new UtilsAPI();
+    api.utils = utilsApi;
 
-    api.info = await ipcRenderer.invoke("getInfo");
+    // replaced by window.info
+    // api.info = await ipcRenderer.invoke("getInfo");
+    api.info = window.info;
 
-    const settingsFilePath = path.join(api.info.configPath, "settings.json");
-    api.settings = await new StoreAPI(settingsFilePath, settingsSchema).init();
+    // replaced by window.settings
+    // api.settings = await new StoreAPI(settingsFilePath, settingsSchema).init();
+    api.settings = window.settings;
 
-    await fs.promises.mkdir(api.info.contentPath, {
-        recursive: true,
-    });
-
-    api.session = new SessionAPI();
-
-    api.router = createRouter({
-        // https://github.com/posva/unplugin-vue-router/discussions/63#discussioncomment-3632637
-        extendRoutes: (routes) => {
-            for (const route of routes) {
-                if (route.children) {
-                    for (const childRoute of route.children) {
-                        if (childRoute.meta?.redirect && typeof childRoute.meta?.redirect === "string") {
-                            childRoute.redirect = { path: childRoute.meta.redirect };
-                        }
-                    }
-                }
-            }
-            return routes;
+    // TODO implement session when new tachyon protocol is released
+    // api.session = new SessionAPI();
+    // Mock session object
+    api.session = {
+        updateUserBattleStauts: () => {},
+        getUserById: () => {},
+        getUserByName: () => {},
+        fetchUserById: () => {},
+        updateBattleList: () => {},
+        onlineUser: {
+            battleStatus: {
+                ready: false,
+                sync: {
+                    engine: 0,
+                    game: 0,
+                    map: 0,
+                },
+            },
         },
-        history: createMemoryHistory(),
-    });
+        onlineBattle: {
+            contenders: [],
+            bots: [],
+            spectators: [],
+            battleOptions: {},
+            battleStatus: {
+                ready: false,
+                sync: {
+                    engine: 0,
+                    game: 0,
+                    map: 0,
+                },
+            },
+        },
+        offlineBattle: {
+            contenders: [],
+            bots: [],
+            spectators: [],
+            battleOptions: {},
+            battleStatus: {
+                ready: false,
+                sync: {
+                    engine: 0,
+                    game: 0,
+                    map: 0,
+                },
+            },
+        },
+        offlineUser: {
+            battleStatus: {
+                ready: false,
+                sync: {
+                    engine: 0,
+                    game: 0,
+                    map: 0,
+                },
+            },
+        },
+        offlineMode: false,
+    };
 
-    api.cacheDb = await new CacheDbAPI().init();
+    // replaced by nothing, use useRouter instead
+    api.router = useRouter();
 
-    api.audio = await new AudioAPI().init();
+    // replaced by window.replays
+    // api.cacheDb = await new CacheDbAPI().init();
+    api.cacheDb = window.replays;
 
-    const accountFilePath = path.join(api.info.configPath, "account.json");
-    api.account = await new StoreAPI(accountFilePath, accountSchema).init();
+    // replaced by audioApi
+    await audioApi.init();
+    api.audio = audioApi;
 
-    api.game = new GameAPI();
+    // replaced by window.account
+    // api.account = await new StoreAPI(accountFilePath, accountSchema).init();
+    api.account = window.account;
 
-    api.comms = new CommsAPI(serverConfig);
+    // api.game = new GameAPI();
+    api.game = {
+        isGameRunning: false,
+    };
 
-    api.content = await new ContentAPI().init();
+    // TODO implement session when new tachyon protocol is released
+    // api.comms = new CommsAPI(serverConfig);
+    // Mock comms object
+    api.comms = {
+        connect: () => {},
+        disconnect: () => {},
+        request: () => {},
+        isConnected: false,
+        config: {
+            host: "localhost",
+            port: 1234,
+        },
+    };
 
-    api.notifications = new NotificationsAPI();
+    api.content = {
+        engine: {
+            installedVersions: [],
+        },
+        game: {
+            installedVersions: [],
+        },
+        maps: {
+            installedVersions: [],
+        },
+    };
+    api.content.engine.installedVersions = await window.engine.getInstalledVersions();
+    api.content.game.installedVersions = await window.game.getInstalledVersions();
+    api.content.maps.installedVersions = await window.maps.getInstalledVersions();
 
+    // replaced by notificationsApi
+    // api.notifications = new NotificationsAPI();
+    api.notifications = notificationsApi;
+
+    // replaced by nothing, use prompt directly when needed
     api.prompt = prompt;
 }

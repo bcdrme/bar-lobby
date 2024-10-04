@@ -43,13 +43,13 @@
 <script lang="ts" setup>
 import { computed, Ref, ref } from "vue";
 
-import AddBotModal from "@/components/battle/AddBotModal.vue";
-import TeamComponent from "@/components/battle/TeamComponent.vue";
-import { AbstractBattle } from "@/model/battle/abstract-battle";
-import { Bot, Faction } from "@/model/battle/battle-types";
-import { EngineAI } from "@/model/cache/engine-version";
-import { GameAI } from "@/model/cache/game-version";
-import { CurrentUser, User } from "@/model/user";
+import AddBotModal from "@renderer/components/battle/AddBotModal.vue";
+import TeamComponent from "@renderer/components/battle/TeamComponent.vue";
+import { AbstractBattle } from "@renderer/model/battle/abstract-battle";
+import { CurrentUser, User } from "@main/model/user";
+import { EngineAI } from "@main/cache/model/engine-version";
+import { GameAI } from "@main/cache/model/game-version";
+import { Bot, Faction } from "@main/game/battle/battle-types";
 
 const props = defineProps<{
     battle: AbstractBattle;

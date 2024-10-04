@@ -11,8 +11,8 @@
 import { Ref, ref } from "vue";
 import { useRouter } from "vue-router";
 
-import Modal from "@/components/common/Modal.vue";
-import Button from "@/components/controls/Button.vue";
+import Modal from "@renderer/components/common/Modal.vue";
+import Button from "@renderer/components/controls/Button.vue";
 
 const router = useRouter();
 const modal: Ref<InstanceType<typeof Modal> | null> = ref(null);

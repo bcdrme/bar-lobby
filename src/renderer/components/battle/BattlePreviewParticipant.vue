@@ -12,10 +12,10 @@ import robot from "@iconify-icons/mdi/robot";
 import { DemoModel } from "sdfz-demo-parser";
 import { computed } from "vue";
 
-import Flag from "@/components/misc/Flag.vue";
-import { Bot } from "@/model/battle/battle-types";
-import { User } from "@/model/user";
-import { isUser } from "@/utils/type-checkers";
+import Flag from "@renderer/components/misc/Flag.vue";
+import { Bot } from "@renderer/model/battle/battle-types";
+import { User } from "@main/model/user";
+import { isUser } from "@main/utils/type-checkers";
 
 const props = defineProps<{
     contender: DemoModel.Info.Player | DemoModel.Info.AI | DemoModel.Info.Spectator | User | Bot;

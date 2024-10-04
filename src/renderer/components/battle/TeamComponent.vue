@@ -32,14 +32,14 @@
 <script lang="ts" setup>
 import { computed } from "vue";
 
-import BotParticipant from "@/components/battle/BotParticipant.vue";
-import PlayerParticipant from "@/components/battle/PlayerParticipant.vue";
-import SpectatorParticipant from "@/components/battle/SpectatorParticipant.vue";
-import Button from "@/components/controls/Button.vue";
-import { AbstractBattle } from "@/model/battle/abstract-battle";
-import { Bot } from "@/model/battle/battle-types";
-import { CurrentUser, User } from "@/model/user";
-import { isBot, isUser } from "@/utils/type-checkers";
+import BotParticipant from "@renderer/components/battle/BotParticipant.vue";
+import PlayerParticipant from "@renderer/components/battle/PlayerParticipant.vue";
+import SpectatorParticipant from "@renderer/components/battle/SpectatorParticipant.vue";
+import Button from "@renderer/components/controls/Button.vue";
+import { AbstractBattle } from "@renderer/model/battle/abstract-battle";
+import { Bot } from "@renderer/model/battle/battle-types";
+import { CurrentUser, User } from "@main/model/user";
+import { isBot, isUser } from "@main/utils/type-checkers";
 
 const props = defineProps<{
     battle: AbstractBattle;
@@ -64,7 +64,7 @@ const showJoin = computed(() => {
     return playerTeam !== listTeam || (listIsSpectator && !playerIsSpectator);
 });
 const memberCount = computed(() => {
-    return iAmSpectator.value ? props.battle.spectators.value.length : props.battle.teams.value.get(props.teamId)?.length ?? 0;
+    return iAmSpectator.value ? props.battle.spectators.value.length : (props.battle.teams.value.get(props.teamId)?.length ?? 0);
 });
 const emit = defineEmits(["addBotClicked", "onJoinClicked", "onDragStart", "onDragEnd", "onDragEnter", "onDrop"]);
 function addBotClicked(teamId: number) {

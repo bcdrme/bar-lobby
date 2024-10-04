@@ -1,10 +1,10 @@
-import { randomFromArray } from "jaz-ts-utils";
+import { randomFromArray } from "$/jaz-ts-utils";
+import { StartPosType } from "@main/game/battle/battle-types";
+import { OfflineBattle } from "@main/game/battle/offline-battle";
 
-import { defaultMaps } from "@/config/default-maps";
-import { defaultEngineVersion, defaultGameVersion } from "@/config/default-versions";
-import { StartPosType } from "@/model/battle/battle-types";
-import { OfflineBattle } from "@/model/battle/offline-battle";
-import { defaultMapBoxes } from "@/utils/start-boxes";
+import { defaultMaps } from "@renderer/config/default-maps";
+import { defaultEngineVersion, defaultGameVersion } from "@renderer/config/default-versions";
+import { defaultMapBoxes } from "@renderer/utils/start-boxes";
 
 export function defaultBattle(mapScriptName?: string) {
     const me = api.session.offlineUser;

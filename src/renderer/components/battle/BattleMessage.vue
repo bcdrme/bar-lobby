@@ -9,9 +9,9 @@
 </template>
 
 <script lang="ts" setup>
-import Flag from "@/components/misc/Flag.vue";
-import MarkDown from "@/components/misc/MarkDown.vue";
-import { Message } from "@/model/messages";
+import Flag from "@renderer/components/misc/Flag.vue";
+import MarkDown from "@renderer/components/misc/MarkDown.vue";
+import { Message } from "@renderer/model/messages";
 
 const props = defineProps<{
     message: Message;

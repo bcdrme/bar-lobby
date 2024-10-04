@@ -111,16 +111,16 @@ import Column from "primevue/column";
 import DataTable, { DataTableRowDoubleClickEvent } from "primevue/datatable";
 import { computed, onBeforeUnmount, Ref, ref, shallowRef } from "vue";
 
-import BattlePreview from "@/components/battle/BattlePreview.vue";
-import HostBattle from "@/components/battle/HostBattle.vue";
-import Loader from "@/components/common/Loader.vue";
-import Button from "@/components/controls/Button.vue";
-import Checkbox from "@/components/controls/Checkbox.vue";
-import SearchBox from "@/components/controls/SearchBox.vue";
-import { SpadsBattle } from "@/model/battle/spads-battle";
-import { attemptJoinBattle } from "@/utils/attempt-join-battle";
-import { getFriendlyDuration } from "@/utils/misc";
-import { isSpadsBattle } from "@/utils/type-checkers";
+import BattlePreview from "@renderer/components/battle/BattlePreview.vue";
+import HostBattle from "@renderer/components/battle/HostBattle.vue";
+import Loader from "@renderer/components/common/Loader.vue";
+import Button from "@renderer/components/controls/Button.vue";
+import Checkbox from "@renderer/components/controls/Checkbox.vue";
+import SearchBox from "@renderer/components/controls/SearchBox.vue";
+import { attemptJoinBattle } from "@renderer/utils/attempt-join-battle";
+import { getFriendlyDuration } from "@renderer/utils/misc";
+import { isSpadsBattle } from "@main/utils/type-checkers";
+import { SpadsBattle } from "@main/game/battle/spads-battle";
 
 const loading = ref(false);
 const intervalId = ref(0);

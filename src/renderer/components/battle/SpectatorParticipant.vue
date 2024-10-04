@@ -9,15 +9,15 @@
 </template>
 
 <script lang="ts" setup>
-import { delay } from "jaz-ts-utils";
+import { delay } from "$/jaz-ts-utils";
 import { MenuItem } from "primevue/menuitem";
 import { inject, Ref, ref } from "vue";
 
-import TeamParticipant from "@/components/battle/TeamParticipant.vue";
-import ContextMenu from "@/components/common/ContextMenu.vue";
-import Flag from "@/components/misc/Flag.vue";
-import { AbstractBattle } from "@/model/battle/abstract-battle";
-import { User } from "@/model/user";
+import TeamParticipant from "@renderer/components/battle/TeamParticipant.vue";
+import ContextMenu from "@renderer/components/common/ContextMenu.vue";
+import Flag from "@renderer/components/misc/Flag.vue";
+import { AbstractBattle } from "@renderer/model/battle/abstract-battle";
+import { User } from "@main/model/user";
 
 const props = defineProps<{
     battle: AbstractBattle;

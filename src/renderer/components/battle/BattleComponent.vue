@@ -199,24 +199,25 @@ import cogIcon from "@iconify-icons/mdi/cog";
 import listIcon from "@iconify-icons/mdi/format-list-bulleted";
 import { computed, Ref, ref } from "vue";
 
-import BattleChat from "@/components/battle/BattleChat.vue";
-import BattleTitleComponent from "@/components/battle/BattleTitleComponent.vue";
-import LuaOptionsModal from "@/components/battle/LuaOptionsModal.vue";
-import MapListModal from "@/components/battle/MapListModal.vue";
-import MapOptionsModal from "@/components/battle/MapOptionsModal.vue";
-import Playerlist from "@/components/battle/Playerlist.vue";
-import VotingPanel from "@/components/battle/VotePanel.vue";
-import Button from "@/components/controls/Button.vue";
-import Checkbox from "@/components/controls/Checkbox.vue";
-import Select from "@/components/controls/Select.vue";
-import MapPreview from "@/components/maps/MapPreview.vue";
-import Flag from "@/components/misc/Flag.vue";
-import { AbstractBattle } from "@/model/battle/abstract-battle";
-import { StartPosType } from "@/model/battle/battle-types";
-import { LuaOptionSection } from "@/model/lua-options";
-import { CurrentUser } from "@/model/user";
-import { StartBoxOrientation } from "@/utils/start-boxes";
-import { isOfflineBattle, isSpadsBattle } from "@/utils/type-checkers";
+import BattleChat from "@renderer/components/battle/BattleChat.vue";
+import BattleTitleComponent from "@renderer/components/battle/BattleTitleComponent.vue";
+import LuaOptionsModal from "@renderer/components/battle/LuaOptionsModal.vue";
+import MapListModal from "@renderer/components/battle/MapListModal.vue";
+import MapOptionsModal from "@renderer/components/battle/MapOptionsModal.vue";
+import Playerlist from "@renderer/components/battle/Playerlist.vue";
+import VotingPanel from "@renderer/components/battle/VotePanel.vue";
+import Button from "@renderer/components/controls/Button.vue";
+import Checkbox from "@renderer/components/controls/Checkbox.vue";
+import Select from "@renderer/components/controls/Select.vue";
+import MapPreview from "@renderer/components/maps/MapPreview.vue";
+import Flag from "@renderer/components/misc/Flag.vue";
+import { AbstractBattle } from "@renderer/model/battle/abstract-battle";
+import { CurrentUser } from "@main/model/user";
+import { StartBoxOrientation } from "@renderer/utils/start-boxes";
+import { isOfflineBattle, isSpadsBattle } from "@main/utils/type-checkers";
+import { LuaOptionSection } from "@main/content/model/lua-options";
+import { asyncComputed } from "@vueuse/core";
+import { StartPosType } from "@main/game/battle/battle-types";
 
 const props = defineProps<{
     battle: AbstractBattle;
@@ -224,12 +225,13 @@ const props = defineProps<{
 }>();
 
 const installedEngines = computed(() => api.content.engine.installedVersions);
-const installedMaps = computed(() =>
-    api.content.maps.installedVersions.sort((a, b) => {
+const installedMaps = asyncComputed(async () => {
+    const maps = await window.maps.getInstalledVersions();
+    return maps.sort((a, b) => {
         return a.friendlyName.localeCompare(b.friendlyName);
-    })
-);
-const map = computed(() => api.content.maps.getMapByScriptName(props.battle.battleOptions.map));
+    });
+});
+const map = asyncComputed(async () => await window.maps.getMapByScriptName(props.battle.battleOptions.map));
 const installedGames = computed(() => Array.from(api.content.game.installedVersions));
 const mapListOpen = ref(false);
 const mapOptionsOpen = ref(false);
@@ -254,7 +256,7 @@ function onGameSelected(gameVersion: string) {
 
 async function openGameOptions() {
     // TODO: show loader on button (maybe @clickAsync event?)
-    gameOptions.value = await api.content.game.getGameOptions(props.battle.battleOptions.gameVersion);
+    gameOptions.value = await window.game.getGameOptions(props.battle.battleOptions.gameVersion);
     gameOptionsOpen.value = true;
 }
 

@@ -1,4 +1,4 @@
-import { objectKeys } from "jaz-ts-utils";
+import { objectKeys } from "$/jaz-ts-utils";
 
 // TODO: move all this to jaz-ts-utils
 

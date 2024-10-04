@@ -1,5 +1,5 @@
 <template>
-    <Modal title="settings" @open="onOpen">
+    <Modal title="settings">
         <div class="gridform">
             <div>Fullscreen</div>
             <Checkbox v-model="settings.fullscreen" />
@@ -23,30 +23,26 @@
 </template>
 
 <script lang="ts" setup>
-import { Ref, ref, watch } from "vue";
+import { Ref } from "vue";
 
-import Modal from "@/components/common/Modal.vue";
-import Checkbox from "@/components/controls/Checkbox.vue";
-import Range from "@/components/controls/Range.vue";
-import Select from "@/components/controls/Select.vue";
+import Modal from "@renderer/components/common/Modal.vue";
+import Checkbox from "@renderer/components/controls/Checkbox.vue";
+import Range from "@renderer/components/controls/Range.vue";
+import Select from "@renderer/components/controls/Select.vue";
+import { asyncComputed } from "@vueuse/core";
 
-const settings = api.settings.model;
-const displayOptions: Ref<Array<{ label: string; value: number }>> = ref([]);
+const settings = asyncComputed(async() =>{
+    return await window.settings.getSettings();
+});
 
-watch(
-    () => settings.displayIndex,
-    async () => {
-        api.info.hardware.currentDisplayIndex = settings.displayIndex;
-    }
-);
-
-function onOpen() {
-    displayOptions.value = Array(api.info.hardware.numOfDisplays)
+const displayOptions: Ref<Array<{ label: string; value: number }>> = asyncComputed(async () => {
+    const info = await window.info.getInfo();
+    return Array(info.hardware.numOfDisplays)
         .fill(0)
-        .map((x, i) => {
+        .map((_, i) => {
             return { label: `Display ${i + 1}`, value: i };
         });
-}
+});
 </script>
 
 <style lang="scss" scoped></style>

@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import { AbstractBattle } from "@/model/battle/abstract-battle";
+import { AbstractBattle } from "@renderer/model/battle/abstract-battle";
 
 const props = defineProps<{
     battle: AbstractBattle;

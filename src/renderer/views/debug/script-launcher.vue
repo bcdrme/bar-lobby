@@ -12,9 +12,9 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 
-import Button from "@/components/controls/Button.vue";
-import Textarea from "@/components/controls/Textarea.vue";
-import { defaultGameVersion } from "@/config/default-versions";
+import Button from "@renderer/components/controls/Button.vue";
+import Textarea from "@renderer/components/controls/Textarea.vue";
+import { defaultGameVersion } from "@renderer/config/default-versions";
 
 const script = ref(`[game] {
     [ais] {

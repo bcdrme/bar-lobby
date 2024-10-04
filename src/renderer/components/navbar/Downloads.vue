@@ -24,8 +24,8 @@
 <script lang="ts" setup>
 import { computed, inject, Ref } from "vue";
 
-import Progress from "@/components/common/Progress.vue";
-import PopOutPanel from "@/components/navbar/PopOutPanel.vue";
+import Progress from "@renderer/components/common/Progress.vue";
+import PopOutPanel from "@renderer/components/navbar/PopOutPanel.vue";
 
 const props = defineProps<{
     modelValue: boolean;

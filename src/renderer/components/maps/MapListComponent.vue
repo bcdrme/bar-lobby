@@ -32,10 +32,10 @@
 
 import { computed, Ref, ref } from "vue";
 
-import SearchBox from "@/components/controls/SearchBox.vue";
-import Select from "@/components/controls/Select.vue";
-import MapOverviewCard from "@/components/maps/MapOverviewCard.vue";
-import { MapData } from "@/model/cache/map-data";
+import SearchBox from "@renderer/components/controls/SearchBox.vue";
+import Select from "@renderer/components/controls/Select.vue";
+import MapOverviewCard from "@renderer/components/maps/MapOverviewCard.vue";
+import { MapData } from "@renderer/model/cache/map-data";
 
 type SortMethod = "Name" | "Size";
 

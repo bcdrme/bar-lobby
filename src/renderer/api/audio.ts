@@ -1,38 +1,37 @@
+import { Settings } from "@main/services/settings.service";
 import type { HowlOptions } from "howler";
 import { Howl } from "howler";
-import * as path from "path";
-import { watch } from "vue";
 
-export class Sound extends Howl {
+class Sound extends Howl {
     public key: string;
     public isMusic: boolean;
 
     constructor(key: string, isMusic: boolean, options: HowlOptions) {
         super(options);
-
         this.key = key;
         this.isMusic = isMusic;
     }
 }
 
-export class AudioAPI {
+class AudioAPI {
     public sounds: Map<string, Sound> = new Map();
+
+    private settings: Settings;
 
     public async init() {
         if (this.sounds.size) {
             return this;
         }
-
-        const audioFiles = import.meta.glob("@/assets/audio/**/*", { as: "url" });
-
+        this.settings = await window.settings.getSettings();
+        const audioFiles = import.meta.glob("@renderer/assets/audio/**/*", { as: "url" });
+        console.log("Loading audio files...");
+        console.log(audioFiles);
         for (const filePath in audioFiles) {
             const isMusic = filePath.includes("music");
-            const key = path.parse(filePath).name;
-            const src = filePath.split("assets/")[1];
-            const volume = isMusic ? api.settings.model.musicVolume / 100 : api.settings.model.sfxVolume / 100;
-
-            const sound = new Sound(key, isMusic, { src, volume, preload: false, html5: true });
-
+            const name = filePath.split("/").pop().split(".")[0];
+            const src = filePath;
+            const volume = isMusic ? this.settings.musicVolume / 100 : this.settings.sfxVolume / 100;
+            const sound = new Sound(name, isMusic, { src, volume, preload: false, html5: true });
             sound.on("play", () => {
                 this.sounds.forEach((_sound) => {
                     if (sound !== _sound && isMusic) {
@@ -40,31 +39,33 @@ export class AudioAPI {
                     }
                 });
             });
-
-            this.sounds.set(key, sound);
+            this.sounds.set(name, sound);
         }
 
-        watch(
-            () => api.settings.model.sfxVolume,
-            () => {
-                this.sounds.forEach((sound) => {
-                    if (!sound.isMusic) {
-                        sound.volume(api.settings.model.sfxVolume / 100);
-                    }
-                });
-            }
-        );
+        // TODO find a way to watch settings changes, thinking about dropping that for more specialized ipc calls
+        // e.g. ipcRenderer.invoke("settings:setMusicVolume") and ipcRenderer.invoke("settings:setSfxVolume")
 
-        watch(
-            () => api.settings.model.musicVolume,
-            () => {
-                this.sounds.forEach((sound) => {
-                    if (sound.isMusic) {
-                        sound.volume(api.settings.model.musicVolume / 100);
-                    }
-                });
-            }
-        );
+        // watch(
+        //     () => api.settings.model.sfxVolume,
+        //     () => {
+        //         this.sounds.forEach((sound) => {
+        //             if (!sound.isMusic) {
+        //                 sound.volume(api.settings.model.sfxVolume / 100);
+        //             }
+        //         });
+        //     }
+        // );
+
+        // watch(
+        //     () => api.settings.model.musicVolume,
+        //     () => {
+        //         this.sounds.forEach((sound) => {
+        //             if (sound.isMusic) {
+        //                 sound.volume(api.settings.model.musicVolume / 100);
+        //             }
+        //         });
+        //     }
+        // );
 
         return this;
     }
@@ -100,7 +101,9 @@ export class AudioAPI {
     public unmuteMusic(fadeTime = 4000) {
         const musicSounds = this.getAllSounds().filter((sound) => sound.isMusic);
         for (const sound of musicSounds) {
-            sound.fade(0, api.settings.model.musicVolume / 100, fadeTime);
+            sound.fade(0, this.settings.musicVolume / 100, fadeTime);
         }
     }
 }
+
+export const audioApi = new AudioAPI();

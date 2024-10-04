@@ -64,10 +64,10 @@ import deleteIcon from "@iconify-icons/mdi/delete";
 import messageReplyText from "@iconify-icons/mdi/message-reply-text";
 import { inject, Ref } from "vue";
 
-import Button from "@/components/controls/Button.vue";
-import Flag from "@/components/misc/Flag.vue";
-import { User } from "@/model/user";
-import { attemptJoinBattle } from "@/utils/attempt-join-battle";
+import Button from "@renderer/components/controls/Button.vue";
+import Flag from "@renderer/components/misc/Flag.vue";
+import { User } from "@main/model/user";
+import { attemptJoinBattle } from "@renderer/utils/attempt-join-battle";
 
 const props = defineProps<{
     user: User;

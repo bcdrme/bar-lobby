@@ -7,15 +7,19 @@
 </template>
 
 <script lang="ts" setup>
-import { randomFromArray } from "jaz-ts-utils";
+import { randomFromArray } from "$/jaz-ts-utils";
 import { onMounted, Ref, ref } from "vue";
 
 const videoEl: Ref<HTMLVideoElement | null> = ref(null);
 
 const emit = defineEmits(["complete"]);
 
-const introVideos = import.meta.glob("@/assets/videos/intros/**/*", { as: "url" });
-const randomIntroVideo = randomFromArray(Object.keys(introVideos))?.split("/assets/")[1];
+const introVideos = import.meta.glob("/src/renderer/assets/videos/intros/**/*", { as: "url" });
+
+console.log("Loading intro videos...");
+console.log(introVideos);
+
+const randomIntroVideo = randomFromArray(Object.keys(introVideos));
 
 onMounted(async () => {
     if (videoEl.value) {
@@ -24,9 +28,12 @@ onMounted(async () => {
             videoEl.value.volume = 0.2;
 
             const fadeOutDuration = 1000;
-            window.setTimeout(() => {
-                emit("complete");
-            }, videoEl.value.duration * 1000 - fadeOutDuration);
+            window.setTimeout(
+                () => {
+                    emit("complete");
+                },
+                videoEl.value.duration * 1000 - fadeOutDuration
+            );
         } catch (err) {
             console.debug(err);
             end();
