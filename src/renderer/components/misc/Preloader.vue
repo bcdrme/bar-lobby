@@ -16,8 +16,8 @@ const totalFiles = ref(0);
 const loadedFiles = ref(0);
 const loadedPercent = computed(() => loadedFiles.value / totalFiles.value);
 
-const backgroundImages = import.meta.glob("@renderer/assets/images/backgrounds/**/*", { as: "url" });
-const randomBackgroundImage = randomFromArray(Object.keys(backgroundImages))?.split("/assets/")[1];
+const backgroundImages = import.meta.glob("/src/renderer/assets/images/backgrounds/**/*", { as: "url" });
+const randomBackgroundImage = randomFromArray(Object.keys(backgroundImages));
 document.documentElement.style.setProperty("--background", `url(${randomBackgroundImage})`);
 
 const fontFiles = import.meta.glob("@renderer/assets/fonts/*", { as: "url" });
