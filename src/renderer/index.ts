@@ -60,7 +60,7 @@ async function setupVue() {
     }
 }
 
-//TODO implement this
+//TODO implement this, needs to be moved to preload probably
 async function replayOpenedHandlers() {
     // const replay = await ipcRenderer.invoke("opened-replay");
     // if (replay) {

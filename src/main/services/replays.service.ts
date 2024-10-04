@@ -118,7 +118,7 @@ async function cacheReplay(replayFilePath: string) {
             await cacheDb.insertInto("replay").values(replayData).execute();
         }
         console.debug(`Cached replay: ${replayFileName}`);
-        // this.onReplayCached.dispatch();
+        ipcMain.emit("replays:replayCached", replayData);
     } catch (err) {
         console.error(`Error caching replay: ${replayFileName}`, err);
         await cacheDb

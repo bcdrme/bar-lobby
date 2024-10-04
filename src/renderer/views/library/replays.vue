@@ -96,8 +96,6 @@
 // https://primefaces.org/primevue/datatable/lazy
 
 import { format } from "date-fns";
-// import { shell } from "electron";
-// import path from "path";
 import Column from "primevue/column";
 import DataTable, { DataTablePageEvent, DataTableStateEvent } from "primevue/datatable";
 import { Ref, ref, shallowRef } from "vue";
@@ -106,9 +104,9 @@ import BattlePreview from "@renderer/components/battle/BattlePreview.vue";
 import Button from "@renderer/components/controls/Button.vue";
 import Checkbox from "@renderer/components/controls/Checkbox.vue";
 import TriStateCheckbox from "@renderer/components/controls/TriStateCheckbox.vue";
-import { Replay } from "@renderer/model/cache/replay";
 import { getFriendlyDuration } from "@renderer/utils/misc";
 import { isBattle, isReplay } from "@main/utils/type-checkers";
+import { Replay } from "@main/cache/model/replay";
 
 const endedNormally: Ref<boolean | null> = ref(true);
 const showSpoilers = ref(true);
@@ -121,9 +119,9 @@ const replays: Ref<Replay[]> = shallowRef([]);
 const selectedReplay: Ref<Replay | null> = shallowRef(null);
 
 async function fetchReplays() {
-    totalReplays.value = await api.content.replays.getTotalReplayCount();
+    totalReplays.value = await window.replays.getTotalReplayCount();
 
-    replays.value = await api.content.replays.getReplays({
+    replays.value = await window.replays.getReplays({
         offset: offset.value,
         limit: limit.value,
         endedNormally: endedNormally.value,
@@ -136,7 +134,8 @@ async function fetchReplays() {
     }
 }
 
-api.content.replays.onReplayCached.add(() => {
+window.replays.onReplayCached((newReplay) => {
+    console.log("Received event - Replay cached", newReplay);
     fetchReplays();
 });
 
@@ -154,23 +153,26 @@ function onSort(event: DataTableStateEvent) {
 }
 
 function refresh() {
-    api.content.replays.refreshCache();
+    window.replays.refreshCache();
 }
 
 function openReplaysFolder() {
-    shell.openPath(path.join(api.content.replays.replaysDir));
+    //TODO implement this
+    // shell.openPath(path.join(window.replays.replaysDir));
 }
 
 function watchReplay(replay: Replay) {
-    api.game.launch(replay);
+    //TODO implement this
+    // api.game.launch(replay);
 }
 
 function showReplayFile(replay: Replay) {
-    if (replay.filePath) {
-        shell.showItemInFolder(replay.filePath);
-        return;
-    }
-    shell.showItemInFolder(path.join(api.content.replays.replaysDir, replay.fileName));
+    //TODO implement this
+    // if (replay.filePath) {
+    //     shell.showItemInFolder(replay.filePath);
+    //     return;
+    // }
+    // shell.showItemInFolder(path.join(window.replays.replaysDir, replay.fileName));
 }
 </script>
 

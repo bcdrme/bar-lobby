@@ -41,6 +41,10 @@ const replaysApi = {
     deleteReplay: (replayId: number): Promise<void> => ipcRenderer.invoke("replays:delete", replayId),
     getReplayById: (replayId: number): Promise<number> => ipcRenderer.invoke("replays:getReplayById", replayId),
     getReplayByGameId: (gameId: string): Promise<string> => ipcRenderer.invoke("replays:getReplayByGameId", gameId),
+
+    // Events
+    //TODO replace any with proper type, check replayparser
+    onReplayCached: (listener: (newReplay) => void) => ipcRenderer.on("replays:replayCached", listener),
 };
 export type ReplaysApi = typeof replaysApi;
 contextBridge.exposeInMainWorld("replays", replaysApi);
