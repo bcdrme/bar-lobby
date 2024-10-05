@@ -42,18 +42,6 @@ export function createWindow() {
         return { action: "deny" };
     });
 
-    mainWindow.webContents.session.webRequest.onBeforeSendHeaders((details, callback) => {
-        callback({ requestHeaders: { Origin: "*", ...details.requestHeaders } });
-    });
-
-    mainWindow.webContents.session.webRequest.onHeadersReceived((details, callback) => {
-        const obj = { responseHeaders: { ...details.responseHeaders } };
-        if (!obj.responseHeaders["Access-Control-Allow-Origin"] && !obj.responseHeaders["access-control-allow-origin"]) {
-            obj.responseHeaders["Access-Control-Allow-Origin"] = ["*"];
-        }
-        callback(obj);
-    });
-
     // and load the index.html of the app.
     if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
         mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);

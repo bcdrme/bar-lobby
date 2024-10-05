@@ -49,10 +49,12 @@ import Button from "@renderer/components/controls/Button.vue";
 import Select from "@renderer/components/controls/Select.vue";
 import ScenarioTile from "@renderer/components/misc/ScenarioTile.vue";
 import { defaultGameVersion } from "@renderer/config/default-versions";
-import { Scenario } from "@renderer/model/scenario";
+import { useRouter } from "vue-router";
+import { Scenario } from "@main/content/model/scenario";
 
-const route = api.router.currentRoute.value;
-const scenarios = await api.content.game.getScenarios();
+const router = useRouter();
+const route = router.currentRoute.value;
+const scenarios = await window.game.getScenarios();
 const selectedScenario = ref<Scenario>(scenarios[0]);
 
 const difficulties = computed(() => selectedScenario.value.difficulties);

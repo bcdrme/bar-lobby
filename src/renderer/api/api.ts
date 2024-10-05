@@ -4,6 +4,8 @@ import { utilsApi } from "./utils";
 import { EngineVersion } from "@main/cache/model/engine-version";
 import { GameVersion } from "@main/cache/model/game-version";
 import { MapData } from "@main/cache/model/map-data";
+import { Message } from "@renderer/model/messages";
+import { read } from "fs";
 import { useRouter } from "vue-router";
 
 interface API {
@@ -63,6 +65,20 @@ export async function apiInit() {
     // api.session = new SessionAPI();
     // Mock session object
     api.session = {
+        directMessages: new Map<number, Message[]>([
+            [
+                1,
+                [
+                    {
+                        type: "chat",
+                        senderUserId: 1,
+                        text: "Hello",
+                    },
+                ],
+            ],
+            [2, []],
+            [3, []],
+        ]),
         updateUserBattleStauts: () => {},
         getUserById: () => {},
         getUserByName: () => {},
@@ -93,6 +109,7 @@ export async function apiInit() {
             },
         },
         offlineBattle: {
+            open: () => {},
             contenders: [],
             bots: [],
             spectators: [],
@@ -117,10 +134,13 @@ export async function apiInit() {
             },
         },
         offlineMode: false,
+        outgoingFriendRequests: [],
+        incomingFriendRequests: [],
+        friends: [],
     };
 
     // replaced by nothing, use useRouter instead
-    api.router = useRouter();
+    // api.router = useRouter();
 
     // replaced by window.replays
     // api.cacheDb = await new CacheDbAPI().init();

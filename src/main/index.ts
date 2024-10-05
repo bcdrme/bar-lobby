@@ -1,4 +1,4 @@
-import { app, ipcMain, protocol, safeStorage } from "electron";
+import { app, ipcMain, protocol, safeStorage, session } from "electron";
 
 import { createWindow } from "@main/main-window";
 import { replaysService } from "@main/services/replays.service";
@@ -28,6 +28,10 @@ if (process.env.NODE_ENV !== "production") {
     }
 }
 
+if (!app.requestSingleInstanceLock()) {
+    app.quit();
+}
+
 initCacheDb();
 
 protocol.registerSchemesAsPrivileged([
@@ -40,10 +44,6 @@ protocol.registerSchemesAsPrivileged([
         },
     },
 ]);
-
-if (!app.requestSingleInstanceLock()) {
-    app.quit();
-}
 
 app.setName("Beyond All Reason");
 app.commandLine.appendSwitch("disable-features", "HardwareMediaKeyHandling,MediaSessionService");
@@ -88,7 +88,9 @@ function setupHandlers() {
     });
 }
 
+// Security
 app.enableSandbox();
+
 app.whenReady().then(() => {
     if (process.env.NODE_ENV !== "production") {
         try {
@@ -99,6 +101,16 @@ app.whenReady().then(() => {
     } else if (app.isPackaged && process.env.NODE_ENV === "production") {
         // autoUpdater.checkForUpdatesAndNotify();
     }
+
+    // Define CSP for all webContents
+    session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+        callback({
+            responseHeaders: {
+                ...details.responseHeaders,
+                "Content-Security-Policy": ["default-src 'self' 'unsafe-inline'"],
+            },
+        });
+    });
 
     setupHandlers();
     settingsService.init();

@@ -10,6 +10,7 @@ import { GameVersion } from "@main/cache/model/game-version";
 import { MapData } from "@main/cache/model/map-data";
 import { MapImages } from "@main/content/map-content";
 import { LuaOptionSection } from "@main/content/model/lua-options";
+import { Scenario } from "@main/content/model/scenario";
 
 console.log("preload.ts loaded");
 
@@ -76,7 +77,7 @@ contextBridge.exposeInMainWorld("engine", engineApi);
 const gameApi = {
     downloadGame: (version: string): Promise<void> => ipcRenderer.invoke("game:downloadGame", version),
     getGameOptions: (version: string): Promise<LuaOptionSection[]> => ipcRenderer.invoke("game:getOptions", version),
-    getScenarios: (): Promise<string[]> => ipcRenderer.invoke("game:getScenarios"),
+    getScenarios: (): Promise<Scenario[]> => ipcRenderer.invoke("game:getScenarios"),
     getInstalledVersions: (): Promise<GameVersion[]> => ipcRenderer.invoke("game:getInstalledVersions"),
     isVersionInstalled: (version: string): Promise<boolean> => ipcRenderer.invoke("game:isVersionInstalled", version),
     uninstallVersion: (version: GameVersion): Promise<void> => ipcRenderer.invoke("game:uninstallVersion", version),

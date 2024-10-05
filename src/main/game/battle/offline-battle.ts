@@ -8,7 +8,9 @@ export class OfflineBattle extends AbstractBattle {
         super.leave();
         api.session.offlineBattle.value = null;
         api.session.onlineUser.battleStatus.battleId = -1;
-        api.router.replace("/home");
+
+        // TODO emit an event instead "battle:leftBattle"
+        // api.router.replace("/home");
     }
 
     public start() {

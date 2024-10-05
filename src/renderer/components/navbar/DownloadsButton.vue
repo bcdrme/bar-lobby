@@ -12,7 +12,9 @@ import { computed } from "vue";
 import Button from "@renderer/components/controls/Button.vue";
 
 const downloadPercent = computed(() => {
-    const downloads = api.content.engine.currentDownloads.concat(api.content.game.currentDownloads, api.content.maps.currentDownloads);
+    // TODO replace with a listener on download progress
+    // const downloads = api.content.engine.currentDownloads.concat(api.content.game.currentDownloads, api.content.maps.currentDownloads);
+    const downloads = [];
 
     let currentBytes = 0;
     let totalBytes = 0;

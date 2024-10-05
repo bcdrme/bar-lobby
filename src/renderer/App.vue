@@ -20,28 +20,30 @@
             </div>
         </div>
         <transition mode="out-in" name="fade">
-            <Preloader v-if="state === 'preloader'" @complete="onPreloadDone" />
-            <InitialSetup v-else-if="state === 'initial-setup'" @complete="onInitialSetupDone" />
-            <div v-else class="fullsize">
-                <NavBar :class="{ hidden: empty }" />
-                <div :class="`view view--${router.currentRoute.value.name?.toString()}`">
-                    <Panel :empty="empty" class="flex-grow">
-                        <Breadcrumbs :class="{ hidden: empty }" />
-                        <router-view v-slot="{ Component, route }">
-                            <transition name="slide-left">
-                                <template v-if="Component">
-                                    <suspense timeout="0">
-                                        <component :is="Component" :key="route.path" />
-                                        <template #fallback>
-                                            <Loader />
-                                        </template>
-                                    </suspense>
-                                </template>
-                            </transition>
-                        </router-view>
-                    </Panel>
+            <Suspense>
+                <Preloader v-if="state === 'preloader'" @complete="onPreloadDone" />
+                <InitialSetup v-else-if="state === 'initial-setup'" @complete="onInitialSetupDone" />
+                <div v-else class="fullsize">
+                    <NavBar :class="{ hidden: empty }" />
+                    <div :class="`view view--${router.currentRoute.value.name?.toString()}`">
+                        <Panel :empty="empty" class="flex-grow">
+                            <Breadcrumbs :class="{ hidden: empty }" />
+                            <router-view v-slot="{ Component, route }">
+                                <transition name="slide-left">
+                                    <template v-if="Component">
+                                        <suspense timeout="0">
+                                            <component :is="Component" :key="route.path" />
+                                            <template #fallback>
+                                                <Loader />
+                                            </template>
+                                        </suspense>
+                                    </template>
+                                </transition>
+                            </router-view>
+                        </Panel>
+                    </div>
                 </div>
-            </div>
+            </Suspense>
         </transition>
     </div>
     <Settings v-model="settingsOpen" />

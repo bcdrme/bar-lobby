@@ -22,10 +22,13 @@
  * - Paginated
  */
 
+import { MapData } from "@main/cache/model/map-data";
 import MapListComponent from "@renderer/components/maps/MapListComponent.vue";
-import { MapData } from "@renderer/model/cache/map-data";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 async function onMapSelected(map: MapData) {
-    await api.router.push(`/library/maps/${map.scriptName}`);
+    await router.push(`/library/maps/${map.scriptName}`);
 }
 </script>

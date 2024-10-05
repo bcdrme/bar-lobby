@@ -27,6 +27,7 @@ import { computed, onMounted, onUnmounted, reactive, Ref, ref } from "vue";
 import { Command, serverCommandList } from "@renderer/api/commands";
 import SearchBox from "@renderer/components/controls/SearchBox.vue";
 import Select from "@renderer/components/controls/Select.vue";
+import { useRouter } from "vue-router";
 
 type FilterMethod = "All" | "Spads" | "Server";
 const filterMethods: FilterMethod[] = ["All", "Spads", "Server"];
@@ -65,7 +66,8 @@ const filteredCommands = computed(() => {
     );
 });
 
-const route = api.router.currentRoute.value;
+const router = useRouter();
+const route = router.currentRoute.value;
 
 const directMessageCommandListener = api.comms.onResponse("s.communication.received_direct_message").add(async (data) => {
     const { message } = data;

@@ -32,9 +32,12 @@ import { computed, inject, Ref, ref } from "vue";
 import TeamParticipant from "@renderer/components/battle/TeamParticipant.vue";
 import ContextMenu from "@renderer/components/common/ContextMenu.vue";
 import Flag from "@renderer/components/misc/Flag.vue";
-import { AbstractBattle } from "@renderer/model/battle/abstract-battle";
 import { User } from "@main/model/user";
 import { isSpadsBattle } from "@main/utils/type-checkers";
+import { AbstractBattle } from "@main/game/battle/abstract-battle";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const props = defineProps<{
     battle: AbstractBattle;
@@ -85,7 +88,7 @@ function onRightClick(event: MouseEvent) {
 }
 
 async function viewProfile() {
-    await api.router.push(`/profile/${props.player.userId}`);
+    await router.push(`/profile/${props.player.userId}`);
 }
 
 async function kickPlayer() {

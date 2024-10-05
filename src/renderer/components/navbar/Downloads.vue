@@ -50,7 +50,9 @@ toggleDownloads.value = async (open?: boolean) => {
 };
 
 const downloads = computed(() =>
-    api.content.engine.currentDownloads.concat(api.content.game.currentDownloads, api.content.maps.currentDownloads)
+    //TODO replace witgh a listener on downloads in progress
+    // api.content.engine.currentDownloads.concat(api.content.game.currentDownloads, api.content.maps.currentDownloads)
+    []
 );
 
 function progressText(currentBytes: number, totalBytes: number) {

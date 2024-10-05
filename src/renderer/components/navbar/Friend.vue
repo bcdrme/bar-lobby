@@ -68,6 +68,9 @@ import Button from "@renderer/components/controls/Button.vue";
 import Flag from "@renderer/components/misc/Flag.vue";
 import { User } from "@main/model/user";
 import { attemptJoinBattle } from "@renderer/utils/attempt-join-battle";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
 
 const props = defineProps<{
     user: User;
@@ -103,7 +106,7 @@ async function rejectRequest() {
 }
 
 async function viewProfile() {
-    await api.router.push(`/profile/${props.user.userId}`);
+    await router.push(`/profile/${props.user.userId}`);
 }
 
 const toggleMessages = inject<Ref<((open?: boolean, userId?: number) => void) | undefined>>("toggleMessages")!;
