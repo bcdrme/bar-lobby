@@ -1,8 +1,6 @@
-import sevenBin from "7zip-bin";
 import { existsSync, promises as fs } from "fs";
 import { glob } from "glob";
 import { LocalStatement, TableConstructorExpression, TableKey, TableKeyString, TableValue, parse } from "luaparse";
-import { extractFull } from "node-7z";
 import * as os from "os";
 import * as path from "path";
 import { defaultWaterOptions, MapInfo, SMD, SMF, SpringMap, WaterOptions } from "./map-model";
@@ -11,9 +9,9 @@ import { DeepPartial } from "$/jaz-ts-utils";
 import { JimpInstance, Jimp, intToRGBA, rgbaToInt } from "jimp";
 import { parseDxt } from "./parse-dxt";
 import { StreamZipAsync } from "node-stream-zip";
-
-const TGA = require("tga");
-const parseDDS = require("./utex.dds");
+import { extract7z } from "@main/utils/extract-7z";
+import parseDDS from "./utex.dds";
+import TGA from "tga";
 
 // https://github.com/spring/spring/tree/develop/rts/Map
 // https://springrts.com/wiki/Mapdev:mapinfo.lua
@@ -33,11 +31,6 @@ export interface MapParserConfig {
      */
     skipSmt: boolean;
     /**
-     * Path to the 7za executable. Will automatically resolve if left unspecified.
-     * @default sevenBin.path7za
-     */
-    path7za: string;
-    /**
      * Retroactively draw water on top of map texture based on the map's depth
      * @default true
      */
@@ -53,7 +46,6 @@ const mapParserDefaultConfig: Partial<MapParserConfig> = {
     verbose: false,
     mipmapSize: 4,
     skipSmt: false,
-    path7za: sevenBin.path7za,
     water: true,
     parseResources: false,
 };
@@ -151,27 +143,16 @@ export class MapParser {
     }
 
     protected async extractSd7(sd7Path: string, outPath: string): Promise<{ smf: Buffer; smt: Buffer; smd?: Buffer; smfName?: string; mapInfo?: Buffer; specular?: JimpInstance }> {
-        return new Promise(async (resolve) => {
-            if (this.config.verbose) {
-                console.log(`Extracting .sd7 to ${outPath}`);
-            }
-
-            if (!existsSync(sd7Path)) {
-                throw new Error(`File not found: ${sd7Path}`);
-            }
-
-            await fs.mkdir(outPath, { recursive: true });
-
-            const extractStream = extractFull(sd7Path, outPath, {
-                $bin: this.config.path7za,
-                recursive: true,
-            });
-
-            extractStream.on("end", async () => {
-                const archiveFiles = await this.extractArchiveFiles(outPath);
-                resolve(archiveFiles);
-            });
-        });
+        if (this.config.verbose) {
+            console.log(`Extracting .sd7 to ${outPath}`);
+        }
+        if (!existsSync(sd7Path)) {
+            throw new Error(`File not found: ${sd7Path}`);
+        }
+        await fs.mkdir(outPath, { recursive: true });
+        await extract7z(sd7Path, outPath);
+        const archiveFiles = await this.extractArchiveFiles(outPath);
+        return archiveFiles;
     }
 
     protected async extractSdz(sdzPath: string, outPath: string): Promise<{ smf: Buffer; smt: Buffer; smd?: Buffer; smfName?: string; mapInfo?: Buffer; specular?: JimpInstance }> {

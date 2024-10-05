@@ -777,6 +777,6 @@ UTEX.PVR = {
     }
 };
 
-module.exports = function(buffer) {
+export default function(buffer) {
     return UTEX.DDS.decode(buffer)[0];
 };
