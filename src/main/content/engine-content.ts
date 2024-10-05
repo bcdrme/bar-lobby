@@ -32,6 +32,7 @@ export class EngineContentAPI extends AbstractContentAPI<EngineVersion> {
             const engineVersions = await cacheDb.selectFrom("engineVersion").selectAll().execute();
             log.info(`Found ${engineVersions.length} installed engine versions`);
             for (const version of engineVersions) {
+                log.info(`Engine version ${version.id}`);
                 this.installedVersions.push(version);
             }
             const files = await fs.promises.readdir(this.engineDirs, { withFileTypes: true });

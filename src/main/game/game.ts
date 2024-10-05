@@ -59,7 +59,7 @@ export class GameAPI {
                 mapName = arg.mapScriptName;
             }
 
-            console.info(`Launching game with engine: ${engineVersion}, game: ${gameVersion}, map: ${mapName}`);
+            log.info(`Launching game with engine: ${engineVersion}, game: ${gameVersion}, map: ${mapName}`);
             await this.fetchMissingContent(engineVersion, gameVersion, mapName);
 
             const enginePath = path.join(getInfo().contentPath, "engine", engineVersion).replaceAll("\\", "/");
@@ -75,11 +75,23 @@ export class GameAPI {
             const args = ["--write-dir", getInfo().contentPath, "--isolation", launchArg];
 
             const binaryName = process.platform === "win32" ? "spring.exe" : "./spring";
-            console.info(`Launching game with binary: ${binaryName}, args: ${args}`);
+            log.debug(`Running binary: ${path.join(enginePath, binaryName)}, args: ${args}`);
             this.gameProcess = spawn(binaryName, args, {
                 cwd: enginePath,
                 stdio: "ignore",
                 detached: true,
+            });
+
+            this.gameProcess.addListener("error", (err) => {
+                log.error(err);
+            });
+
+            this.gameProcess.addListener("exit", (code) => {
+                if (code !== 0) {
+                    log.error(`Game process exited with code: ${code}`);
+                } else {
+                    log.debug(`Game process exited with code: ${code}`);
+                }
             });
 
             this.gameProcess.addListener("spawn", () => {
@@ -96,8 +108,7 @@ export class GameAPI {
                 // TODO send event to renderer "game closed"
                 // api.audio.unmuteMusic();
             });
-
-            console.log(`Game process PID: ${this.gameProcess.pid}`);
+            log.debug(`Game process PID: ${this.gameProcess.pid}`);
         } catch (err) {
             log.error(err);
         }
@@ -131,7 +142,7 @@ export class GameAPI {
                 .where("id", "=", engineVersion)
                 .execute();
         } catch (err) {
-            console.error(`Error updating lastLaunched field for engine: ${engineVersion}`, err);
+            log.error(`Error updating lastLaunched field for engine: ${engineVersion}`, err);
         }
 
         try {
@@ -143,7 +154,7 @@ export class GameAPI {
                 .where("id", "=", gameVersion)
                 .execute();
         } catch (err) {
-            console.error(`Error updating lastLaunched field for game: ${gameVersion}`, err);
+            log.error(`Error updating lastLaunched field for game: ${gameVersion}`, err);
         }
 
         try {
@@ -155,7 +166,7 @@ export class GameAPI {
                 .where("scriptName", "=", mapScriptName)
                 .execute();
         } catch (err) {
-            console.error(`Error updating lastLaunched field for map: ${mapScriptName}`, err);
+            log.error(`Error updating lastLaunched field for map: ${mapScriptName}`, err);
         }
     }
 }

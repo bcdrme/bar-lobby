@@ -3,10 +3,10 @@ import { assign } from "$/jaz-ts-utils";
 // import { lobbySchema, myUserSchema, playerSchema, ResponseType, userSchema } from "tachyon-client";
 import { computed, ComputedRef, nextTick, reactive, Ref, ref, shallowReactive, shallowRef } from "vue";
 
-import { OfflineBattle } from "@renderer/model/battle/offline-battle";
-import { SpadsBattle } from "@renderer/model/battle/spads-battle";
 import { Message } from "@renderer/model/messages";
 import { CurrentUser, User } from "@main/model/user";
+import { OfflineBattle } from "@main/game/battle/offline-battle";
+import { SpadsBattle } from "@main/game/battle/spads-battle";
 
 export class SessionAPI {
     public readonly offlineMode: Ref<boolean> = ref(false);

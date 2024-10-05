@@ -7,10 +7,9 @@
 </template>
 
 <script lang="ts" setup>
+import { defaultMaps } from "@main/content/config/default-maps";
+import { defaultEngineVersion, defaultGameVersion } from "@main/content/config/default-versions";
 import { computed, onMounted, ref } from "vue";
-
-import { defaultMaps } from "@renderer/config/default-maps";
-import { defaultEngineVersion, defaultGameVersion } from "@renderer/config/default-versions";
 
 const emit = defineEmits<{
     (event: "complete"): void;

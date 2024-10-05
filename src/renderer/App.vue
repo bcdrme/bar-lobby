@@ -72,10 +72,11 @@ import NavBar from "@renderer/components/navbar/NavBar.vue";
 import Settings from "@renderer/components/navbar/Settings.vue";
 import Notifications from "@renderer/components/notifications/Notifications.vue";
 import PromptContainer from "@renderer/components/prompts/PromptContainer.vue";
-import { defaultMaps } from "@renderer/config/default-maps";
-import { defaultEngineVersion, defaultGameVersion } from "@renderer/config/default-versions";
+
 import { playRandomMusic } from "@renderer/utils/play-random-music";
 import { asyncComputed, computedAsync } from "@vueuse/core";
+import { defaultEngineVersion, defaultGameVersion } from "@main/content/config/default-versions";
+import { defaultMaps } from "@main/content/config/default-maps";
 
 window.game.onGameLaunched(() => {
     console.log("Game launched");

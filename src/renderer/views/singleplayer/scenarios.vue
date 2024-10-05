@@ -48,9 +48,9 @@ import Markdown from "vue3-markdown-it";
 import Button from "@renderer/components/controls/Button.vue";
 import Select from "@renderer/components/controls/Select.vue";
 import ScenarioTile from "@renderer/components/misc/ScenarioTile.vue";
-import { defaultGameVersion } from "@renderer/config/default-versions";
 import { useRouter } from "vue-router";
 import { Scenario } from "@main/content/model/scenario";
+import { defaultGameVersion } from "@main/content/config/default-versions";
 
 const router = useRouter();
 const route = router.currentRoute.value;

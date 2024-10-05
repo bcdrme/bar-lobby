@@ -18,13 +18,20 @@ import { defaultGameVersion } from "./config/default-versions";
 import { BufferStream } from "@main/utils/buffer-stream";
 import { DownloadInfo } from "./model/downloads";
 import { cacheDb } from "@main/cache/cache-db";
+import { logger } from "@main/utils/logger";
+import assert from "assert";
 
+const log = logger("game-content.ts");
 const gunzip = util.promisify(zlib.gunzip);
 
 export class GameContentAPI extends PrDownloaderAPI<GameVersion | CustomGameVersion> {
     public override async init() {
         const gameVersions = await cacheDb.selectFrom("gameVersion").selectAll().execute();
+        if (gameVersions.length === 0) {
+            log.warn("No game versions found, please download a game version");
+        }
         for (const version of gameVersions) {
+            log.info("Installed game versions: ", version.id);
             this.installedVersions.push(version);
         }
         // load custom .sdd games
@@ -64,11 +71,12 @@ export class GameContentAPI extends PrDownloaderAPI<GameVersion | CustomGameVers
         if (this.isVersionInstalled(gameVersion)) {
             return;
         }
+        log.info(`Downloading game version: ${gameVersion}`);
         return this.downloadContent("game", gameVersion);
     }
 
     public async getGameOptions(version: string): Promise<LuaOptionSection[]> {
-        const gameVersion = this.installedVersions.find((version) => version.id === defaultGameVersion)!;
+        const gameVersion = this.installedVersions.find((version) => version.id === defaultGameVersion);
         // TODO: cache per session
         const gameFiles = await this.getGameFiles(gameVersion, "modoptions.lua", true);
         const gameOptionsLua = gameFiles[0].data;
@@ -76,7 +84,8 @@ export class GameContentAPI extends PrDownloaderAPI<GameVersion | CustomGameVers
     }
 
     public async getScenarios(): Promise<Scenario[]> {
-        const gameVersion = this.installedVersions.find((version) => version.id === defaultGameVersion)!;
+        const gameVersion = this.installedVersions.find((version) => version.id === defaultGameVersion);
+        assert(gameVersion, "No default game version found");
         const scenarioImages = await this.getGameFiles(gameVersion, "singleplayer/scenarios/**/*.{jpg,png}", false);
         const scenarioDefinitions = await this.getGameFiles(gameVersion, "singleplayer/scenarios/**/*.lua", true);
         const cacheDir = path.join(getInfo().contentPath, "scenario-images");
