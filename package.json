@@ -24,7 +24,7 @@
         "@iconify-icons/mdi": "^1.2.48",
         "@iconify/json": "^2.2.256",
         "@iconify/vue": "^4.1.2",
-        "@sinclair/typebox": "^0.33.13",
+        "@sinclair/typebox": "^0.33.14",
         "@vueuse/core": "^11.1.0",
         "ajv": "^8.17.1",
         "ajv-formats": "^3.0.1",
