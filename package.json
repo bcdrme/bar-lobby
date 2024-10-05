@@ -47,7 +47,7 @@
         "pino-pretty": "^11.2.2",
         "pixi.js": "^8.4.1",
         "primeicons": "^7.0.0",
-        "primevue": "^3.53.0",
+        "primevue": "3.23.0",
         "remove": "^0.1.5",
         "tga": "^1.0.7",
         "uuid": "^10.0.0",

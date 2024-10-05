@@ -1,9 +1,7 @@
 <template>
     <Control class="button" :class="[{ active }, $attrs.class]" :style="$attrs.style" :disabled="disabled" @click="onClick">
         <PrimeVueButton v-bind="$attrs">
-            <template v-for="(_, name) in $slots as {}" #[name]="slotData">
-                <slot :name="name" v-bind="slotData || {}" />
-            </template>
+            <slot />
         </PrimeVueButton>
     </Control>
 </template>
