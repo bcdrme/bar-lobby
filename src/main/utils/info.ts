@@ -20,7 +20,7 @@ export type Info = {
 
 export function getInfo() {
     const resourcesPath = path.join(app.getAppPath(), "resources").split("resources")[0] + "resources";
-    const paths = envPaths(app.getName(), { suffix: "" });
+    const paths = envPaths(app.getAppPath(), { suffix: "" });
     const displayIds = app.isReady() ? screen.getAllDisplays().map((display) => display.id) : [];
     let currentDisplayId = 0;
     if (app.isReady()) {

@@ -10,6 +10,7 @@ import mapsService from "./services/maps.service";
 import gameService from "./services/game.service";
 import { initCacheDb } from "./cache/cache-db";
 import { logger } from "./utils/logger";
+import { getInfo } from "./utils/info";
 
 const log = logger("main/index.ts");
 log.info("Starting Electron main process");
@@ -92,6 +93,9 @@ function setupHandlers() {
 app.enableSandbox();
 
 app.whenReady().then(() => {
+    log.info("App is ready, getInfo():");
+    log.info(getInfo());
+
     if (process.env.NODE_ENV !== "production") {
         try {
             // await installExtension(VUEJS_DEVTOOLS);

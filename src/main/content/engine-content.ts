@@ -2,7 +2,7 @@ import axios from "axios";
 import * as fs from "fs";
 import * as glob from "glob-promise";
 import { removeFromArray } from "$/jaz-ts-utils";
-import { Octokit } from "octokit";
+import { Octokit } from "@octokit/rest";
 import * as path from "path";
 
 import { EngineAI, EngineVersion } from "@main/cache/model/engine-version";
@@ -96,7 +96,7 @@ export class EngineContentAPI extends AbstractContentAPI<EngineVersion> {
             const engine7z = downloadResponse.data as ArrayBuffer;
             const downloadedFilePath = path.join(this.engineDirs, asset.name);
             const engineDestinationPath = path.join(this.engineDirs, engineName);
-            log.info(`Extracting engine: ${engineName}`);
+            log.info(`Extracting <${asset.name}> to ${engineDestinationPath}`);
             await fs.promises.mkdir(this.engineDirs, { recursive: true });
             await fs.promises.writeFile(downloadedFilePath, Buffer.from(engine7z), { encoding: "binary" });
             await extract7z(downloadedFilePath, engineDestinationPath);
@@ -144,7 +144,7 @@ export class EngineContentAPI extends AbstractContentAPI<EngineVersion> {
 
     protected engineVersionToGitEngineTag(engineVersionString: string) {
         const { major, minor, patch, revision, sha, branch } = engineVersionString.match(engineVersionRegex)!.groups!;
-        return `spring_bar_{${branch}}${major}.${minor}.${patch}-${revision}-g${sha}`;
+        return `spring_bar_{${branch.toUpperCase()}${major}}${major}.${minor}.${patch}-${revision}-g${sha}`;
     }
 
     protected gitEngineTagToEngineVersionString(gitEngineTag: string) {
@@ -174,7 +174,15 @@ export class EngineContentAPI extends AbstractContentAPI<EngineVersion> {
             return;
         }
         const ais = await this.parseAis(id);
-        const engineVersion = await cacheDb.insertInto("engineVersion").values({ id, ais, lastLaunched: new Date() }).returningAll().executeTakeFirstOrThrow();
+        const engineVersion = await cacheDb
+            .insertInto("engineVersion")
+            .values({
+                id,
+                ais,
+                lastLaunched: new Date(),
+            })
+            .returningAll()
+            .executeTakeFirstOrThrow();
         this.installedVersions.push(engineVersion);
         if (sort) {
             this.sortVersions();

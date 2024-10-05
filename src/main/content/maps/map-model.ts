@@ -1,4 +1,3 @@
-
 import { DeepPartial, Optionals } from "$/jaz-ts-utils";
 import { JimpInstance } from "jimp";
 
@@ -16,8 +15,8 @@ export type SpringMap = {
     miniMap: JimpInstance;
     metalMap: JimpInstance;
     typeMap: JimpInstance;
-    resources?: Record<string, JimpInstance | undefined>
-}
+    resources?: Record<string, JimpInstance | undefined>;
+};
 
 export type SMD = {
     description: string;
@@ -30,8 +29,8 @@ export type SMD = {
     maxWind: number;
     minHeight?: number;
     maxHeight?: number;
-    startPositions: Array<{ x: number, z: number }>;
-}
+    startPositions: Array<{ x: number; z: number }>;
+};
 
 export type SMF = {
     magic: string;
@@ -65,13 +64,13 @@ export type SMF = {
     tileIndexMap: number[];
     features: any; // TODO
     heightMapValues: number[];
-}
+};
 
 export type SMFExtraHeader = {
     size: number;
     type: number;
     data: Buffer;
-}
+};
 
 export type WaterOptions = {
     textureMap: JimpInstance;
@@ -79,9 +78,9 @@ export type WaterOptions = {
     minHeight: number;
     maxHeight: number;
 
-    rgbColor?: { r: number, g: number, b: number };
-    rgbModifier?: { r: number, g: number, b: number };
-}
+    rgbColor?: { r: number; g: number; b: number };
+    rgbModifier?: { r: number; g: number; b: number };
+};
 
 export type MapInfo = {
     fileName: string;
@@ -106,7 +105,7 @@ export type MapInfo = {
     autoShowMetal: boolean;
     smf: Smf;
     sound: Sound;
-    resources: { [key: string]: string; };
+    resources: { [key: string]: string };
     splats: Splats;
     atmosphere: Atmosphere;
     grass: Grass;
@@ -120,29 +119,29 @@ export type MapInfo = {
     minDepth: number;
     maxDepth: number;
     smtFileName: string;
-}
+};
 
 export type Smf = {
     minheight: number;
     maxheight: number;
     smtFileName0: string;
-}
+};
 
 export type Passfilter = {
     gainlf: number;
     gainhf: number;
-}
+};
 
 export type Sound = {
     preset: string;
     passfilter: Passfilter;
     reverb: any;
-}
+};
 
 export type Splats = {
     TexScales: number[];
     TexMults: number[];
-}
+};
 
 export type Atmosphere = {
     minWind: number;
@@ -156,7 +155,7 @@ export type Atmosphere = {
     sunColor: number[];
     skyDir: number[];
     cloudDensity: number;
-}
+};
 
 export type Grass = {
     bladeWaveScale: number;
@@ -164,7 +163,7 @@ export type Grass = {
     bladeHeight: number;
     bladeAngle: number;
     bladeColor: number[];
-}
+};
 
 export type Lighting = {
     groundShadowDensity: number;
@@ -183,7 +182,7 @@ export type Lighting = {
     unitshadowdensity: number;
     specularsuncolor: number[];
     specularExponent: number;
-}
+};
 
 export type Water = {
     ambientFactor: number;
@@ -218,36 +217,36 @@ export type Water = {
     surfacecolor: number[];
     surfaceAlpha: number;
     windSpeed: number;
-}
+};
 
 export type StartPos = {
     x: number;
     z: number;
-}
+};
 
 export type Team = {
     startPos: StartPos;
-}
+};
 
 export type MoveSpeeds = {
     tank: number;
     kbot: number;
     hover: number;
     ship: number;
-}
+};
 
 export type TerrainType = {
     name: string;
     hardness: number;
     receiveTracks: boolean;
     moveSpeeds: MoveSpeeds;
-}
+};
 
 export type Fog = {
     color: number[];
     height: string;
     fogatten: number;
-}
+};
 
 export type Precipitation = {
     density: number;
@@ -255,14 +254,14 @@ export type Precipitation = {
     speed: number;
     windscale: number;
     texture: string;
-}
+};
 
 export type Custom = {
     fog: Fog;
     precipitation: Precipitation;
-}
+};
 
 export const defaultWaterOptions: Optionals<WaterOptions> = {
     rgbColor: { r: 33, g: 35, b: 77 },
-    rgbModifier: { r: 1, g: 1.2, b: 1 }
+    rgbModifier: { r: 1, g: 1.2, b: 1 },
 };

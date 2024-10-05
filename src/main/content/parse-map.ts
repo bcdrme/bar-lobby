@@ -1,25 +1,29 @@
 import path from "path";
-// import { MapParser, StartPos } from "spring-map-parser";
-
-// let mapParser: MapParser | undefined;
-let mapParser = {};
+import { MapParser } from "./maps/spring-map-parser";
+import { StartPos } from "./maps/map-model";
 
 export const mipmapSize = 8;
 
-//TODO do we need a web worker for this?
-export const parseMap = async (mapPath: string, mapImagesPath: string, path7za: string) => {
-    if (!mapParser) {
-        // mapParser = new MapParser({
-        //     mipmapSize: mipmapSize,
-        //     path7za,
-        // });
-    }
+const mapParser = new MapParser({
+    mipmapSize: mipmapSize,
+});
+
+export const parseMap = async (mapPath: string, mapImagesPath: string) => {
     const map = await mapParser.parseMap(mapPath);
     const fileNameWithoutExt = path.parse(mapPath).name;
-    await map.textureMap!.quality(80).writeAsync(path.join(mapImagesPath, `${fileNameWithoutExt}-texture.jpg`));
-    await map.metalMap.quality(80).writeAsync(path.join(mapImagesPath, `${fileNameWithoutExt}-metal.jpg`));
-    await map.heightMap.quality(80).writeAsync(path.join(mapImagesPath, `${fileNameWithoutExt}-height.jpg`));
-    await map.typeMap.quality(80).writeAsync(path.join(mapImagesPath, `${fileNameWithoutExt}-type.jpg`));
+
+    const textureJpg = await map.textureMap!.getBuffer("image/jpeg", { quality: 80 });
+    await textureJpg.write(path.join(mapImagesPath, `${fileNameWithoutExt}-texture.jpg`));
+
+    const metalJpg = await map.metalMap.getBuffer("image/jpeg", { quality: 80 });
+    await metalJpg.write(path.join(mapImagesPath, `${fileNameWithoutExt}-metal.jpg`));
+
+    const heightJpg = await map.heightMap.getBuffer("image/jpeg", { quality: 80 });
+    await heightJpg.write(path.join(mapImagesPath, `${fileNameWithoutExt}-height.jpg`));
+
+    const typeJpg = await map.typeMap.getBuffer("image/jpeg", { quality: 80 });
+    await typeJpg.write(path.join(mapImagesPath, `${fileNameWithoutExt}-type.jpg`));
+
     return {
         fileName: path.parse(mapPath).base,
         scriptName: map.scriptName.trim(),

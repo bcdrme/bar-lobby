@@ -8,6 +8,9 @@ import { MapData } from "@main/cache/model/map-data";
 import { cacheDb } from "@main/cache/cache-db";
 import { getInfo } from "@main/utils/info";
 import { parseMap } from "./parse-map";
+import { logger } from "@main/utils/logger";
+
+const log = logger("map-content.ts");
 
 export interface MapImages {
     textureImagePath: string;
@@ -109,7 +112,7 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
         await fs.promises.rm(mapFile, { force: true, recursive: true });
         await this.uncacheMap(version.fileName);
         removeFromArray(this.installedVersions, version);
-        console.debug(`Map removed: ${version.scriptName}`);
+        log.debug(`Map removed: ${version.scriptName}`);
     }
 
     protected async uncacheMap(fileName: string) {
@@ -127,7 +130,7 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
 
     protected async cacheMaps() {
         if (this.cachingMaps) {
-            console.warn("Don't call cacheMaps more than once");
+            log.warn("Don't call cacheMaps more than once");
             return;
         }
         this.cachingMaps = true;
@@ -147,14 +150,14 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
             const fileName = path.parse(mapFileName).name;
             const existingCachedMap = await cacheDb.selectFrom("map").select("mapId").where("fileName", "=", fileName).executeTakeFirst();
             if (existingCachedMap || this.installedVersions.some((map) => map.fileName === mapFileName)) {
-                console.debug(`${fileName} already cached`);
+                log.debug(`${fileName} already cached`);
                 this.mapCacheQueue.delete(mapFileName);
                 return;
             }
-            console.debug(`Caching: ${mapFileName}`);
+            log.debug(`Caching: ${mapFileName}`);
             console.time(`Cached: ${mapFileName}`);
             const mapPath = path.join(this.mapsDir, mapFileName);
-            const parsedMap = await this.parseMap(mapPath, this.mapImagesDir, this.path7za);
+            const parsedMap = await this.parseMap(mapPath, this.mapImagesDir);
             const mapData = await cacheDb
                 .insertInto("map")
                 .values({
@@ -173,7 +176,7 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
             }
             console.timeEnd(`Cached: ${mapFileName}`);
         } catch (err) {
-            console.error(`Error parsing map: ${mapFileName}`, err);
+            log.error(`Error parsing map: ${mapFileName}`, err);
             await cacheDb
                 .insertInto("mapError")
                 .onConflict((oc) => oc.doNothing())
