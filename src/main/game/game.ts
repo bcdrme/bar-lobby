@@ -13,7 +13,7 @@ import { getInfo } from "@main/utils/info";
 import { AbstractBattle } from "./battle/abstract-battle";
 import { Replay } from "@main/cache/model/replay";
 import { StartScriptConverter } from "@main/utils/start-script-converter";
-import { defaultEngineVersion } from "@main/content/config/default-versions";
+import { defaultEngineVersion } from "@main/config/default-versions";
 import { isReplay } from "@main/utils/type-checkers";
 import { logger } from "@main/utils/logger";
 

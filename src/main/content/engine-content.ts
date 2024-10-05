@@ -10,7 +10,7 @@ import { AbstractContentAPI } from "./abstract-content";
 import { DownloadInfo } from "./model/downloads";
 import { parseLuaTable } from "@main/utils/parse-lua-table";
 import { getInfo } from "@main/utils/info";
-import { contentSources } from "./config/content-sources";
+import { contentSources } from "../config/content-sources";
 import { parseLuaOptions } from "@main/utils/parse-lua-options";
 import { cacheDb } from "@main/cache/cache-db";
 import { logger } from "@main/utils/logger";
@@ -102,7 +102,9 @@ export class EngineContentAPI extends AbstractContentAPI<EngineVersion> {
             await extract7z(downloadedFilePath, engineDestinationPath);
             await fs.promises.unlink(downloadedFilePath);
             removeFromArray(this.currentDownloads, downloadInfo);
+            log.info(`Extracted engine <${asset.name}>`);
             await this.downloadComplete(downloadInfo);
+            log.info(`Downloaded engine: ${engineName}`);
             return engineName;
         } catch (err) {
             log.error(err);
@@ -144,7 +146,7 @@ export class EngineContentAPI extends AbstractContentAPI<EngineVersion> {
 
     protected engineVersionToGitEngineTag(engineVersionString: string) {
         const { major, minor, patch, revision, sha, branch } = engineVersionString.match(engineVersionRegex)!.groups!;
-        return `spring_bar_{${branch.toUpperCase()}${major}}${major}.${minor}.${patch}-${revision}-g${sha}`;
+        return `spring_bar_{${branch.toUpperCase()}}${major}.${minor}.${patch}-${revision}-g${sha}`;
     }
 
     protected gitEngineTagToEngineVersionString(gitEngineTag: string) {

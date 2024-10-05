@@ -10,11 +10,11 @@ import { CustomGameVersion, GameAI, GameVersion } from "@main/cache/model/game-v
 import { parseLuaTable } from "@main/utils/parse-lua-table";
 import { parseLuaOptions } from "@main/utils/parse-lua-options";
 import { getInfo } from "@main/utils/info";
-import { contentSources } from "./config/content-sources";
+import { contentSources } from "../config/content-sources";
 import { LuaOptionSection } from "./model/lua-options";
 import { Scenario } from "./model/scenario";
 import { SdpFile, SdpFileMeta } from "./model/sdp";
-import { defaultGameVersion } from "./config/default-versions";
+import { defaultGameVersion } from "../config/default-versions";
 import { BufferStream } from "@main/utils/buffer-stream";
 import { DownloadInfo } from "./model/downloads";
 import { cacheDb } from "@main/cache/cache-db";

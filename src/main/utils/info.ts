@@ -2,9 +2,9 @@ import { app, BrowserWindow, screen } from "electron";
 import envPaths from "env-paths";
 import path from "path";
 import os from "os";
+import { APP_NAME } from "@main/config/app";
 
 export type Info = {
-    resourcesPath: string;
     contentPath: string;
     configPath: string;
     lobby: {
@@ -19,8 +19,7 @@ export type Info = {
 };
 
 export function getInfo() {
-    const resourcesPath = path.join(app.getAppPath(), "resources").split("resources")[0] + "resources";
-    const paths = envPaths(app.getAppPath(), { suffix: "" });
+    const paths = envPaths(APP_NAME, { suffix: "" });
     const displayIds = app.isReady() ? screen.getAllDisplays().map((display) => display.id) : [];
     let currentDisplayId = 0;
     if (app.isReady()) {
@@ -30,7 +29,6 @@ export function getInfo() {
     const networkInterfaces = os.networkInterfaces();
     const defaultNetworkInterface = networkInterfaces["Ethernet"]?.[0] ?? Object.values(networkInterfaces)[0]?.[0];
     const info: Info = {
-        resourcesPath,
         contentPath: paths.data,
         configPath: paths.config,
         lobby: {

@@ -27,7 +27,6 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
 
     protected readonly mapsDir = path.join(getInfo().contentPath, "maps");
     protected readonly mapImagesDir = path.join(getInfo().contentPath, "map-images");
-    protected readonly path7za = path.join(getInfo().resourcesPath, process.platform === "win32" ? "7za.exe" : "7za");
     // protected readonly parseMap = hookWorkerFunction(new Worker(new URL("../../workers/parse-map.ts", import.meta.url), { type: "module" }), parseMapWorkerFunction);
     protected readonly parseMap = parseMap;
     protected readonly mapCacheQueue: Set<string> = new Set();

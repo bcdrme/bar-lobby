@@ -11,6 +11,7 @@ import gameService from "./services/game.service";
 import { initCacheDb } from "./cache/cache-db";
 import { logger } from "./utils/logger";
 import { getInfo } from "./utils/info";
+import { APP_NAME } from "./config/app";
 
 const log = logger("main/index.ts");
 log.info("Starting Electron main process");
@@ -33,8 +34,6 @@ if (!app.requestSingleInstanceLock()) {
     app.quit();
 }
 
-initCacheDb();
-
 protocol.registerSchemesAsPrivileged([
     {
         scheme: "bar",
@@ -46,7 +45,7 @@ protocol.registerSchemesAsPrivileged([
     },
 ]);
 
-app.setName("Beyond All Reason");
+app.setName(APP_NAME);
 app.commandLine.appendSwitch("disable-features", "HardwareMediaKeyHandling,MediaSessionService");
 app.on("window-all-closed", () => app.quit());
 // app.on("web-contents-created", (_, contents) => {
@@ -95,6 +94,8 @@ app.enableSandbox();
 app.whenReady().then(() => {
     log.info("App is ready, getInfo():");
     log.info(getInfo());
+
+    initCacheDb();
 
     if (process.env.NODE_ENV !== "production") {
         try {

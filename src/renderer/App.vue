@@ -75,8 +75,8 @@ import PromptContainer from "@renderer/components/prompts/PromptContainer.vue";
 
 import { playRandomMusic } from "@renderer/utils/play-random-music";
 import { asyncComputed, computedAsync } from "@vueuse/core";
-import { defaultEngineVersion, defaultGameVersion } from "@main/content/config/default-versions";
-import { defaultMaps } from "@main/content/config/default-maps";
+import { defaultEngineVersion, defaultGameVersion } from "@main/config/default-versions";
+import { defaultMaps } from "@main/config/default-maps";
 
 window.game.onGameLaunched(() => {
     console.log("Game launched");
