@@ -77,6 +77,14 @@ import { defaultEngineVersion, defaultGameVersion } from "@renderer/config/defau
 import { playRandomMusic } from "@renderer/utils/play-random-music";
 import { asyncComputed, computedAsync } from "@vueuse/core";
 
+window.game.onGameLaunched(() => {
+    console.log("Game launched");
+});
+
+window.game.onGameClosed(() => {
+    console.log("Game closed");
+});
+
 const router = useRouter();
 const settings = computedAsync(async () => {
     return await window.settings.getSettings();

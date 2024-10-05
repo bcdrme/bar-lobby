@@ -74,7 +74,7 @@ async function launch() {
         version: selectedScenario.value.version,
         difficulty: selectedDifficulty.value,
     };
-    const scenarioOptionsStr = Buffer.from(JSON.stringify(scenarioOptions)).toString("base64");
+    const scenarioOptionsStr = btoa(JSON.stringify(scenarioOptions));
 
     let restrictionsStr = "";
     let restrictionCount = 0;
@@ -94,7 +94,7 @@ async function launch() {
         .replaceAll("__RESTRICTEDUNITS__", restrictionsStr)
         .replaceAll("__NUMRESTRICTIONS__", restrictionCount.toString());
 
-    await api.game.launch(script);
+    await window.game.launchGame(script);
 }
 </script>
 

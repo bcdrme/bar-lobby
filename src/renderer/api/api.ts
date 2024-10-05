@@ -4,12 +4,11 @@ import { utilsApi } from "./utils";
 import { EngineVersion } from "@main/cache/model/engine-version";
 import { GameVersion } from "@main/cache/model/game-version";
 import { MapData } from "@main/cache/model/map-data";
+import { Account } from "@main/services/account.service";
 import { Message } from "@renderer/model/messages";
-import { read } from "fs";
-import { useRouter } from "vue-router";
 
 interface API {
-    account: typeof window.account;
+    account: Account;
     audio: typeof audioApi;
     cacheDb: typeof window.replays;
     content: {
@@ -152,7 +151,7 @@ export async function apiInit() {
 
     // replaced by window.account
     // api.account = await new StoreAPI(accountFilePath, accountSchema).init();
-    api.account = window.account;
+    api.account = await window.account.getAccount();
 
     // api.game = new GameAPI();
     api.game = {

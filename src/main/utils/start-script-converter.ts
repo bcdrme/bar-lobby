@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { assign } from "$/jaz-ts-utils";
-
-import { AbstractBattle } from "@renderer/model/battle/abstract-battle";
-import { StartPosType } from "@renderer/model/battle/battle-types";
-import { OfflineBattle } from "@renderer/model/battle/offline-battle";
-import { SpadsBattle } from "@renderer/model/battle/spads-battle";
-import type { StartScriptTypes } from "@renderer/model/start-script";
+import { AbstractBattle } from "@main/game/battle/abstract-battle";
+import { StartPosType } from "@main/game/battle/battle-types";
+import { OfflineBattle } from "@main/game/battle/offline-battle";
+import { SpadsBattle } from "@main/game/battle/spads-battle";
+import { StartScriptTypes } from "@main/model/start-script";
 
 /**
  * https://springrts.com/wiki/Script.txt

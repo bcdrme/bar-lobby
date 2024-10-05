@@ -38,7 +38,7 @@ onMounted(async () => {
 });
 
 async function loadFont(url: string) {
-    console.log("Loading font:", url);
+    console.debug("Loading font:", url);
     const fileName = url.split("/").pop()!.split(".")[0];
     const [family, weight, style] = fileName.split("-");
     const font = new FontFace(family, `url(${url})`, { weight, style });
