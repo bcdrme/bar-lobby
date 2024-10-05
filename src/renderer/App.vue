@@ -45,9 +45,9 @@
                 </div>
             </Suspense>
         </transition>
+        <Settings v-model="settingsOpen" />
+        <Error />
     </div>
-    <Settings v-model="settingsOpen" />
-    <Error />
 </template>
 
 <script lang="ts" setup>
@@ -114,7 +114,6 @@ function onIntroEnd() {
     videoVisible.value = false;
 }
 
-//TODO: fix this next (API content, file downloading etc)
 async function onPreloadDone() {
     console.time("onPreloadDone");
     state.value = "initial-setup";
@@ -123,7 +122,6 @@ async function onPreloadDone() {
     if (installedEngines.length === 0) {
         state.value = "initial-setup";
     } else {
-        // TODO: fix the slight delay these cause on startup, probably best to move them into worker threads
         window.engine.downloadEngine(defaultEngineVersion);
         window.game.downloadGame(defaultGameVersion);
         window.maps.downloadMaps(defaultMaps);

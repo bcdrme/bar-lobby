@@ -70,30 +70,35 @@ import { computed, ComputedRef } from "vue";
 
 import BattlePreviewParticipant from "@renderer/components/battle/BattlePreviewParticipant.vue";
 import MapOverviewCard from "@renderer/components/maps/MapOverviewCard.vue";
-import { AbstractBattle } from "@renderer/model/battle/abstract-battle";
-import { StartBox, StartPosType } from "@renderer/model/battle/battle-types";
-import { Replay } from "@renderer/model/cache/replay";
 import { isBattle, isReplay, isUser } from "@main/utils/type-checkers";
+import { AbstractBattle } from "@main/game/battle/abstract-battle";
+import { Replay } from "@main/cache/model/replay";
+import { StartBox, StartPosType } from "@main/game/battle/battle-types";
+import { asyncComputed } from "@vueuse/core";
 
 const props = defineProps<{
     battle: AbstractBattle | Replay;
     showSpoilers?: boolean;
 }>();
 
-const map = computed(() => {
+const map = asyncComputed(async () => {
     return props.battle instanceof AbstractBattle
-        ? api.content.maps.getMapByScriptName(props.battle.battleOptions.map)
-        : api.content.maps.getMapByScriptName(props.battle.mapScriptName);
+        ? await window.maps.getMapByScriptName(props.battle.battleOptions.map)
+        : await window.maps.getMapByScriptName(props.battle.mapScriptName);
 });
+
 const mapName = computed(() => {
     return props.battle instanceof AbstractBattle ? props.battle.battleOptions.map : props.battle.mapScriptName;
 });
+
 const gameVersion = computed(() =>
     props.battle instanceof AbstractBattle ? props.battle.battleOptions.gameVersion : props.battle.gameVersion
 );
+
 const engineVersion = computed(() =>
     props.battle instanceof AbstractBattle ? props.battle.battleOptions.engineVersion : props.battle.engineVersion
 );
+
 const isFFA = computed(() => {
     if (props.battle instanceof AbstractBattle) {
         // TODO: get preset from spads/server
@@ -102,6 +107,7 @@ const isFFA = computed(() => {
         return props.battle.preset === "ffa";
     }
 });
+
 const teams = computed(() => {
     if (isBattle(props.battle)) {
         const teams = groupBy(props.battle.contenders.value, (contender) =>
@@ -123,6 +129,7 @@ const teams = computed(() => {
         // return orderedTeams;
     }
 });
+
 const startPosType: ComputedRef<StartPosType> = computed(() => {
     if (isBattle(props.battle)) {
         return props.battle.battleOptions.startPosType;
@@ -130,6 +137,7 @@ const startPosType: ComputedRef<StartPosType> = computed(() => {
         return parseInt(props.battle.battleSettings.startpostype);
     }
 });
+
 const startBoxes = computed(() => {
     if (startPosType.value !== StartPosType.Boxes) {
         return undefined;
@@ -147,9 +155,9 @@ const startBoxes = computed(() => {
     });
     return startBoxes;
 });
+
 const startPositions = computed(() => {
     const contenders = isBattle(props.battle) ? props.battle.contenders.value : props.battle.contenders;
-
     return contenders.map((contender) => {
         if (!contender.startPos) {
             return;
