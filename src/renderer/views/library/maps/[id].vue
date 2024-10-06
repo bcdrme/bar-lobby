@@ -61,7 +61,7 @@ async function downloadMap() {
 
 async function play() {
     const battle = defaultBattle(map.value?.scriptName);
-    await api.game.launch(battle);
+    await window.game.launchGame(battle);
 }
 </script>
 

@@ -163,7 +163,11 @@
                             >Join Queue ({{ battle.battleOptions.joinQueueUserIds.length + 1 }})</Button
                         >
 
-                        <Button v-if="battle.battleOptions.startTime" class="fullwidth green" :disabled="isGameRunning.value" @click="start"
+                        <Button
+                            v-if="battle.battleOptions.startTime"
+                            class="fullwidth green"
+                            :disabled="gameStore.isGameRunning"
+                            @click="start"
                             >Watch</Button
                         >
                     </template>
@@ -173,14 +177,18 @@
                         >
                         <Button v-else class="fullwidth yellow" @click="toggleReady"><span class="checkbox">✖</span>Ready</Button>
 
-                        <Button v-if="battle.battleOptions.startTime" class="fullwidth green" :disabled="isGameRunning.value" @click="start"
+                        <Button
+                            v-if="battle.battleOptions.startTime"
+                            class="fullwidth green"
+                            :disabled="gameStore.isGameRunning"
+                            @click="start"
                             >Rejoin</Button
                         >
-                        <Button v-else class="fullwidth green" :disabled="isGameRunning.value" @click="start">Start</Button>
+                        <Button v-else class="fullwidth green" :disabled="gameStore.isGameRunning" @click="start">Start</Button>
                     </template>
                 </template>
                 <template v-else-if="isOfflineBattle(battle)">
-                    <Button class="fullwidth green" :disabled="isGameRunning.value" @click="start">Start</Button>
+                    <Button class="fullwidth green" :disabled="gameStore.isGameRunning" @click="start">Start</Button>
                 </template>
             </div>
         </div>
@@ -218,6 +226,7 @@ import { LuaOptionSection } from "@main/content/game/lua-options";
 import { asyncComputed } from "@vueuse/core";
 import { StartPosType } from "@main/game/battle/battle-types";
 import { AbstractBattle } from "@main/game/battle/abstract-battle";
+import { gameStore } from "@renderer/store/game.store";
 
 const props = defineProps<{
     battle: AbstractBattle;
@@ -237,7 +246,6 @@ const mapListOpen = ref(false);
 const mapOptionsOpen = ref(false);
 const gameOptionsOpen = ref(false);
 const gameOptions: Ref<LuaOptionSection[]> = ref([]);
-const isGameRunning = api.game.isGameRunning;
 
 function openMapList() {
     mapListOpen.value = true;

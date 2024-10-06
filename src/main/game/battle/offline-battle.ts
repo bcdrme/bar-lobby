@@ -2,6 +2,7 @@ import { User } from "@main/model/user";
 import { defaultMapBoxes, getBoxes, StartBoxOrientation } from "@renderer/utils/start-boxes";
 import { AbstractBattle } from "./abstract-battle";
 import { Bot, StartPosType } from "./battle-types";
+import { gameAPI } from "@main/game/game";
 
 export class OfflineBattle extends AbstractBattle {
     public override leave() {
@@ -14,7 +15,7 @@ export class OfflineBattle extends AbstractBattle {
     }
 
     public start() {
-        api.game.launch(this);
+        gameAPI.launch(this);
     }
 
     public setEngine(engineVersion: string) {

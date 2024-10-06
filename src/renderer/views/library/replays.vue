@@ -162,8 +162,8 @@ function openReplaysFolder() {
 }
 
 function watchReplay(replay: Replay) {
-    //TODO implement this
-    // api.game.launch(replay);
+    //TODO implement this for replay watching, window.game or window.replays?
+    window.game.launchGame(replay);
 }
 
 function showReplayFile(replay: Replay) {

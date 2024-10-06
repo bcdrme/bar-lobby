@@ -20,11 +20,9 @@ interface API {
     };
     //TODO implement comms
     comms: any;
-    // game: GameAPI;
-    game: any;
     notifications: typeof notificationsApi;
+    //TODO implement prompt, see usePrompt
     prompt: typeof prompt;
-    router: any;
     //TODO implement sesssion
     session: any;
 }
@@ -39,9 +37,6 @@ declare global {
 export async function apiInit() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const api: API = (window.api = {} as any);
-
-    // replaced by settingsStore
-    // api.settings = await new StoreAPI(settingsFilePath, settingsSchema).init();
 
     // TODO implement session when new tachyon protocol is released
     // api.session = new SessionAPI();
@@ -125,11 +120,6 @@ export async function apiInit() {
     // replaced by window.account
     // api.account = await new StoreAPI(accountFilePath, accountSchema).init();
     api.account = await window.account.getAccount();
-
-    // api.game = new GameAPI();
-    api.game = {
-        isGameRunning: false,
-    };
 
     // TODO implement session when new tachyon protocol is released
     // api.comms = new CommsAPI(serverConfig);

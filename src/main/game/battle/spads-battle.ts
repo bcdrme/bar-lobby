@@ -11,6 +11,7 @@ import { mapContentAPI } from "@main/content/maps/map-content";
 import { AbstractBattle } from "./abstract-battle";
 import { SpadsVote } from "@main/model/spads/spads-types";
 import { gameContentAPI } from "@main/content/game/game-content";
+import { gameAPI } from "@main/game/game";
 
 type LobbyType = Static<typeof lobbySchema>;
 type BattleType = Static<typeof battleSchema>;
@@ -251,7 +252,7 @@ export class SpadsBattle extends AbstractBattle<SpadsBattleOptions> {
                 message: "!joinas spec",
             });
 
-            api.game.launch(this);
+            gameAPI.launch(this);
         } else {
             api.comms.request("c.lobby.message", {
                 message: "!cv start",
