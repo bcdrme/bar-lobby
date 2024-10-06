@@ -15,7 +15,7 @@ import { elementInViewDirective } from "@renderer/utils/element-in-view-directiv
 import { audioApi } from "@renderer/audio/audio";
 import { apiInit } from "@renderer/api/api";
 import { router } from "@renderer/router";
-import { initSettingsStore } from "@renderer/store/settings.store";
+import { initSettingsStore, settingsStore } from "@renderer/store/settings.store";
 
 declare module "vue-router" {
     interface RouteMeta {
@@ -38,8 +38,7 @@ declare module "vue-router" {
     window.addEventListener("keydown", (event) => {
         if (event.code === "F11") {
             event.preventDefault();
-            window.mainWindow.toggleFullscreen();
-            window.settings.toggleFullscreen();
+            settingsStore.fullscreen = !settingsStore.fullscreen;
         }
     });
     //TODO implement this
