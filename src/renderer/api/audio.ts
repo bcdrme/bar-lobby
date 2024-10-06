@@ -1,6 +1,8 @@
 import { Settings } from "@main/services/settings.service";
+import { settingsStore } from "@renderer/store/settings.store";
 import type { HowlOptions } from "howler";
 import { Howl } from "howler";
+import { watch } from "vue";
 
 class Sound extends Howl {
     public key: string;
@@ -42,30 +44,27 @@ class AudioAPI {
             this.sounds.set(name, sound);
         }
 
-        // TODO find a way to watch settings changes, thinking about dropping that for more specialized ipc calls
-        // e.g. ipcRenderer.invoke("settings:setMusicVolume") and ipcRenderer.invoke("settings:setSfxVolume")
+        watch(
+            () => settingsStore.sfxVolume,
+            () => {
+                this.sounds.forEach((sound) => {
+                    if (!sound.isMusic) {
+                        sound.volume(settingsStore.sfxVolume / 100);
+                    }
+                });
+            }
+        );
 
-        // watch(
-        //     () => api.settings.model.sfxVolume,
-        //     () => {
-        //         this.sounds.forEach((sound) => {
-        //             if (!sound.isMusic) {
-        //                 sound.volume(api.settings.model.sfxVolume / 100);
-        //             }
-        //         });
-        //     }
-        // );
-
-        // watch(
-        //     () => api.settings.model.musicVolume,
-        //     () => {
-        //         this.sounds.forEach((sound) => {
-        //             if (sound.isMusic) {
-        //                 sound.volume(api.settings.model.musicVolume / 100);
-        //             }
-        //         });
-        //     }
-        // );
+        watch(
+            () => settingsStore.musicVolume,
+            () => {
+                this.sounds.forEach((sound) => {
+                    if (sound.isMusic) {
+                        sound.volume(settingsStore.musicVolume / 100);
+                    }
+                });
+            }
+        );
 
         return this;
     }
