@@ -3,7 +3,7 @@ import { v4 as uuid } from "uuid";
 import { reactive } from "vue";
 
 import { Alert, Event } from "@renderer/model/notifications";
-import { audioApi } from "./audio";
+import { audioApi } from "../audio/audio";
 
 class NotificationsAPI {
     public readonly alerts: Array<Alert> = reactive([]);

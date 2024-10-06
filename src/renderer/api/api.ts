@@ -1,6 +1,4 @@
-import { audioApi } from "./audio";
 import { notificationsApi } from "./notifications";
-import { utilsApi } from "./utils";
 import { EngineVersion } from "@main/cache/model/engine-version";
 import { GameVersion } from "@main/cache/model/game-version";
 import { MapData } from "@main/cache/model/map-data";
@@ -9,7 +7,6 @@ import { Message } from "@renderer/model/messages";
 
 interface API {
     account: Account;
-    audio: typeof audioApi;
     cacheDb: typeof window.replays;
     content: {
         engine: {
@@ -32,7 +29,6 @@ interface API {
     router: any;
     //TODO implement sesssion
     session: any;
-    utils: typeof utilsApi;
 }
 
 declare global {
@@ -46,13 +42,8 @@ export async function apiInit() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const api: API = (window.api = {} as any);
 
-    // replaced by utilsApi
-    // api.utils = new UtilsAPI();
-    api.utils = utilsApi;
-
     // replaced by window.info
     // api.info = await ipcRenderer.invoke("getInfo");
-    api.info = window.info;
 
     // replaced by settingsStore
     // api.settings = await new StoreAPI(settingsFilePath, settingsSchema).init();
@@ -142,10 +133,6 @@ export async function apiInit() {
     // replaced by window.replays
     // api.cacheDb = await new CacheDbAPI().init();
     api.cacheDb = window.replays;
-
-    // replaced by audioApi
-    await audioApi.init();
-    api.audio = audioApi;
 
     // replaced by window.account
     // api.account = await new StoreAPI(accountFilePath, accountSchema).init();

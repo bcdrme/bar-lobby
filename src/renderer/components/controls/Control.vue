@@ -6,6 +6,7 @@
 </template>
 
 <script lang="ts" setup>
+import { audioApi } from "@renderer/audio/audio";
 import { Ref, ref } from "vue";
 
 const props = defineProps<{
@@ -26,7 +27,7 @@ function focus() {
 }
 
 function onMouseEnter() {
-    api.audio.play("button-hover");
+    audioApi.play("button-hover");
 }
 </script>
 

@@ -101,7 +101,7 @@ import Exit from "@renderer/components/navbar/Exit.vue";
 import Friends from "@renderer/components/navbar/Friends.vue";
 import Messages from "@renderer/components/navbar/Messages.vue";
 import { useRouter } from "vue-router";
-import { asyncComputed } from "@vueuse/core";
+import { settingsStore } from "@renderer/store/settings.store";
 
 const props = defineProps<{
     hidden?: boolean;
@@ -110,15 +110,13 @@ const props = defineProps<{
 const router = useRouter();
 const allRoutes = router.getRoutes();
 const offlineMode = api.session.offlineMode;
-// const settings = asyncComputed(async () => await window.settings.getSettings(), null);
-const settings = await window.settings.getSettings();
 const primaryRoutes = computed(() => {
     return allRoutes
         .filter((r) => ["/singleplayer", "/multiplayer", "/library", "/learn", "/store", "/development"].includes(r.path))
         .filter(
             (r) =>
                 (r.meta.hide === false || r.meta.hide === undefined) &&
-                ((r.meta.devOnly && settings.devMode) || !r.meta.devOnly) &&
+                ((r.meta.devOnly && settingsStore.devMode) || !r.meta.devOnly) &&
                 (r.meta.availableOffline === undefined ||
                     r.meta.availableOffline ||
                     (r.meta.availableOffline === false && !offlineMode.value))
@@ -131,7 +129,7 @@ const secondaryRoutes = computed(() => {
         .filter(
             (r) =>
                 (r.meta.hide === false || r.meta.hide === undefined) &&
-                ((r.meta.devOnly && settings.devMode) || !r.meta.devOnly) &&
+                ((r.meta.devOnly && settingsStore.devMode) || !r.meta.devOnly) &&
                 (r.meta.availableOffline === undefined ||
                     r.meta.availableOffline ||
                     (r.meta.availableOffline === false && !offlineMode.value))

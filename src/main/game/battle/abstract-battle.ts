@@ -4,10 +4,10 @@ import { groupBy } from "$/jaz-ts-utils/object";
 import { computed, ComputedRef, reactive, shallowReactive, watch, WatchStopHandle } from "vue";
 
 import { User } from "@main/model/user";
-import { StartBoxOrientation } from "@renderer/utils/start-boxes";
 import { MapData } from "@main/cache/model/map-data";
-import { BattleOptions, Bot, StartPosType } from "./battle-types";
 import { mapContentAPI } from "@main/content/maps/map-content";
+import { BattleOptions, Bot, StartPosType } from "@main/game/battle/battle-types";
+import { StartBoxOrientation } from "@renderer/utils/start-boxes";
 
 export interface BattleConfig<T extends BattleOptions = BattleOptions> {
     battleOptions: T;

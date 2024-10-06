@@ -28,8 +28,8 @@ import { computed, ref, watch } from "vue";
 
 import Panel from "@renderer/components/common/Panel.vue";
 import Button from "@renderer/components/controls/Button.vue";
-import { SpadsBattle } from "@renderer/model/battle/spads-battle";
-import { SpadsVote } from "@renderer/model/spads/spads-types";
+import { SpadsVote } from "@main/model/spads/spads-types";
+import { SpadsBattle } from "@main/game/battle/spads-battle";
 
 const props = defineProps<{
     vote: SpadsVote;

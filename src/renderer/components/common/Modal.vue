@@ -38,6 +38,7 @@ import closeThick from "@iconify-icons/mdi/close-thick";
 import { nextTick, onMounted, Ref, ref, toRef, watch } from "vue";
 
 import Panel from "@renderer/components/common/Panel.vue";
+import { audioApi } from "@renderer/audio/audio";
 
 export type PanelProps = InstanceType<typeof Panel>["$props"];
 export interface ModalProps extends /* @vue-ignore */ PanelProps {
@@ -103,7 +104,7 @@ async function onSubmit() {
 }
 
 function sound() {
-    return api.audio.play("button-hover");
+    return audioApi.play("button-hover");
 }
 </script>
 

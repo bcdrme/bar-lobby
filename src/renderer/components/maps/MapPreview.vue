@@ -8,8 +8,8 @@ import { Application, Assets, Graphics, Sprite, Texture, Color } from "pixi.js";
 import { onMounted, onUnmounted, ref, watch } from "vue";
 import { CurrentUser } from "@main/model/user";
 import { MapData } from "@main/cache/model/map-data";
-import { mipmapSize } from "@main/content/parse-map";
 import { StartBox, StartPosType } from "@main/game/battle/battle-types";
+import { mipmapSize } from "@main/content/maps/parse-map";
 
 const props = defineProps<{
     map?: MapData;

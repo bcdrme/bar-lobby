@@ -68,8 +68,8 @@ import Checkbox from "@renderer/components/controls/Checkbox.vue";
 import Range from "@renderer/components/controls/Range.vue";
 import Select from "@renderer/components/controls/Select.vue";
 import Textbox from "@renderer/components/controls/Textbox.vue";
-import { LuaOptionBoolean, LuaOptionList, LuaOptionNumber, LuaOptionSection, LuaOptionString } from "@renderer/model/lua-options";
 import { setObject } from "@renderer/utils/temp";
+import { LuaOptionSection, LuaOptionNumber, LuaOptionBoolean, LuaOptionString, LuaOptionList } from "@main/content/game/lua-options";
 
 const props = defineProps<{
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

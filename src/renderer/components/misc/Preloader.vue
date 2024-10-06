@@ -9,6 +9,7 @@ import { randomFromArray } from "$/jaz-ts-utils/object";
 import { computed, onMounted, ref } from "vue";
 
 import Progress from "@renderer/components/common/Progress.vue";
+import { audioApi } from "@renderer/audio/audio";
 
 const emit = defineEmits(["complete"]);
 
@@ -33,7 +34,8 @@ onMounted(async () => {
     } catch (error) {
         console.error(`Failed to load fonts: `, error);
     }
-    api.audio.load();
+    await audioApi.init();
+    audioApi.load();
     emit("complete");
 });
 

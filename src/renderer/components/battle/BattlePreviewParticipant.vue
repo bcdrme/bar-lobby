@@ -9,13 +9,13 @@
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
 import robot from "@iconify-icons/mdi/robot";
-import { DemoModel } from "sdfz-demo-parser";
 import { computed } from "vue";
 
 import Flag from "@renderer/components/misc/Flag.vue";
-import { Bot } from "@renderer/model/battle/battle-types";
 import { User } from "@main/model/user";
 import { isUser } from "@main/utils/type-checkers";
+import { DemoModel } from "$/sdfz-demo-parser/demo-model";
+import { Bot } from "@main/game/battle/battle-types";
 
 const props = defineProps<{
     contender: DemoModel.Info.Player | DemoModel.Info.AI | DemoModel.Info.Spectator | User | Bot;

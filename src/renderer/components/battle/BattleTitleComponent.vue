@@ -21,9 +21,9 @@ import { computed } from "@vue/reactivity";
 import { ref } from "vue";
 
 import Textbox from "@renderer/components/controls/Textbox.vue";
-import { AbstractBattle } from "@renderer/model/battle/abstract-battle";
 import { CurrentUser } from "@main/model/user";
 import { isSpadsBattle } from "@main/utils/type-checkers";
+import { AbstractBattle } from "@main/game/battle/abstract-battle";
 
 const props = defineProps<{
     battle: AbstractBattle;

@@ -1,6 +1,6 @@
 <template>
     <div class="map">
-        <div class="background" :style="`background-image: url('${mapTextureImage}')`"></div>
+        <div class="background" :style="`background-image: url('bar://${mapTextureImage}')`"></div>
         <div class="name">
             {{ map?.friendlyName ?? friendlyName }}
         </div>
@@ -11,9 +11,9 @@
 </template>
 
 <script lang="ts" setup>
+import { MapData } from "@main/cache/model/map-data";
+import { computedAsync } from "@vueuse/core";
 import { computed } from "vue";
-
-import { MapData } from "@renderer/model/cache/map-data";
 
 const props = defineProps<{
     map?: MapData;
@@ -22,7 +22,10 @@ const props = defineProps<{
 
 const mapSize = computed(() => (props.map ? props.map.width + "x" + props.map.height : "Unknown"));
 
-const mapTextureImage = computed(() => api.content.maps.getMapImages(props.map).textureImagePath);
+const mapTextureImage = computedAsync(async () => {
+    const images = await window.maps.getMapImages(props.map);
+    return images.textureImagePath;
+});
 </script>
 
 <style lang="scss" scoped>
@@ -36,7 +39,10 @@ const mapTextureImage = computed(() => api.content.maps.getMapImages(props.map).
         left: 0;
         width: 100%;
         height: 100%;
-        box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.3), inset 0 -1px 0 rgba(0, 0, 0, 0.3), inset 1px 0 0 rgba(0, 0, 0, 0.3),
+        box-shadow:
+            inset 0 1px 0 rgba(0, 0, 0, 0.3),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+            inset 1px 0 0 rgba(0, 0, 0, 0.3),
             inset -1px 0 0 rgba(0, 0, 0, 0.3);
         border: 3px solid rgba(0, 0, 0, 0.2);
         z-index: 5;

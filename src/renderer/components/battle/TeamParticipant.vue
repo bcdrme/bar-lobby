@@ -5,14 +5,15 @@
 </template>
 
 <script lang="ts" setup>
-import { AbstractBattle } from "@renderer/model/battle/abstract-battle";
+import { AbstractBattle } from "@main/game/battle/abstract-battle";
+import { audioApi } from "@renderer/audio/audio";
 
 const props = defineProps<{
     battle: AbstractBattle;
 }>();
 
 function onMouseEnter() {
-    api.audio.play("button-hover");
+    audioApi.play("button-hover");
 }
 </script>
 
