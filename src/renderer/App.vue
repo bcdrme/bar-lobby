@@ -9,7 +9,7 @@
         <Notifications />
         <PromptContainer />
         <div class="lobby-version">
-            {{ lobbyVersion }}
+            {{ infosStore.lobby.version }}
         </div>
         <div v-if="empty" class="splash-options">
             <div class="option" @click="settingsOpen = true">
@@ -78,6 +78,7 @@ import { asyncComputed, watchOnce } from "@vueuse/core";
 import { defaultEngineVersion, defaultGameVersion } from "@main/config/default-versions";
 import { defaultMaps } from "@main/config/default-maps";
 import { settingsStore } from "./store/settings.store";
+import { infosStore } from "@renderer/store/infos.store";
 
 window.game.onGameLaunched(() => {
     console.log("Game launched");
@@ -93,7 +94,6 @@ const videoVisible = toRef(!toValue(settingsStore.skipIntro));
 const state: Ref<"preloader" | "initial-setup" | "default"> = ref("preloader");
 const empty = ref(false);
 const blurBg = ref(true);
-const lobbyVersion = asyncComputed(async () => (await window.info.getInfo()).lobby.version);
 const viewOverflowY = computed(() => (router.currentRoute.value.meta.overflowY ? router.currentRoute.value.meta.overflowY : "auto"));
 
 const settingsOpen = ref(false);

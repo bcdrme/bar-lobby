@@ -1,4 +1,14 @@
-// TODO to implement
+import { reactive } from "vue";
+import { Info } from "@main/utils/info";
 
-// app infos (getInfo)
-// hardware infos (getHardwareInfo), e.g. displays
+export const infosStore = reactive({
+    isInitialized: false,
+} as {
+    isInitialized: boolean;
+} & Info);
+
+export async function initInfosStore() {
+    const currentInfos = await window.info.getInfo();
+    Object.assign(infosStore, currentInfos);
+    infosStore.isInitialized = true;
+}

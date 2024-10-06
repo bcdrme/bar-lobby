@@ -30,10 +30,10 @@ import Range from "@renderer/components/controls/Range.vue";
 import Select from "@renderer/components/controls/Select.vue";
 import { asyncComputed } from "@vueuse/core";
 import { settingsStore } from "@renderer/store/settings.store";
+import { infosStore } from "@renderer/store/infos.store";
 
 const displayOptions: Ref<Array<{ label: string; value: number }>> = asyncComputed(async () => {
-    const info = await window.info.getInfo();
-    return Array(info.hardware.numOfDisplays)
+    return Array(infosStore.hardware.numOfDisplays)
         .fill(0)
         .map((_, i) => {
             return { label: `Display ${i + 1}`, value: i };

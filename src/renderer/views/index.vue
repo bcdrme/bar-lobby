@@ -7,6 +7,7 @@
 </template>
 
 <script lang="ts" setup>
+import { infosStore } from "@renderer/store/infos.store";
 import { onMounted } from "vue";
 import { useRouter } from "vue-router";
 
@@ -15,17 +16,15 @@ const router = useRouter();
 onMounted(async () => {
     const account = await window.account.getAccount();
     const settings = await window.settings.getSettings();
-    const info = await window.info.getInfo();
-
     try {
         if (account.token && settings.loginAutomatically) {
             await api.comms.connect();
 
             const loginResponse = await api.comms.request("c.auth.login", {
                 token: account.token,
-                lobby_name: info.lobby.name,
-                lobby_version: info.lobby.version,
-                lobby_hash: info.lobby.hash,
+                lobby_name: infosStore.lobby.name,
+                lobby_version: infosStore.lobby.version,
+                lobby_hash: infosStore.lobby.hash,
             });
 
             if (loginResponse.result === "success") {

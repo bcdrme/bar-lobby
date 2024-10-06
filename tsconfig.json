@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "target": "ESNext",
-        "module": "commonjs",
+        "module": "CommonJS",
         "paths": {
             "@preload/*": ["src/preload/*"],
             "@renderer/*": ["src/renderer/*"],
