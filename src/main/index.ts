@@ -51,7 +51,7 @@ function registerBarFileProtocol() {
             const filePath = decodedUrl.slice("bar://".length);
             // Security Check: Ensure the file is within the content folder
             if (!filePath.startsWith(CONTENT_PATH)) {
-                throw new Error("Attempt to access file outside content folder");
+                throw new Error(`Attempt to access file outside content folder <${filePath}>`);
             }
             return net.fetch(url.pathToFileURL(filePath).toString());
         } catch (err) {
@@ -130,9 +130,9 @@ app.whenReady().then(() => {
     infoService.registerIpcHandlers();
     settingsService.registerIpcHandlers();
     accountService.registerIpcHandlers();
-    replaysService.registerIpcHandlers();
+    replaysService.registerIpcHandlers(mainWindow);
     engineService.registerIpcHandlers();
-    gameService.registerIpcHandlers();
+    gameService.registerIpcHandlers(mainWindow);
     mapsService.registerIpcHandlers(mainWindow);
     shellService.registerIpcHandlers();
 });

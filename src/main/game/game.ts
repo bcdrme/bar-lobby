@@ -98,16 +98,12 @@ export class GameAPI {
             this.gameProcess.addListener("spawn", () => {
                 this.onGameLaunched.dispatch();
                 this.updateLastLaunched(engineVersion, gameVersion, mapName);
-                // TODO send event to renderer "game started"
-                // api.audio.muteMusic();
             });
 
             this.gameProcess.addListener("close", (exitCode) => {
                 this.gameProcess = null;
                 this.onGameClosed.dispatch(exitCode);
                 replaysService.refreshCache();
-                // TODO send event to renderer "game closed"
-                // api.audio.unmuteMusic();
             });
             log.debug(`Game process PID: ${this.gameProcess.pid}`);
         } catch (err) {

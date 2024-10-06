@@ -1,4 +1,5 @@
 import { Settings } from "@main/services/settings.service";
+import { gameStore } from "@renderer/store/game.store";
 import { settingsStore } from "@renderer/store/settings.store";
 import type { HowlOptions } from "howler";
 import { Howl } from "howler";
@@ -63,6 +64,17 @@ class AudioAPI {
                         sound.volume(settingsStore.musicVolume / 100);
                     }
                 });
+            }
+        );
+
+        watch(
+            () => gameStore.isGameRunning,
+            () => {
+                if (gameStore.isGameRunning) {
+                    this.muteMusic();
+                } else {
+                    this.unmuteMusic();
+                }
             }
         );
 

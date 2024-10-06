@@ -80,14 +80,6 @@ import { defaultMaps } from "@main/config/default-maps";
 import { settingsStore } from "./store/settings.store";
 import { infosStore } from "@renderer/store/infos.store";
 
-window.game.onGameLaunched(() => {
-    console.log("Game launched");
-});
-
-window.game.onGameClosed(() => {
-    console.log("Game closed");
-});
-
 const router = useRouter();
 const videoVisible = toRef(!toValue(settingsStore.skipIntro));
 
