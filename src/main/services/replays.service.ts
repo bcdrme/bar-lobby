@@ -8,10 +8,12 @@ import { isFileInUse } from "@main/utils/file";
 // import { DemoParser } from "sdfz-demo-parser";
 import { Replay } from "@main/cache/model/replay";
 import { CONTENT_PATH } from "@main/config/app";
+import { Signal } from "$/jaz-ts-utils/signal";
 
 const replayCacheQueue: Set<string> = new Set();
 export const replaysDir = path.join(CONTENT_PATH, "demos");
 
+export const onReplayCached: Signal<Replay> = new Signal();
 async function init() {
     await fs.promises.mkdir(replaysDir, { recursive: true });
     refreshCache();
@@ -90,7 +92,7 @@ async function parseReplay(replayPath: string) {
         gameSettings: replayData.info.gameSettings,
         mapSettings: replayData.info.mapSettings,
         hostSettings: replayData.info.spadsSettings ?? {},
-    };
+    } as Replay;
 }
 
 async function cacheReplay(replayFilePath: string) {
@@ -118,7 +120,7 @@ async function cacheReplay(replayFilePath: string) {
             await cacheDb.insertInto("replay").values(replayData).execute();
         }
         console.debug(`Cached replay: ${replayFileName}`);
-        ipcMain.emit("replays:replayCached", replayData);
+        onReplayCached.dispatch(replayData);
     } catch (err) {
         console.error(`Error caching replay: ${replayFileName}`, err);
         await cacheDb
@@ -169,13 +171,18 @@ async function deleteReplay(replayId: number) {
     }
 }
 
-function registerIpcHandlers() {
+function registerIpcHandlers(mainWindow: Electron.BrowserWindow) {
     ipcMain.handle("replays:getReplays", (_, args: ReplayQueryOptions) => getReplays(args));
     ipcMain.handle("replays:refreshCache", () => refreshCache());
     ipcMain.handle("replays:delete", (_, replayId: number) => deleteReplay(replayId));
     ipcMain.handle("replays:getReplayById", (_, replayId: number) => getReplayById(replayId));
     ipcMain.handle("replays:getReplayByGameId", (_, gameId: string) => getReplayByGameId(gameId));
     ipcMain.handle("replays:getTotalReplayCount", () => getTotalReplayCount());
+
+    // Events
+    onReplayCached.add((replay) => {
+        mainWindow.webContents.send("replays:replayCached", replay);
+    });
 }
 
 export const replaysService = {

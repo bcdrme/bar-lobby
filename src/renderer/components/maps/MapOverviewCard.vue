@@ -13,7 +13,7 @@
 <script lang="ts" setup>
 import { MapData } from "@main/cache/model/map-data";
 import { computedAsync } from "@vueuse/core";
-import { computed } from "vue";
+import { computed, toRaw } from "vue";
 
 const props = defineProps<{
     map?: MapData;
@@ -23,7 +23,7 @@ const props = defineProps<{
 const mapSize = computed(() => (props.map ? props.map.width + "x" + props.map.height : "Unknown"));
 
 const mapTextureImage = computedAsync(async () => {
-    const images = await window.maps.getMapImages(props.map);
+    const images = await window.maps.getMapImages(toRaw(props.map));
     return images.textureImagePath;
 });
 </script>

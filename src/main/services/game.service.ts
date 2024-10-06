@@ -7,7 +7,7 @@ function init() {
     gameContentAPI.init();
 }
 
-function registerIpcHandlers() {
+function registerIpcHandlers(mainWindow: Electron.BrowserWindow) {
     // Content
     ipcMain.handle("game:downloadGame", (_, version: string) => gameContentAPI.downloadGame(version));
     ipcMain.handle("game:getGameOptions", (_, version: string) => gameContentAPI.getGameOptions(version));
@@ -21,10 +21,10 @@ function registerIpcHandlers() {
 
     // Events
     gameAPI.onGameLaunched.add(() => {
-        ipcMain.emit("game:launched");
+        mainWindow.webContents.send("game:launched");
     });
     gameAPI.onGameClosed.add(() => {
-        ipcMain.emit("game:closed");
+        mainWindow.webContents.send("game:closed");
     });
 }
 

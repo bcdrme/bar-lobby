@@ -124,15 +124,15 @@ app.whenReady().then(() => {
     gameService.init();
     mapsService.init();
 
+    const mainWindow = createWindow();
+
+    // Handlers may need the mainWindow to send events
     infoService.registerIpcHandlers();
     settingsService.registerIpcHandlers();
     accountService.registerIpcHandlers();
     replaysService.registerIpcHandlers();
     engineService.registerIpcHandlers();
     gameService.registerIpcHandlers();
-    mapsService.registerIpcHandlers();
+    mapsService.registerIpcHandlers(mainWindow);
     shellService.registerIpcHandlers();
-
-    // Initialize all handlers before creating the window
-    createWindow();
 });

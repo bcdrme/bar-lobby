@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import { useElementSize } from "@vueuse/core";
 import { Application, Assets, Graphics, Sprite, Texture, Color } from "pixi.js";
-import { onMounted, onUnmounted, ref, watch } from "vue";
+import { onMounted, onUnmounted, ref, toRaw, watch } from "vue";
 import { CurrentUser } from "@main/model/user";
 import { MapData } from "@main/cache/model/map-data";
 import { StartBox, StartPosType } from "@main/game/battle/battle-types";
@@ -102,7 +102,7 @@ async function setMapImage() {
     if (mapSprite) {
         app.value.stage.removeChild(mapSprite);
     }
-    const textureImage = await window.maps.getMapImages(props.map);
+    const textureImage = (await window.maps.getMapImages(toRaw(props.map))).textureImagePath;
     console.log("Loading map image", textureImage);
     const texture = await Assets.load<Texture>(textureImage);
     console.log("Loaded map image", texture);

@@ -46,8 +46,7 @@ const replaysApi = {
     getReplayByGameId: (gameId: string): Promise<string> => ipcRenderer.invoke("replays:getReplayByGameId", gameId),
 
     // Events
-    //TODO replace any with proper type, check replayparser
-    onReplayCached: (listener: (newReplay) => void) => ipcRenderer.on("replays:replayCached", listener),
+    onReplayCached: (callback: (replay: Replay) => void) => ipcRenderer.on("replays:replayCached", (_event, replay) => callback(replay as Replay)),
 };
 export type ReplaysApi = typeof replaysApi;
 contextBridge.exposeInMainWorld("replays", replaysApi);
@@ -89,8 +88,8 @@ const gameApi = {
     launchGame: (script: string): Promise<void> => ipcRenderer.invoke("game:launchGame", script),
 
     // Events
-    onGameLaunched: (listener: () => void) => ipcRenderer.on("game:launched", listener),
-    onGameClosed: (listener: () => void) => ipcRenderer.on("game:closed", listener),
+    onGameLaunched: (callback: () => void) => ipcRenderer.on("game:launched", callback),
+    onGameClosed: (callback: () => void) => ipcRenderer.on("game:closed", callback),
 };
 export type GameApi = typeof gameApi;
 contextBridge.exposeInMainWorld("game", gameApi);
@@ -102,8 +101,10 @@ const mapsApi = {
     getMapByScriptName: (scriptName: string): Promise<MapData> => ipcRenderer.invoke("maps:getMapByScriptName", scriptName),
     getMapImages: (mapData: MapData | undefined): Promise<MapImages> => ipcRenderer.invoke("maps:getMapImages", mapData),
     isVersionInstalled: (id: string): Promise<boolean> => ipcRenderer.invoke("maps:isVersionInstalled", id),
-
     attemptCacheErrorMaps: (): Promise<void> => ipcRenderer.invoke("maps:attemptCacheErrorMaps"),
+
+    // Events
+    onMapCached: (callback: (mapData: MapData) => void) => ipcRenderer.on("maps:mapCached", (_event, mapData) => callback(mapData as MapData)),
 };
 export type MapsApi = typeof mapsApi;
 contextBridge.exposeInMainWorld("maps", mapsApi);

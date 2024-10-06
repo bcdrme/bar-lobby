@@ -17,6 +17,7 @@ import { apiInit } from "@renderer/api/api";
 import { router } from "@renderer/router";
 import { initSettingsStore, settingsStore } from "@renderer/store/settings.store";
 import { initInfosStore } from "@renderer/store/infos.store";
+import { initStores } from "@renderer/store/stores";
 
 declare module "vue-router" {
     interface RouteMeta {
@@ -60,8 +61,7 @@ async function setupVue() {
         app.config.globalProperties.window = window;
     }
     // Init stores before mounting app
-    await initSettingsStore();
-    await initInfosStore();
+    await initStores();
     await audioApi.init();
     app.mount("#app");
 }

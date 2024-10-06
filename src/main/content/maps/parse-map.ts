@@ -1,6 +1,10 @@
 import { StartPos } from "@main/content/maps/map-model";
 import { MapParser } from "@main/content/maps/spring-map-parser";
+import { logger } from "@main/utils/logger";
 import path from "path";
+import fs from "fs";
+
+const log = logger("parse-map.ts");
 
 export const mipmapSize = 8;
 
@@ -13,16 +17,20 @@ export const parseMap = async (mapPath: string, mapImagesPath: string) => {
     const fileNameWithoutExt = path.parse(mapPath).name;
 
     const textureJpg = await map.textureMap!.getBuffer("image/jpeg", { quality: 80 });
-    await textureJpg.write(path.join(mapImagesPath, `${fileNameWithoutExt}-texture.jpg`));
+    await fs.promises.writeFile(path.join(mapImagesPath, `${fileNameWithoutExt}-texture.jpg`), textureJpg);
+    log.debug(`Wrote texture jpg for ${fileNameWithoutExt} to ${mapImagesPath}`);
 
     const metalJpg = await map.metalMap.getBuffer("image/jpeg", { quality: 80 });
-    await metalJpg.write(path.join(mapImagesPath, `${fileNameWithoutExt}-metal.jpg`));
+    await fs.promises.writeFile(path.join(mapImagesPath, `${fileNameWithoutExt}-metal.jpg`), metalJpg);
+    log.debug(`Wrote metal jpg for ${fileNameWithoutExt} to ${mapImagesPath}`);
 
     const heightJpg = await map.heightMap.getBuffer("image/jpeg", { quality: 80 });
-    await heightJpg.write(path.join(mapImagesPath, `${fileNameWithoutExt}-height.jpg`));
+    await fs.promises.writeFile(path.join(mapImagesPath, `${fileNameWithoutExt}-height.jpg`), heightJpg);
+    log.debug(`Wrote height jpg for ${fileNameWithoutExt} to ${mapImagesPath}`);
 
     const typeJpg = await map.typeMap.getBuffer("image/jpeg", { quality: 80 });
-    await typeJpg.write(path.join(mapImagesPath, `${fileNameWithoutExt}-type.jpg`));
+    await fs.promises.writeFile(path.join(mapImagesPath, `${fileNameWithoutExt}-type.jpg`), typeJpg);
+    log.debug(`Wrote type jpg for ${fileNameWithoutExt} to ${mapImagesPath}`);
 
     return {
         fileName: path.parse(mapPath).base,

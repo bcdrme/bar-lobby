@@ -1,6 +1,5 @@
 import * as fs from "fs";
 import * as path from "path";
-import url from "url";
 
 import { MapData } from "@main/cache/model/map-data";
 import { cacheDb } from "@main/cache/cache-db";
@@ -23,13 +22,12 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
 
     protected readonly mapsDir = path.join(CONTENT_PATH, "maps");
     protected readonly mapImagesDir = path.join(CONTENT_PATH, "map-images");
-    // protected readonly parseMap = hookWorkerFunction(new Worker(new URL("../../workers/parse-map.ts", import.meta.url), { type: "module" }), parseMapWorkerFunction);
-    protected readonly parseMap = parseMap;
     protected readonly mapCacheQueue: Set<string> = new Set();
     protected cachingMaps = false;
 
     public override async init() {
         await fs.promises.mkdir(this.mapsDir, { recursive: true });
+        await fs.promises.mkdir(this.mapImagesDir, { recursive: true });
         const maps = await cacheDb.selectFrom("map").selectAll().execute();
         this.installedVersions.push(...maps);
         await this.queueMapsToCache();
@@ -78,10 +76,10 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
         }
         const fileNameWithoutExt = path.parse(mapData.fileName).name;
         return {
-            textureImagePath: url.pathToFileURL(path.join(this.mapImagesDir, `${fileNameWithoutExt}-texture.jpg`)).toString(),
-            heightImagePath: url.pathToFileURL(path.join(this.mapImagesDir, `${fileNameWithoutExt}-height.jpg`)).toString(),
-            metalImagePath: url.pathToFileURL(path.join(this.mapImagesDir, `${fileNameWithoutExt}-metal.jpg`)).toString(),
-            typeImagePath: url.pathToFileURL(path.join(this.mapImagesDir, `${fileNameWithoutExt}-type.jpg`)).toString(),
+            textureImagePath: path.join(this.mapImagesDir, `${fileNameWithoutExt}-texture.jpg`),
+            heightImagePath: path.join(this.mapImagesDir, `${fileNameWithoutExt}-height.jpg`),
+            metalImagePath: path.join(this.mapImagesDir, `${fileNameWithoutExt}-metal.jpg`),
+            typeImagePath: path.join(this.mapImagesDir, `${fileNameWithoutExt}-type.jpg`),
         } as MapImages;
     }
 
@@ -157,7 +155,7 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
             log.debug(`Caching: ${mapFileName}`);
             console.time(`Cached: ${mapFileName}`);
             const mapPath = path.join(this.mapsDir, mapFileName);
-            const parsedMap = await this.parseMap(mapPath, this.mapImagesDir);
+            const parsedMap = await parseMap(mapPath, this.mapImagesDir);
             const mapData = await cacheDb
                 .insertInto("map")
                 .values({
@@ -170,10 +168,8 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
                 })
                 .returningAll()
                 .executeTakeFirst();
-            if (mapData) {
-                this.installedVersions.push(mapData);
-                this.onMapCached.dispatch(mapData);
-            }
+            this.installedVersions.push(mapData);
+            this.onMapCached.dispatch(mapData);
             console.timeEnd(`Cached: ${mapFileName}`);
         } catch (err) {
             log.error(`Error parsing map: ${mapFileName}`, err);
