@@ -1,4 +1,4 @@
-import { app, ipcMain, protocol, safeStorage, session } from "electron";
+import { app, ipcMain, net, protocol, safeStorage, session } from "electron";
 
 import { createWindow } from "@main/main-window";
 import { replaysService } from "@main/services/replays.service";
@@ -12,6 +12,7 @@ import { initCacheDb } from "./cache/cache-db";
 import { logger } from "./utils/logger";
 import { getInfo } from "./utils/info";
 import { APP_NAME } from "./config/app";
+import url from "url";
 
 const log = logger("main/index.ts");
 log.info("Starting Electron main process");
@@ -38,12 +39,27 @@ protocol.registerSchemesAsPrivileged([
     {
         scheme: "bar",
         privileges: {
-            secure: true,
-            standard: true,
-            stream: true,
+            bypassCSP: true,
         },
     },
 ]);
+
+function registerBarFileProtocol() {
+    const contentPath = getInfo().contentPath;
+    protocol.handle("bar", (request) => {
+        try {
+            const decodedUrl = decodeURIComponent(request.url);
+            const filePath = decodedUrl.slice("bar://".length);
+            // Security Check: Ensure the file is within the content folder
+            if (!filePath.startsWith(contentPath)) {
+                throw new Error("Attempt to access file outside content folder");
+            }
+            return net.fetch(url.pathToFileURL(filePath).toString());
+        } catch (err) {
+            log.error(err);
+        }
+    });
+}
 
 app.setName(APP_NAME);
 app.commandLine.appendSwitch("disable-features", "HardwareMediaKeyHandling,MediaSessionService");
@@ -94,6 +110,8 @@ app.enableSandbox();
 app.whenReady().then(() => {
     log.info("App is ready, getInfo():");
     log.info(getInfo());
+
+    registerBarFileProtocol();
 
     initCacheDb();
 
