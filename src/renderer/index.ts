@@ -12,9 +12,10 @@ import { createI18n } from "vue-i18n";
 import App from "@renderer/App.vue";
 import { clickAwayDirective } from "@renderer/utils/click-away-directive";
 import { elementInViewDirective } from "@renderer/utils/element-in-view-directive";
-import { apiInit } from "./api/api";
-import { router } from "./router";
-import { initSettingsStore } from "./store/settings.store";
+import { audioApi } from "@renderer/audio/audio";
+import { apiInit } from "@renderer/api/api";
+import { router } from "@renderer/router";
+import { initSettingsStore } from "@renderer/store/settings.store";
 
 declare module "vue-router" {
     interface RouteMeta {
@@ -59,6 +60,7 @@ async function setupVue() {
         app.config.globalProperties.window = window;
     }
     await initSettingsStore();
+    await audioApi.init();
     app.mount("#app");
 }
 

@@ -34,7 +34,6 @@ onMounted(async () => {
     } catch (error) {
         console.error(`Failed to load fonts: `, error);
     }
-    await audioApi.init();
     audioApi.load();
     emit("complete");
 });

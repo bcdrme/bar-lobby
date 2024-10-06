@@ -7,7 +7,6 @@ import { Message } from "@renderer/model/messages";
 
 interface API {
     account: Account;
-    cacheDb: typeof window.replays;
     content: {
         engine: {
             installedVersions: EngineVersion[];
@@ -23,7 +22,6 @@ interface API {
     comms: any;
     // game: GameAPI;
     game: any;
-    info: typeof window.info;
     notifications: typeof notificationsApi;
     prompt: typeof prompt;
     router: any;
@@ -41,9 +39,6 @@ declare global {
 export async function apiInit() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const api: API = (window.api = {} as any);
-
-    // replaced by window.info
-    // api.info = await ipcRenderer.invoke("getInfo");
 
     // replaced by settingsStore
     // api.settings = await new StoreAPI(settingsFilePath, settingsSchema).init();
@@ -126,13 +121,6 @@ export async function apiInit() {
         incomingFriendRequests: [],
         friends: [],
     };
-
-    // replaced by nothing, use useRouter instead
-    // api.router = useRouter();
-
-    // replaced by window.replays
-    // api.cacheDb = await new CacheDbAPI().init();
-    api.cacheDb = window.replays;
 
     // replaced by window.account
     // api.account = await new StoreAPI(accountFilePath, accountSchema).init();

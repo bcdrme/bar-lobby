@@ -65,9 +65,11 @@ async function login() {
 
         const loginResponse = await api.comms.request("c.auth.login", {
             token: api.account.model.token,
-            lobby_name: api.info.lobby.name,
-            lobby_version: api.info.lobby.version,
-            lobby_hash: api.info.lobby.hash,
+
+            //TODO replace with infosStore
+            // lobby_name: api.info.lobby.name,
+            // lobby_version: api.info.lobby.version,
+            // lobby_hash: api.info.lobby.hash,
         });
 
         if (loginResponse.result === "success") {
