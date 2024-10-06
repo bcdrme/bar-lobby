@@ -54,7 +54,7 @@
 import { Icon } from "@iconify/vue";
 import closeThick from "@iconify-icons/mdi/close-thick";
 import cog from "@iconify-icons/mdi/cog";
-import { computed, provide, Ref } from "vue";
+import { computed, onBeforeMount, provide, Ref, toRaw } from "vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
@@ -77,6 +77,7 @@ import { playRandomMusic } from "@renderer/utils/play-random-music";
 import { asyncComputed, computedAsync } from "@vueuse/core";
 import { defaultEngineVersion, defaultGameVersion } from "@main/config/default-versions";
 import { defaultMaps } from "@main/config/default-maps";
+import { Settings as SettingsType } from "@main/services/settings.service";
 
 window.game.onGameLaunched(() => {
     console.log("Game launched");
@@ -87,9 +88,13 @@ window.game.onGameClosed(() => {
 });
 
 const router = useRouter();
-const settings = computedAsync(async () => {
-    return await window.settings.getSettings();
-}, null);
+const settings = ref<SettingsType>();
+
+onBeforeMount(async () => {
+    settings.value = await window.settings.getSettings();
+    console.debug("Settings loaded", toRaw(settings.value));
+});
+
 const videoVisible = ref(true);
 const state: Ref<"preloader" | "initial-setup" | "default"> = ref("preloader");
 const empty = ref(false);

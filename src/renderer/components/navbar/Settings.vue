@@ -23,16 +23,28 @@
 </template>
 
 <script lang="ts" setup>
-import { Ref } from "vue";
+import { onMounted, ref, Ref, toRaw, watch, watchEffect } from "vue";
 
 import Modal from "@renderer/components/common/Modal.vue";
 import Checkbox from "@renderer/components/controls/Checkbox.vue";
 import Range from "@renderer/components/controls/Range.vue";
 import Select from "@renderer/components/controls/Select.vue";
 import { asyncComputed } from "@vueuse/core";
+import { Settings } from "@main/services/settings.service";
 
-const settings = asyncComputed(async() =>{
-    return await window.settings.getSettings();
+const settings = ref<Settings>();
+
+onMounted(async () => {
+    settings.value = await window.settings.getSettings();
+});
+
+watch(settings, () => window.settings.updateSettings(toRaw(settings.value)), {
+    deep: true,
+    immediate: true,
+});
+
+watchEffect(() => {
+    if (settings.value) window.mainWindow.setFullscreen(settings.value.fullscreen);
 });
 
 const displayOptions: Ref<Array<{ label: string; value: number }>> = asyncComputed(async () => {

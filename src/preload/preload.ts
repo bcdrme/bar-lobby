@@ -22,6 +22,7 @@ export type InfoApi = typeof infoApi;
 contextBridge.exposeInMainWorld("info", infoApi);
 
 const mainWindowApi = {
+    setFullscreen: (flag: boolean): Promise<void> => ipcRenderer.invoke("mainWindow:setFullscreen", flag),
     toggleFullscreen: (): Promise<void> => ipcRenderer.invoke("mainWindow:toggleFullscreen"),
     flashFrame: (flag: boolean): Promise<void> => ipcRenderer.invoke("mainWindow:flashFrame", flag),
 };

@@ -41,7 +41,7 @@ import Panel from "@renderer/components/common/Panel.vue";
 
 export type PanelProps = InstanceType<typeof Panel>["$props"];
 export interface ModalProps extends /* @vue-ignore */ PanelProps {
-    modelValue: boolean;
+    modelValue?: boolean;
     title?: string;
 }
 

@@ -1,12 +1,17 @@
 import { app, BrowserWindow, ipcMain, screen, shell } from "electron";
 import path from "path";
 import { settingsService } from "./services/settings.service";
+import { logger } from "./utils/logger";
 
 declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string;
 declare const MAIN_WINDOW_VITE_NAME: string;
 
+const log = logger("main-window");
+
 export function createWindow() {
     const settings = settingsService.getSettings();
+    log.info("Creating main window with settings: ", settings);
+
     const mainWindow = new BrowserWindow({
         title: "Beyond All Reason",
         fullscreen: settings.fullscreen,
@@ -92,6 +97,7 @@ export function createWindow() {
     }
 
     // Register IPC handlers for the main window
+    ipcMain.handle("mainWindow:setFullscreen", (_event, flag: boolean) => mainWindow.setFullScreen(flag));
     ipcMain.handle("mainWindow:toggleFullscreen", () => mainWindow.setFullScreen(!mainWindow.isFullScreen()));
     ipcMain.handle("mainWindow:flashFrame", (_event, flag: boolean) => {
         mainWindow.flashFrame(flag);

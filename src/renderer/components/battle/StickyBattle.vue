@@ -33,13 +33,13 @@ import closeThick from "@iconify-icons/mdi/close-thick";
 import eyeIcon from "@iconify-icons/mdi/eye";
 import robotIcon from "@iconify-icons/mdi/robot";
 import swordCross from "@iconify-icons/mdi/sword-cross";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
 const route = router.currentRoute;
 const me = api.session.onlineUser;
-const battle = api.session.onlineBattle;
+const battle = ref(api.session.onlineBattle);
 const playerCount = computed(() => battle.value?.contenders.value.filter((c) => "userId" in c).length);
 const botCount = computed(() => battle.value?.bots.length);
 const specCount = computed(() => battle.value?.spectators.value.length);

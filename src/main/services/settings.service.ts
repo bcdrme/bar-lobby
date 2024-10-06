@@ -19,7 +19,7 @@ const settingsStore = new FileStore<typeof settingsSchema>(path.join(getInfo().c
 });
 
 function init() {
-   settingsStore.init();
+    settingsStore.init();
 }
 
 function getSettings() {

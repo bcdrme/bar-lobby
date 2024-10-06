@@ -93,20 +93,21 @@ export async function apiInit() {
                 },
             },
         },
-        onlineBattle: {
-            contenders: [],
-            bots: [],
-            spectators: [],
-            battleOptions: {},
-            battleStatus: {
-                ready: false,
-                sync: {
-                    engine: 0,
-                    game: 0,
-                    map: 0,
-                },
-            },
-        },
+        onlineBattle: undefined,
+        // {
+        //     contenders: [],
+        //     bots: [],
+        //     spectators: [],
+        //     battleOptions: {},
+        //     battleStatus: {
+        //         ready: false,
+        //         sync: {
+        //             engine: 0,
+        //             game: 0,
+        //             map: 0,
+        //         },
+        //     },
+        // },
         offlineBattle: {
             open: () => {},
             contenders: [],
