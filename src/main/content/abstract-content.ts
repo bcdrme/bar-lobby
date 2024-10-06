@@ -1,5 +1,5 @@
 import { Signal } from "$/jaz-ts-utils/signal";
-import { DownloadInfo } from "./model/downloads";
+import { DownloadInfo } from "./downloads";
 
 export abstract class AbstractContentAPI<T> {
     public installedVersions: T[] = [];

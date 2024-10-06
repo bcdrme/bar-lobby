@@ -1,5 +1,5 @@
 <template>
-    <div v-if="settingsStore.isInitialized" id="wrapper" class="wrapper fullsize" @click.left="leftClick" @click.right="rightClick">
+    <div v-if="settingsStore.isInitialized" id="wrapper" class="wrapper fullsize">
         <transition mode="in-out" name="intro">
             <IntroVideo v-if="!settingsStore.skipIntro && videoVisible" @complete="onIntroEnd" />
         </transition>
@@ -140,14 +140,6 @@ async function onPreloadDone() {
 
 function onInitialSetupDone() {
     state.value = "default";
-}
-
-function leftClick() {
-    return api.utils.onLeftClick.dispatch();
-}
-
-function rightClick() {
-    return api.utils.onRightClick.dispatch();
 }
 </script>
 

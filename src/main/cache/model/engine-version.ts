@@ -1,4 +1,4 @@
-import { LuaOptionSection } from "@main/content/model/lua-options";
+import { LuaOptionSection } from "@main/content/game/lua-options";
 import { Insertable, JSONColumnType, Selectable } from "kysely";
 
 export interface EngineVersionTable {

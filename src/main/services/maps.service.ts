@@ -1,5 +1,5 @@
 import { MapData } from "@main/cache/model/map-data";
-import { mapContentAPI } from "@main/content/map-content";
+import { mapContentAPI } from "@main/content/maps/map-content";
 import { ipcMain } from "electron";
 
 function init() {

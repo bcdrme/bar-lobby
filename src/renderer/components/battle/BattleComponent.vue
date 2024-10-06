@@ -215,7 +215,7 @@ import { AbstractBattle } from "@renderer/model/battle/abstract-battle";
 import { CurrentUser } from "@main/model/user";
 import { StartBoxOrientation } from "@renderer/utils/start-boxes";
 import { isOfflineBattle, isSpadsBattle } from "@main/utils/type-checkers";
-import { LuaOptionSection } from "@main/content/model/lua-options";
+import { LuaOptionSection } from "@main/content/game/lua-options";
 import { asyncComputed } from "@vueuse/core";
 import { StartPosType } from "@main/game/battle/battle-types";
 

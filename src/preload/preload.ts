@@ -8,10 +8,9 @@ import { ReplayQueryOptions } from "@main/services/replays.service";
 import { EngineVersion } from "@main/cache/model/engine-version";
 import { GameVersion } from "@main/cache/model/game-version";
 import { MapData } from "@main/cache/model/map-data";
-import { MapImages } from "@main/content/map-content";
-import { LuaOptionSection } from "@main/content/model/lua-options";
-import { Scenario } from "@main/content/model/scenario";
-import { on } from "events";
+import { LuaOptionSection } from "@main/content/game/lua-options";
+import { Scenario } from "@main/content/game/scenario";
+import { MapImages } from "@main/content/maps/map-model";
 
 console.log("preload.ts loaded");
 

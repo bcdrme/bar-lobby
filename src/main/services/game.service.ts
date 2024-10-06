@@ -1,5 +1,5 @@
 import { GameVersion } from "@main/cache/model/game-version";
-import { gameContentAPI } from "@main/content/game-content";
+import { gameContentAPI } from "@main/content/game/game-content";
 import { gameAPI } from "@main/game/game";
 import { ipcMain } from "electron";
 

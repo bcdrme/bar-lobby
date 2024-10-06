@@ -49,7 +49,7 @@ import Button from "@renderer/components/controls/Button.vue";
 import Select from "@renderer/components/controls/Select.vue";
 import ScenarioTile from "@renderer/components/misc/ScenarioTile.vue";
 import { useRouter } from "vue-router";
-import { Scenario } from "@main/content/model/scenario";
+import { Scenario } from "@main/content/game/scenario";
 import { defaultGameVersion } from "@main/config/default-versions";
 
 const router = useRouter();

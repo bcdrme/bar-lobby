@@ -2,24 +2,18 @@ import * as fs from "fs";
 import * as path from "path";
 import url from "url";
 
-import { PrDownloaderAPI } from "./pr-downloader";
 import { MapData } from "@main/cache/model/map-data";
 import { cacheDb } from "@main/cache/cache-db";
 import { getInfo } from "@main/utils/info";
-import { parseMap } from "./parse-map";
 import { logger } from "@main/utils/logger";
 import { Signal } from "$/jaz-ts-utils/signal";
 import { removeFromArray } from "$/jaz-ts-utils/object";
 import { delay } from "$/jaz-ts-utils/delay";
+import { parseMap } from "@main/content/maps/parse-map";
+import { PrDownloaderAPI } from "@main/content/pr-downloader";
+import { MapImages } from "@main/content/maps/map-model";
 
 const log = logger("map-content.ts");
-
-export interface MapImages {
-    textureImagePath: string;
-    heightImagePath: string;
-    metalImagePath: string;
-    typeImagePath: string;
-}
 
 /**
  * @todo replace queue method with syncMapCache function once prd returns map file name

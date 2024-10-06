@@ -6,11 +6,11 @@ import { computed, ComputedRef, Ref, ref } from "vue";
 import { Bot, SpadsBattleOptions, StartBox, StartPosType } from "@main/game/battle/battle-types";
 import { User } from "@main/model/user";
 import { spadsBoxToStartBox, StartBoxOrientation } from "@renderer/utils/start-boxes";
-import { engineContentAPI } from "@main/content/engine-content";
-import { gameContentAPI } from "@main/content/game-content";
-import { mapContentAPI } from "@main/content/map-content";
+import { engineContentAPI } from "@main/content/engine/engine-content";
+import { mapContentAPI } from "@main/content/maps/map-content";
 import { AbstractBattle } from "./abstract-battle";
 import { SpadsVote } from "@main/model/spads/spads-types";
+import { gameContentAPI } from "@main/content/game/game-content";
 
 type LobbyType = Static<typeof lobbySchema>;
 type BattleType = Static<typeof battleSchema>;

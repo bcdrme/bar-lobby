@@ -1,6 +1,6 @@
+import { StartPos } from "@main/content/maps/map-model";
+import { MapParser } from "@main/content/maps/spring-map-parser";
 import path from "path";
-import { MapParser } from "./maps/spring-map-parser";
-import { StartPos } from "./maps/map-model";
 
 export const mipmapSize = 8;
 

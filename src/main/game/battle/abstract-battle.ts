@@ -7,7 +7,7 @@ import { User } from "@main/model/user";
 import { StartBoxOrientation } from "@renderer/utils/start-boxes";
 import { MapData } from "@main/cache/model/map-data";
 import { BattleOptions, Bot, StartPosType } from "./battle-types";
-import { mapContentAPI } from "@main/content/map-content";
+import { mapContentAPI } from "@main/content/maps/map-content";
 
 export interface BattleConfig<T extends BattleOptions = BattleOptions> {
     battleOptions: T;

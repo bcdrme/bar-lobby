@@ -6,15 +6,15 @@ import { Octokit } from "@octokit/rest";
 import * as path from "path";
 
 import { EngineAI, EngineVersion } from "@main/cache/model/engine-version";
-import { AbstractContentAPI } from "./abstract-content";
-import { DownloadInfo } from "./model/downloads";
+import { DownloadInfo } from "../downloads";
 import { parseLuaTable } from "@main/utils/parse-lua-table";
 import { getInfo } from "@main/utils/info";
-import { contentSources } from "../config/content-sources";
 import { parseLuaOptions } from "@main/utils/parse-lua-options";
 import { cacheDb } from "@main/cache/cache-db";
 import { logger } from "@main/utils/logger";
 import { extract7z } from "@main/utils/extract-7z";
+import { contentSources } from "@main/config/content-sources";
+import { AbstractContentAPI } from "@main/content/abstract-content";
 
 const log = logger("engine-content.ts");
 

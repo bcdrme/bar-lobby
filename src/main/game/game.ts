@@ -5,17 +5,17 @@ import { Signal } from "$/jaz-ts-utils/signal";
 import * as path from "path";
 
 import { cacheDb } from "@main/cache/cache-db";
-import { engineContentAPI } from "@main/content/engine-content";
-import { gameContentAPI } from "@main/content/game-content";
-import { mapContentAPI } from "@main/content/map-content";
+import { engineContentAPI } from "@main/content/engine/engine-content";
+import { mapContentAPI } from "@main/content/maps/map-content";
 import { replaysDir, replaysService } from "@main/services/replays.service";
 import { getInfo } from "@main/utils/info";
-import { AbstractBattle } from "./battle/abstract-battle";
 import { Replay } from "@main/cache/model/replay";
 import { StartScriptConverter } from "@main/utils/start-script-converter";
 import { defaultEngineVersion } from "@main/config/default-versions";
 import { isReplay } from "@main/utils/type-checkers";
 import { logger } from "@main/utils/logger";
+import { gameContentAPI } from "@main/content/game/game-content";
+import { AbstractBattle } from "@main/game/battle/abstract-battle";
 
 const log = logger("main/game/game.ts");
 

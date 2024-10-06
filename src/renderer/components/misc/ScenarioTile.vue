@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Scenario } from "@main/content/model/scenario";
+import { Scenario } from "@main/content/game/scenario";
 import { ref } from "vue";
 
 const props = defineProps<{

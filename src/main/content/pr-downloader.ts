@@ -5,13 +5,28 @@ import path from "path";
 import { reactive } from "vue";
 
 import { getInfo } from "@main/utils/info";
-import { DownloadInfo } from "./model/downloads";
+import { DownloadInfo } from "./downloads";
 import { AbstractContentAPI } from "./abstract-content";
-import { PrdProgressMessage } from "./model/pr-downloader";
-import { engineContentAPI } from "./engine-content";
+import { engineContentAPI } from "./engine/engine-content";
 import { logger } from "@main/utils/logger";
 
 const log = logger("pr-downloader.ts");
+
+export type PrdDownloadType = "engine" | "game" | "map";
+
+export type PrdProgressMessage = {
+    downloadType: PrdDownloadType;
+    content: string;
+    currentBytes: number;
+    totalBytes: number;
+    parsedPercent: number;
+};
+
+export type RapidVersion = {
+    tag: string;
+    md5: string;
+    version: string;
+};
 
 /**
  * https://github.com/beyond-all-reason/pr-downloader

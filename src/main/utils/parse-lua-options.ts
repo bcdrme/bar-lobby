@@ -1,4 +1,4 @@
-import { LuaOption, LuaOptionBoolean, LuaOptionList, LuaOptionNumber, LuaOptionSection, LuaOptionString } from "@main/content/model/lua-options";
+import { LuaOption, LuaOptionBoolean, LuaOptionList, LuaOptionNumber, LuaOptionSection, LuaOptionString } from "@main/content/game/lua-options";
 import { parseLuaTable } from "./parse-lua-table";
 
 export function parseLuaOptions(lua: Buffer): LuaOptionSection[] {
