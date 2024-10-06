@@ -1,9 +1,9 @@
 <template>
-    <div v-if="settings != null" id="wrapper" class="wrapper fullsize" @click.left="leftClick" @click.right="rightClick">
+    <div v-if="settingsStore.isInitialized" id="wrapper" class="wrapper fullsize" @click.left="leftClick" @click.right="rightClick">
         <transition mode="in-out" name="intro">
-            <IntroVideo v-if="!settings.skipIntro && videoVisible" @complete="onIntroEnd" />
+            <IntroVideo v-if="!settingsStore.skipIntro && videoVisible" @complete="onIntroEnd" />
         </transition>
-        <DebugSidebar v-if="settings.devMode" />
+        <DebugSidebar v-if="settingsStore.devMode" />
         <StickyBattle />
         <Background :blur="blurBg" />
         <Notifications />
@@ -54,7 +54,7 @@
 import { Icon } from "@iconify/vue";
 import closeThick from "@iconify-icons/mdi/close-thick";
 import cog from "@iconify-icons/mdi/cog";
-import { computed, onBeforeMount, provide, Ref, toRaw } from "vue";
+import { computed, onBeforeMount, provide, Ref, toRaw, toRef, toValue } from "vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
@@ -74,10 +74,10 @@ import Notifications from "@renderer/components/notifications/Notifications.vue"
 import PromptContainer from "@renderer/components/prompts/PromptContainer.vue";
 
 import { playRandomMusic } from "@renderer/utils/play-random-music";
-import { asyncComputed, computedAsync } from "@vueuse/core";
+import { asyncComputed, watchOnce } from "@vueuse/core";
 import { defaultEngineVersion, defaultGameVersion } from "@main/config/default-versions";
 import { defaultMaps } from "@main/config/default-maps";
-import { Settings as SettingsType } from "@main/services/settings.service";
+import { settingsStore } from "./store/settings.store";
 
 window.game.onGameLaunched(() => {
     console.log("Game launched");
@@ -88,14 +88,8 @@ window.game.onGameClosed(() => {
 });
 
 const router = useRouter();
-const settings = ref<SettingsType>();
+const videoVisible = toRef(!toValue(settingsStore.skipIntro));
 
-onBeforeMount(async () => {
-    settings.value = await window.settings.getSettings();
-    console.debug("Settings loaded", toRaw(settings.value));
-});
-
-const videoVisible = ref(true);
 const state: Ref<"preloader" | "initial-setup" | "default"> = ref("preloader");
 const empty = ref(false);
 const blurBg = ref(true);

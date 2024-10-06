@@ -15,10 +15,7 @@ const videoEl: Ref<HTMLVideoElement | null> = ref(null);
 const emit = defineEmits(["complete"]);
 
 const introVideos = import.meta.glob("/src/renderer/assets/videos/intros/**/*", { as: "url" });
-
-console.log("Loading intro videos...");
-console.log(introVideos);
-
+console.debug("Loading intro videos...", introVideos);
 const randomIntroVideo = randomFromArray(Object.keys(introVideos));
 
 onMounted(async () => {

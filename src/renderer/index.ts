@@ -14,6 +14,7 @@ import { clickAwayDirective } from "@renderer/utils/click-away-directive";
 import { elementInViewDirective } from "@renderer/utils/element-in-view-directive";
 import { apiInit } from "./api/api";
 import { router } from "./router";
+import { initSettingsStore } from "./store/settings.store";
 
 declare module "vue-router" {
     interface RouteMeta {
@@ -54,10 +55,11 @@ async function setupVue() {
     app.directive("click-away", clickAwayDirective);
     app.directive("in-view", elementInViewDirective);
     app.directive("tooltip", Tooltip);
-    app.mount("#app");
     if (process.env.NODE_ENV !== "production") {
         app.config.globalProperties.window = window;
     }
+    await initSettingsStore();
+    app.mount("#app");
 }
 
 //TODO implement this, needs to be moved to preload probably

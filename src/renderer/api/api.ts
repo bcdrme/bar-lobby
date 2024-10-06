@@ -24,7 +24,6 @@ interface API {
     };
     //TODO implement comms
     comms: any;
-    // content: ContentAPI;
     // game: GameAPI;
     game: any;
     info: typeof window.info;
@@ -33,7 +32,6 @@ interface API {
     router: any;
     //TODO implement sesssion
     session: any;
-    settings: typeof window.settings;
     utils: typeof utilsApi;
 }
 
@@ -56,9 +54,8 @@ export async function apiInit() {
     // api.info = await ipcRenderer.invoke("getInfo");
     api.info = window.info;
 
-    // replaced by window.settings
+    // replaced by settingsStore
     // api.settings = await new StoreAPI(settingsFilePath, settingsSchema).init();
-    api.settings = window.settings;
 
     // TODO implement session when new tachyon protocol is released
     // api.session = new SessionAPI();
