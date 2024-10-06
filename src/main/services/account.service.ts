@@ -1,10 +1,11 @@
+import { CONFIG_PATH } from "@main/config/app";
 import { FileStore } from "@main/json/file-store";
 import { accountSchema } from "@main/json/model/account";
-import { getInfo } from "@main/utils/info";
+
 import { ipcMain } from "electron";
 import path from "path";
 
-const accountStore = new FileStore<typeof accountSchema>(path.join(getInfo().configPath, "account.json"), accountSchema);
+const accountStore = new FileStore<typeof accountSchema>(path.join(CONFIG_PATH, "account.json"), accountSchema);
 
 function init() {
     accountStore.init();

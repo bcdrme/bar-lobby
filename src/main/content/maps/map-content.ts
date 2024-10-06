@@ -4,7 +4,6 @@ import url from "url";
 
 import { MapData } from "@main/cache/model/map-data";
 import { cacheDb } from "@main/cache/cache-db";
-import { getInfo } from "@main/utils/info";
 import { logger } from "@main/utils/logger";
 import { Signal } from "$/jaz-ts-utils/signal";
 import { removeFromArray } from "$/jaz-ts-utils/object";
@@ -12,6 +11,7 @@ import { delay } from "$/jaz-ts-utils/delay";
 import { parseMap } from "@main/content/maps/parse-map";
 import { PrDownloaderAPI } from "@main/content/pr-downloader";
 import { MapImages } from "@main/content/maps/map-model";
+import { CONTENT_PATH } from "@main/config/app";
 
 const log = logger("map-content.ts");
 
@@ -21,8 +21,8 @@ const log = logger("map-content.ts");
 export class MapContentAPI extends PrDownloaderAPI<MapData> {
     public readonly onMapCached: Signal<MapData> = new Signal();
 
-    protected readonly mapsDir = path.join(getInfo().contentPath, "maps");
-    protected readonly mapImagesDir = path.join(getInfo().contentPath, "map-images");
+    protected readonly mapsDir = path.join(CONTENT_PATH, "maps");
+    protected readonly mapImagesDir = path.join(CONTENT_PATH, "map-images");
     // protected readonly parseMap = hookWorkerFunction(new Worker(new URL("../../workers/parse-map.ts", import.meta.url), { type: "module" }), parseMapWorkerFunction);
     protected readonly parseMap = parseMap;
     protected readonly mapCacheQueue: Set<string> = new Set();

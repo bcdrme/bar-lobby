@@ -1,22 +1,24 @@
-import { getInfo } from "@main/utils/info";
+import { CONFIG_PATH, CONTENT_PATH } from "@main/config/app";
+
 import { ipcMain, shell } from "electron";
+import path from "path";
 
 function openConfigDir() {
-  shell.openPath(getInfo().configPath);
+    shell.openPath(CONFIG_PATH);
 }
 
 function openContentDir() {
-  shell.openPath(getInfo().contentPath);
+    shell.openPath(CONTENT_PATH);
 }
 
 function openSettingsFile() {
-  shell.openPath(getInfo().configPath + "/settings.json");
+    shell.openPath(path.join(CONFIG_PATH, "settings.json"));
 }
 
 function registerIpcHandlers() {
-  ipcMain.handle("shell:openConfigDir", () => openConfigDir());
-  ipcMain.handle("shell:openContentDir", () => openContentDir());
-  ipcMain.handle("shell:openSettingsFile", () => openSettingsFile());
+    ipcMain.handle("shell:openConfigDir", () => openConfigDir());
+    ipcMain.handle("shell:openContentDir", () => openContentDir());
+    ipcMain.handle("shell:openSettingsFile", () => openSettingsFile());
 }
 
 export const shellService = {

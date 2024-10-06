@@ -8,7 +8,6 @@ import zlib from "zlib";
 import { CustomGameVersion, GameAI, GameVersion } from "@main/cache/model/game-version";
 import { parseLuaTable } from "@main/utils/parse-lua-table";
 import { parseLuaOptions } from "@main/utils/parse-lua-options";
-import { getInfo } from "@main/utils/info";
 import { BufferStream } from "@main/utils/buffer-stream";
 import { cacheDb } from "@main/cache/cache-db";
 import { logger } from "@main/utils/logger";
@@ -20,6 +19,7 @@ import { LuaOptionSection } from "@main/content/game/lua-options";
 import { Scenario } from "@main/content/game/scenario";
 import { SdpFileMeta, SdpFile } from "@main/content/game/sdp";
 import { PrDownloaderAPI } from "@main/content/pr-downloader";
+import { CONTENT_PATH } from "@main/config/app";
 
 const log = logger("game-content.ts");
 const gunzip = util.promisify(zlib.gunzip);
@@ -35,7 +35,7 @@ export class GameContentAPI extends PrDownloaderAPI<GameVersion | CustomGameVers
             this.installedVersions.push(version);
         }
         // load custom .sdd games
-        const gamesDir = path.join(getInfo().contentPath, "games");
+        const gamesDir = path.join(CONTENT_PATH, "games");
         if (fs.existsSync(gamesDir)) {
             const dirs = await fs.promises.readdir(gamesDir);
             for (const dir of dirs) {
@@ -88,7 +88,7 @@ export class GameContentAPI extends PrDownloaderAPI<GameVersion | CustomGameVers
         assert(gameVersion, "No default game version found");
         const scenarioImages = await this.getGameFiles(gameVersion, "singleplayer/scenarios/**/*.{jpg,png}", false);
         const scenarioDefinitions = await this.getGameFiles(gameVersion, "singleplayer/scenarios/**/*.lua", true);
-        const cacheDir = path.join(getInfo().contentPath, "scenario-images");
+        const cacheDir = path.join(CONTENT_PATH, "scenario-images");
         await fs.promises.mkdir(cacheDir, { recursive: true });
         for (const scenarioImage of scenarioImages) {
             const data = await fs.promises.readFile(scenarioImage.archivePath);
@@ -130,7 +130,7 @@ export class GameContentAPI extends PrDownloaderAPI<GameVersion | CustomGameVers
     protected async getGameFiles(version: { md5: string } | { dir: string }, filePattern: string, parseData = false): Promise<SdpFileMeta[] | SdpFile[]> {
         if ("dir" in version) {
             const sdpFiles: Array<SdpFileMeta & { data?: Buffer }> = [];
-            const customGameDir = path.join(getInfo().contentPath, "games", version.dir);
+            const customGameDir = path.join(CONTENT_PATH, "games", version.dir);
             const files = await glob.promise(path.join(customGameDir, filePattern), { windowsPathsNoEscape: true });
             for (const file of files) {
                 const sdpData = {
@@ -152,13 +152,13 @@ export class GameContentAPI extends PrDownloaderAPI<GameVersion | CustomGameVers
 
         const md5 = version.md5;
         const sdpFileName = `${md5}.sdp`;
-        const filePath = path.join(getInfo().contentPath, "packages", sdpFileName);
+        const filePath = path.join(CONTENT_PATH, "packages", sdpFileName);
         const sdpEntries = await this.parseSdpFile(filePath, filePattern);
         const sdpFiles: Array<SdpFileMeta & { data?: Buffer }> = [];
         for (const sdpEntry of sdpEntries) {
             const poolDir = sdpEntry.md5.slice(0, 2);
             const archiveFileName = `${sdpEntry.md5.slice(2)}.gz`;
-            const archiveFilePath = path.join(getInfo().contentPath, "pool", poolDir, archiveFileName);
+            const archiveFilePath = path.join(CONTENT_PATH, "pool", poolDir, archiveFileName);
             const archiveFile = await fs.promises.readFile(archiveFilePath);
             if (parseData) {
                 const data = await gunzip(archiveFile);
@@ -189,7 +189,7 @@ export class GameContentAPI extends PrDownloaderAPI<GameVersion | CustomGameVers
             const md5 = bufferStream.read(16).toString("hex");
             const crc32 = bufferStream.read(4).toString("hex");
             const filesizeBytes = bufferStream.readInt(4, true);
-            const archivePath = path.join(getInfo().contentPath, "pool", md5.slice(0, 2), `${md5.slice(2)}.gz`);
+            const archivePath = path.join(CONTENT_PATH, "pool", md5.slice(0, 2), `${md5.slice(2)}.gz`);
             if (globPattern && globPattern.minimatch.match(fileName)) {
                 fileData.push({ fileName, md5, crc32, filesizeBytes, archivePath });
             } else if (!globPattern) {

@@ -10,8 +10,7 @@ import mapsService from "./services/maps.service";
 import gameService from "./services/game.service";
 import { initCacheDb } from "./cache/cache-db";
 import { logger } from "./utils/logger";
-import { getInfo } from "./utils/info";
-import { APP_NAME } from "./config/app";
+import { APP_NAME, CONTENT_PATH } from "./config/app";
 import url from "url";
 
 const log = logger("main/index.ts");
@@ -45,13 +44,12 @@ protocol.registerSchemesAsPrivileged([
 ]);
 
 function registerBarFileProtocol() {
-    const contentPath = getInfo().contentPath;
     protocol.handle("bar", (request) => {
         try {
             const decodedUrl = decodeURIComponent(request.url);
             const filePath = decodedUrl.slice("bar://".length);
             // Security Check: Ensure the file is within the content folder
-            if (!filePath.startsWith(contentPath)) {
+            if (!filePath.startsWith(CONTENT_PATH)) {
                 throw new Error("Attempt to access file outside content folder");
             }
             return net.fetch(url.pathToFileURL(filePath).toString());
@@ -64,20 +62,6 @@ function registerBarFileProtocol() {
 app.setName(APP_NAME);
 app.commandLine.appendSwitch("disable-features", "HardwareMediaKeyHandling,MediaSessionService");
 app.on("window-all-closed", () => app.quit());
-// app.on("web-contents-created", (_, contents) => {
-//     contents.on("will-navigate", (event, navigationUrl) => {
-//         const parsedUrl = new URL(navigationUrl);
-//         if (process.env.ELECTRON_RENDERER_URL && parsedUrl.protocol == "http:" && parsedUrl.toString() == process.env.ELECTRON_RENDERER_URL + "/") {
-//             return; //allow
-//         }
-//         if (parsedUrl.protocol == "file:" && parsedUrl.pathname) {
-//             if (path.resolve(parsedUrl.pathname) == path.resolve(path.join(__dirname, "../renderer/index.html"))) {
-//                 return; //allow
-//             }
-//         }
-//         event.preventDefault(); //disallow
-//     });
-// });
 
 //TODO move these to services
 function setupHandlers() {
@@ -108,11 +92,7 @@ function setupHandlers() {
 app.enableSandbox();
 
 app.whenReady().then(() => {
-    log.info("App is ready, getInfo():");
-    log.info(getInfo());
-
     registerBarFileProtocol();
-
     initCacheDb();
 
     if (process.env.NODE_ENV !== "production") {

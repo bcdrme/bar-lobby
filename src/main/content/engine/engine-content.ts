@@ -4,17 +4,16 @@ import * as glob from "glob-promise";
 import { removeFromArray } from "$/jaz-ts-utils/object";
 import { Octokit } from "@octokit/rest";
 import * as path from "path";
-
 import { EngineAI, EngineVersion } from "@main/cache/model/engine-version";
 import { DownloadInfo } from "../downloads";
 import { parseLuaTable } from "@main/utils/parse-lua-table";
-import { getInfo } from "@main/utils/info";
 import { parseLuaOptions } from "@main/utils/parse-lua-options";
 import { cacheDb } from "@main/cache/cache-db";
 import { logger } from "@main/utils/logger";
 import { extract7z } from "@main/utils/extract-7z";
 import { contentSources } from "@main/config/content-sources";
 import { AbstractContentAPI } from "@main/content/abstract-content";
+import { CONTENT_PATH } from "@main/config/app";
 
 const log = logger("engine-content.ts");
 
@@ -22,7 +21,7 @@ export const engineVersionRegex = /^(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)-
 export const gitEngineTagRegex = /^.*?\{(?<branch>.*?)\}(?<major>\d+)\.(?<minor>\d+)\.(?<patch>\d+)-(?<revision>\d+)-g(?<sha>[0-9a-f]+)$/i;
 
 export class EngineContentAPI extends AbstractContentAPI<EngineVersion> {
-    protected readonly engineDirs = path.join(getInfo().contentPath, "engine");
+    protected readonly engineDirs = path.join(CONTENT_PATH, "engine");
     protected readonly ocotokit = new Octokit();
 
     public override async init() {

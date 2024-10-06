@@ -1,10 +1,11 @@
+import { CONFIG_PATH } from "@main/config/app";
 import { FileStore } from "@main/json/file-store";
 import { settingsSchema } from "@main/json/model/settings";
-import { getInfo } from "@main/utils/info";
+
 import { ipcMain } from "electron";
 import path from "path";
 
-const settingsStore = new FileStore<typeof settingsSchema>(path.join(getInfo().configPath, "settings.json"), settingsSchema, {
+const settingsStore = new FileStore<typeof settingsSchema>(path.join(CONFIG_PATH, "settings.json"), settingsSchema, {
     fullscreen: true,
     displayIndex: 0,
     skipIntro: false,

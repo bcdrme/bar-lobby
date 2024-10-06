@@ -6,10 +6,10 @@ import { MapDataTable } from "./model/map-data";
 import { ReplayTable } from "./model/replay";
 import { GameVersionTable } from "./model/game-version";
 import { EngineVersionTable } from "./model/engine-version";
-import { getInfo } from "@main/utils/info";
 import { logger } from "@main/utils/logger";
 import { SerializePlugin } from "kysely-plugin-serialize";
 import fs from "fs";
+import { CONTENT_PATH } from "@main/config/app";
 
 const log = logger("cache-db.ts");
 
@@ -22,7 +22,7 @@ interface CacheDatabase {
     engineVersion: EngineVersionTable;
 }
 
-const dbPath = path.join(getInfo().contentPath, "cache.db");
+const dbPath = path.join(CONTENT_PATH, "cache.db");
 fs.mkdir(path.dirname(dbPath), { recursive: true }, (err) => {
     if (err) {
         log.error(err);

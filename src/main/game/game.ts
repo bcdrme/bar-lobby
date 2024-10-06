@@ -8,7 +8,7 @@ import { cacheDb } from "@main/cache/cache-db";
 import { engineContentAPI } from "@main/content/engine/engine-content";
 import { mapContentAPI } from "@main/content/maps/map-content";
 import { replaysDir, replaysService } from "@main/services/replays.service";
-import { getInfo } from "@main/utils/info";
+
 import { Replay } from "@main/cache/model/replay";
 import { StartScriptConverter } from "@main/utils/start-script-converter";
 import { defaultEngineVersion } from "@main/config/default-versions";
@@ -16,6 +16,7 @@ import { isReplay } from "@main/utils/type-checkers";
 import { logger } from "@main/utils/logger";
 import { gameContentAPI } from "@main/content/game/game-content";
 import { AbstractBattle } from "@main/game/battle/abstract-battle";
+import { CONTENT_PATH } from "@main/config/app";
 
 const log = logger("main/game/game.ts");
 
@@ -62,17 +63,17 @@ export class GameAPI {
             log.info(`Launching game with engine: ${engineVersion}, game: ${gameVersion}, map: ${mapName}`);
             await this.fetchMissingContent(engineVersion, gameVersion, mapName);
 
-            const enginePath = path.join(getInfo().contentPath, "engine", engineVersion).replaceAll("\\", "/");
+            const enginePath = path.join(CONTENT_PATH, "engine", engineVersion).replaceAll("\\", "/");
 
             let launchArg = "";
             if (script) {
-                const scriptPath = (launchArg = path.join(getInfo().contentPath, this.scriptName));
+                const scriptPath = (launchArg = path.join(CONTENT_PATH, this.scriptName));
                 await fs.promises.writeFile(scriptPath, script);
             } else if (isReplay(arg)) {
                 launchArg = arg.filePath ? arg.filePath : path.join(replaysDir, arg.fileName);
             }
 
-            const args = ["--write-dir", getInfo().contentPath, "--isolation", launchArg];
+            const args = ["--write-dir", CONTENT_PATH, "--isolation", launchArg];
 
             const binaryName = process.platform === "win32" ? "spring.exe" : "./spring";
             log.debug(`Running binary: ${path.join(enginePath, binaryName)}, args: ${args}`);

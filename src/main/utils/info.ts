@@ -1,8 +1,6 @@
-import { app, BrowserWindow, screen } from "electron";
-import envPaths from "env-paths";
-import path from "path";
+import { app, screen } from "electron";
 import os from "os";
-import { APP_NAME } from "@main/config/app";
+import { CONFIG_PATH, CONTENT_PATH } from "@main/config/app";
 
 export type Info = {
     contentPath: string;
@@ -19,7 +17,6 @@ export type Info = {
 };
 
 export function getInfo() {
-    const paths = envPaths(APP_NAME, { suffix: "" });
     const displayIds = app.isReady() ? screen.getAllDisplays().map((display) => display.id) : [];
     let currentDisplayId = 0;
     if (app.isReady()) {
@@ -29,8 +26,8 @@ export function getInfo() {
     const networkInterfaces = os.networkInterfaces();
     const defaultNetworkInterface = networkInterfaces["Ethernet"]?.[0] ?? Object.values(networkInterfaces)[0]?.[0];
     const info: Info = {
-        contentPath: paths.data,
-        configPath: paths.config,
+        contentPath: CONTENT_PATH,
+        configPath: CONFIG_PATH,
         lobby: {
             name: "BAR Lobby",
             version: app.getVersion(),

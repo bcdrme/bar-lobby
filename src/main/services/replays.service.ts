@@ -7,10 +7,10 @@ import { delay } from "$/jaz-ts-utils/delay";
 import { isFileInUse } from "@main/utils/file";
 // import { DemoParser } from "sdfz-demo-parser";
 import { Replay } from "@main/cache/model/replay";
-import { getInfo } from "@main/utils/info";
+import { CONTENT_PATH } from "@main/config/app";
 
 const replayCacheQueue: Set<string> = new Set();
-export const replaysDir = path.join(getInfo().contentPath, "demos");
+export const replaysDir = path.join(CONTENT_PATH, "demos");
 
 async function init() {
     await fs.promises.mkdir(replaysDir, { recursive: true });
