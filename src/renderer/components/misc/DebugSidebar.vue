@@ -24,7 +24,7 @@
         <Button @click="attemptCacheErrorMaps"> Recache Errored Maps </Button>
         <Button @click="openSyncLobbyContentTool"> Sync Lobby Content Tool </Button>
 
-        <!-- <SyncDataDirsDialog v-model="syncLobbyContentToolOpen" /> -->
+        <SyncDataDirsDialog v-model="syncLobbyContentToolOpen" />
     </div>
 </template>
 
@@ -36,6 +36,7 @@ import { useRouter } from "vue-router";
 
 import Button from "@renderer/components/controls/Button.vue";
 import Select from "@renderer/components/controls/Select.vue";
+import SyncDataDirsDialog from "@renderer/components/misc/SyncDataDirsDialog.vue";
 
 const active = ref(false);
 const syncLobbyContentToolOpen = ref(false);
@@ -45,6 +46,7 @@ const routes = router.getRoutes().sort((a, b) => a.path.localeCompare(b.path));
 const currentRoute = router.currentRoute;
 
 async function onRouteSelect(newRoute: string) {
+    console.log("Navigating to", newRoute);
     await router.replace(newRoute);
 }
 

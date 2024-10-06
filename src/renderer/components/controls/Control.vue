@@ -9,7 +9,7 @@
 import { audioApi } from "@renderer/audio/audio";
 import { Ref, ref } from "vue";
 
-const props = defineProps<{
+defineProps<{
     label?: string;
     disabled?: boolean;
 }>();
