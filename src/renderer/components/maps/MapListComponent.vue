@@ -49,32 +49,28 @@ const emit = defineEmits<{
 
 const filteredMaps = ref<Array<MapData>>([]);
 
-watch(
-    () => mapsStore.installedMaps,
-    () => {
-        let maps: MapData[] = [];
-        Object.assign(maps, mapsStore.installedMaps);
-        if (searchVal.value.length > 0) {
-            filteredMaps.value = maps.filter((map: MapData) => {
-                map.friendlyName.toLowerCase().includes(searchVal.value.toLowerCase());
+watch(() => mapsStore.installedMaps, updateFilteredMap, { immediate: true, deep: true });
+watch(searchVal, updateFilteredMap);
+
+function updateFilteredMap() {
+    let maps: MapData[] = [];
+    Object.assign(maps, mapsStore.installedMaps);
+    if (searchVal.value.length > 0) {
+        maps = maps.filter((map: MapData) => map.friendlyName.toLowerCase().includes(searchVal.value.toLowerCase()));
+    }
+    switch (sortMethod.value) {
+        case "Name":
+            maps.sort((a, b) => {
+                return a.friendlyName.localeCompare(b.friendlyName);
             });
-        } else {
-            switch (sortMethod.value) {
-                case "Name":
-                    maps.sort((a, b) => {
-                        return a.friendlyName.localeCompare(b.friendlyName);
-                    });
-                    break;
-                case "Size":
-                    maps.sort((a, b) => {
-                        return a.width * a.height - b.width * b.height;
-                    });
-            }
-            filteredMaps.value = maps;
-        }
-    },
-    { immediate: true, deep: true }
-);
+            break;
+        case "Size":
+            maps.sort((a, b) => {
+                return a.width * a.height - b.width * b.height;
+            });
+    }
+    filteredMaps.value = maps;
+}
 
 function mapSelected(map: MapData) {
     emit("map-selected", map);
