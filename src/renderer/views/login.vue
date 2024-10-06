@@ -35,7 +35,7 @@
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
 import replayIcon from "@iconify-icons/mdi/replay";
-import { delay } from "$/jaz-ts-utils";
+import { delay } from "$/jaz-ts-utils/delay";
 import TabPanel from "primevue/tabpanel";
 import { ref } from "vue";
 

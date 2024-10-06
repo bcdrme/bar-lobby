@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts" setup>
-import { SignalBinding } from "$/jaz-ts-utils";
+import { SignalBinding } from "$/jaz-ts-utils/signal";
 import { computed, Ref, ref } from "vue";
 
 import Loader from "@renderer/components/common/Loader.vue";

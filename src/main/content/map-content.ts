@@ -1,5 +1,4 @@
 import * as fs from "fs";
-import { delay, removeFromArray, Signal } from "$/jaz-ts-utils";
 import * as path from "path";
 import url from "url";
 
@@ -9,6 +8,9 @@ import { cacheDb } from "@main/cache/cache-db";
 import { getInfo } from "@main/utils/info";
 import { parseMap } from "./parse-map";
 import { logger } from "@main/utils/logger";
+import { Signal } from "$/jaz-ts-utils/signal";
+import { removeFromArray } from "$/jaz-ts-utils/object";
+import { delay } from "$/jaz-ts-utils/delay";
 
 const log = logger("map-content.ts");
 

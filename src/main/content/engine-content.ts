@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as fs from "fs";
 import * as glob from "glob-promise";
-import { removeFromArray } from "$/jaz-ts-utils";
+import { removeFromArray } from "$/jaz-ts-utils/object";
 import { Octokit } from "@octokit/rest";
 import * as path from "path";
 

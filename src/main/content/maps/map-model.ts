@@ -1,4 +1,4 @@
-import { DeepPartial, Optionals } from "$/jaz-ts-utils";
+import { DeepPartial, Optionals } from "$/jaz-ts-utils/types";
 import { JimpInstance } from "jimp";
 
 export type SpringMap = {

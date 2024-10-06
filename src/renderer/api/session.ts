@@ -1,5 +1,5 @@
 import { Static } from "@sinclair/typebox";
-import { assign } from "$/jaz-ts-utils";
+import { assign } from "$/jaz-ts-utils/object";
 // import { lobbySchema, myUserSchema, playerSchema, ResponseType, userSchema } from "tachyon-client";
 import { computed, ComputedRef, nextTick, reactive, Ref, ref, shallowReactive, shallowRef } from "vue";
 

@@ -3,7 +3,7 @@ import { ipcMain } from "electron";
 import { cacheDb } from "@main/cache/cache-db";
 import fs from "fs";
 import path from "path";
-import { delay } from "$/jaz-ts-utils";
+import { delay } from "$/jaz-ts-utils/delay";
 import { isFileInUse } from "@main/utils/file";
 // import { DemoParser } from "sdfz-demo-parser";
 import { Replay } from "@main/cache/model/replay";

@@ -57,7 +57,7 @@
 <script lang="ts" setup>
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { clone } from "$/jaz-ts-utils";
+import { clone } from "$/jaz-ts-utils/object";
 import TabPanel from "primevue/tabpanel";
 import { reactive, Ref, ref, toRaw } from "vue";
 

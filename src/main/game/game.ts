@@ -1,7 +1,7 @@
 import type { ChildProcess } from "child_process";
 import { spawn } from "child_process";
 import * as fs from "fs";
-import { Signal } from "$/jaz-ts-utils";
+import { Signal } from "$/jaz-ts-utils/signal";
 import * as path from "path";
 
 import { cacheDb } from "@main/cache/cache-db";

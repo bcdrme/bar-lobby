@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as fs from "fs";
 import * as glob from "glob-promise";
-import { removeFromArray } from "$/jaz-ts-utils";
+import { removeFromArray } from "$/jaz-ts-utils/object";
 import * as path from "path";
 import util from "util";
 import zlib from "zlib";

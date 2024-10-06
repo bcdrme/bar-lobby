@@ -1,4 +1,4 @@
-import { removeFromArray } from "$/jaz-ts-utils";
+import { removeFromArray } from "$/jaz-ts-utils/object";
 import { v4 as uuid } from "uuid";
 import { reactive } from "vue";
 

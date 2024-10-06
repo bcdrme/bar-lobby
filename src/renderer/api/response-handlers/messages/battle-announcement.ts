@@ -1,5 +1,5 @@
 import { Type } from "@sinclair/typebox";
-import { assign } from "$/jaz-ts-utils";
+import { assign } from "$/jaz-ts-utils/object";
 
 import { createMessageHandlers } from "@renderer/model/messages";
 

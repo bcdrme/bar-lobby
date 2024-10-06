@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { assign } from "$/jaz-ts-utils";
+import { assign } from "$/jaz-ts-utils/object";
 import { AbstractBattle } from "@main/game/battle/abstract-battle";
 import { StartPosType } from "@main/game/battle/battle-types";
 import { OfflineBattle } from "@main/game/battle/offline-battle";

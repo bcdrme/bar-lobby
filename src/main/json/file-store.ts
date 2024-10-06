@@ -2,9 +2,10 @@ import type { Static, TObject } from "@sinclair/typebox";
 import type { ValidateFunction } from "ajv";
 import Ajv from "ajv";
 import fs from "fs";
-import { assign, SetUndefinedValues } from "$/jaz-ts-utils";
+import { assign } from "$/jaz-ts-utils/object";
 import path from "path";
 import { logger } from "@main/utils/logger";
+import { SetUndefinedValues } from "$/jaz-ts-utils/types";
 
 const log = logger("file-store.ts");
 

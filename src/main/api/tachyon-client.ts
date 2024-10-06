@@ -5,7 +5,7 @@ import { GetCommandData, GetCommandIds, GetCommands, TachyonActor, TachyonEvent,
 
 import { SetOptional } from "type-fest";
 import { ClientOptions, MessageEvent, WebSocket } from "ws";
-import { Signal } from "$/jaz-ts-utils";
+import { Signal } from "$/jaz-ts-utils/signal";
 import { TachyonCommand } from "tachyon-protocol/dist/types";
 import * as validators from "tachyon-protocol/dist/validators";
 import { RedirectHandler } from "@main/services/oauth.service";
@@ -205,9 +205,7 @@ export class TachyonClient<OriginActor extends TachyonActor> {
         return signal;
     }
 
-    public nextEvent<C extends GetCommandIds<"server", OriginActor, "event">>(
-        commandId: C
-    ): Promise<GetCommandData<GetCommands<"server", OriginActor, "event", C>>> {
+    public nextEvent<C extends GetCommandIds<"server", OriginActor, "event">>(commandId: C): Promise<GetCommandData<GetCommands<"server", OriginActor, "event", C>>> {
         return new Promise((resolve) => {
             let signal = this.eventHandlers.get(commandId);
             if (!signal) {

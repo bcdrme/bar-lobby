@@ -1,5 +1,5 @@
-import type { DeepPartial } from "$/jaz-ts-utils";
-import { MapInfo } from "$/map-parser/map-model";
+import type { DeepPartial } from "$/jaz-ts-utils/types";
+import { MapInfo } from "@main/content/maps/map-model";
 import { Generated, Selectable } from "kysely";
 
 export interface MapDataTable {
@@ -25,6 +25,6 @@ export interface MapDataTable {
     maxDepth: number;
     mapInfo: DeepPartial<MapInfo> | null;
     lastLaunched: Date;
-};
+}
 
 export type MapData = Selectable<MapDataTable>;

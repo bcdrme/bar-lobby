@@ -7,7 +7,7 @@
  * this includes matchmaking, chat, direct messages, and other lobby related functions.
  */
 import { Static, TSchema } from "@sinclair/typebox";
-import { arrayToMap, assign } from "$/jaz-ts-utils";
+import { arrayToMap, assign } from "$/jaz-ts-utils/object";
 import { nextTick, reactive, Ref, ref } from "vue";
 
 import { barManagerHandlers } from "@renderer/api/response-handlers/messages/bar-manager";
@@ -15,10 +15,10 @@ import { battleAnnouncementHandlers } from "@renderer/api/response-handlers/mess
 import { battleMessageHandlers } from "@renderer/api/response-handlers/messages/battle-message";
 import { directAnnouncementHandlers } from "@renderer/api/response-handlers/messages/direct-announcement";
 import { directMessageHandlers } from "@renderer/api/response-handlers/messages/direct-message";
-import { SpadsBattle } from "@renderer/model/battle/spads-battle";
 import { Message, MessageHandler } from "@renderer/model/messages";
 import { spadsBoxToStartBox } from "@renderer/utils/start-boxes";
 import { tachyonLog } from "@renderer/utils/tachyon-log";
+import { SpadsBattle } from "@main/game/battle/spads-battle";
 
 /**
  * TODO: move most of the response logic into separate response-handler files

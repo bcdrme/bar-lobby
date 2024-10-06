@@ -65,7 +65,7 @@
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
 import trophyVariant from "@iconify-icons/mdi/trophy-variant";
-import { groupBy } from "$/jaz-ts-utils";
+import { groupBy } from "$/jaz-ts-utils/object";
 import { computed, ComputedRef } from "vue";
 
 import BattlePreviewParticipant from "@renderer/components/battle/BattlePreviewParticipant.vue";

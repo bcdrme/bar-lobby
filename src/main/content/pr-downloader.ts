@@ -1,5 +1,5 @@
 import { spawn } from "child_process";
-import { lastInArray, removeFromArray } from "$/jaz-ts-utils";
+import { lastInArray, removeFromArray } from "$/jaz-ts-utils/object";
 import os from "os";
 import path from "path";
 import { reactive } from "vue";

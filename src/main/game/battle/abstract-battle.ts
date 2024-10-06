@@ -1,6 +1,6 @@
 import { useNow } from "@vueuse/core";
 import { formatDuration } from "date-fns";
-import { groupBy } from "$/jaz-ts-utils";
+import { groupBy } from "$/jaz-ts-utils/object";
 import { computed, ComputedRef, reactive, shallowReactive, watch, WatchStopHandle } from "vue";
 
 import { User } from "@main/model/user";

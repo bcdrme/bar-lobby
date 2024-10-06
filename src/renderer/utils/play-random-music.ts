@@ -1,4 +1,4 @@
-import { randomFromArray } from "$/jaz-ts-utils";
+import { randomFromArray } from "$/jaz-ts-utils/object";
 
 const musicKeys: string[] = [];
 

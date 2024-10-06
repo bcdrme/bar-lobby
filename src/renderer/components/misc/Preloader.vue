@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts" setup>
-import { randomFromArray } from "$/jaz-ts-utils";
+import { randomFromArray } from "$/jaz-ts-utils/object";
 import { computed, onMounted, ref } from "vue";
 
 import Progress from "@renderer/components/common/Progress.vue";

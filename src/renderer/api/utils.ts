@@ -1,4 +1,4 @@
-import { Signal } from "$/jaz-ts-utils";
+import { Signal } from "$/jaz-ts-utils/signal";
 
 class UtilsAPI {
     public readonly onRightClick = new Signal();

@@ -1,4 +1,4 @@
-import { Signal } from "$/jaz-ts-utils";
+import { Signal } from "$/jaz-ts-utils/signal";
 import { DownloadInfo } from "./model/downloads";
 
 export abstract class AbstractContentAPI<T> {

@@ -5,7 +5,7 @@ import * as os from "os";
 import * as path from "path";
 import { defaultWaterOptions, MapInfo, SMD, SMF, SpringMap, WaterOptions } from "./map-model";
 import { BufferStream } from "@main/utils/buffer-stream";
-import { DeepPartial } from "$/jaz-ts-utils";
+import { DeepPartial } from "$/jaz-ts-utils/types";
 import { JimpInstance, Jimp, intToRGBA, rgbaToInt } from "jimp";
 import { parseDxt } from "./parse-dxt";
 import { StreamZipAsync } from "node-stream-zip";

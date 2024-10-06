@@ -25,7 +25,7 @@
 import { Icon } from "@iconify/vue";
 import checkBold from "@iconify-icons/mdi/check-bold";
 import cloudDownload from "@iconify-icons/mdi/cloud-download";
-import { delay } from "$/jaz-ts-utils";
+import { delay } from "$/jaz-ts-utils/delay";
 import { MenuItem } from "primevue/menuitem";
 import { computed, inject, Ref, ref } from "vue";
 
