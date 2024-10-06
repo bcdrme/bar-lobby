@@ -4,7 +4,7 @@
 
 <template>
     <div class="flex-col gap-md fullheight">
-        <Textarea v-model="script" spellcheck="false" />
+        <Textarea class="fullheight" v-model="script" spellcheck="false" />
         <Button class="green" @click="launch">Launch</Button>
     </div>
 </template>
@@ -37,12 +37,6 @@ const script = ref(`[game] {
 }`);
 
 function launch() {
-    api.game.launch(script.value);
+    window.game.launchGame(script.value);
 }
 </script>
-
-<style lang="scss" scoped>
-.textarea {
-    height: 100%;
-}
-</style>
