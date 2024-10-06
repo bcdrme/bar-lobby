@@ -32,6 +32,7 @@ const shellApi = {
     openConfigDir: (): Promise<void> => ipcRenderer.invoke("shell:openConfigDir"),
     openContentDir: (): Promise<void> => ipcRenderer.invoke("shell:openContentDir"),
     openSettingsFile: (): Promise<void> => ipcRenderer.invoke("shell:openSettingsFile"),
+    openStartScript: (): Promise<void> => ipcRenderer.invoke("shell:openStartScript"),
 };
 export type ShellApi = typeof shellApi;
 contextBridge.exposeInMainWorld("shell", shellApi);
@@ -101,6 +102,8 @@ const mapsApi = {
     getMapByScriptName: (scriptName: string): Promise<MapData> => ipcRenderer.invoke("maps:getMapByScriptName", scriptName),
     getMapImages: (mapData: MapData | undefined): Promise<MapImages> => ipcRenderer.invoke("maps:getMapImages", mapData),
     isVersionInstalled: (id: string): Promise<boolean> => ipcRenderer.invoke("maps:isVersionInstalled", id),
+
+    attemptCacheErrorMaps: (): Promise<void> => ipcRenderer.invoke("maps:attemptCacheErrorMaps"),
 };
 export type MapsApi = typeof mapsApi;
 contextBridge.exposeInMainWorld("maps", mapsApi);

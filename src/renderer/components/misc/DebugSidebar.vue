@@ -61,14 +61,11 @@ async function openConfigDir() {
 }
 
 async function openStartScript() {
-    //TODO
-    // await shell.openPath(path.join(api.info.contentPath, api.game.scriptName));
+    window.shell.openStartScript();
 }
 
 async function attemptCacheErrorMaps() {
-    //TODO
-    // await api.cacheDb.deleteFrom("mapError").execute();
-    // await api.content.maps.queueMapsToCache();
+    window.maps.attemptCacheErrorMaps();
 }
 
 function openSyncLobbyContentTool() {

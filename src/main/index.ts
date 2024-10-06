@@ -12,6 +12,7 @@ import { initCacheDb } from "./cache/cache-db";
 import { logger } from "./utils/logger";
 import { APP_NAME, CONTENT_PATH } from "./config/app";
 import url from "url";
+import { shellService } from "@main/services/shell.service";
 
 const log = logger("main/index.ts");
 log.info("Starting Electron main process");
@@ -130,6 +131,7 @@ app.whenReady().then(() => {
     engineService.registerIpcHandlers();
     gameService.registerIpcHandlers();
     mapsService.registerIpcHandlers();
+    shellService.registerIpcHandlers();
 
     // Initialize all handlers before creating the window
     createWindow();

@@ -85,7 +85,12 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
         } as MapImages;
     }
 
-    public async queueMapsToCache() {
+    public async attemptCacheErrorMaps() {
+        await cacheDb.deleteFrom("mapError").execute();
+        await this.queueMapsToCache();
+    }
+
+    protected async queueMapsToCache() {
         let mapFiles = await fs.promises.readdir(this.mapsDir);
         mapFiles = mapFiles.filter((mapFile) => mapFile.endsWith("sd7"));
         const cachedMapFiles = await cacheDb.selectFrom("map").select(["fileName"]).execute();
