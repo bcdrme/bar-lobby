@@ -49,6 +49,7 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
 
     public async downloadMap(scriptName: string) {
         if (this.installedVersions.some((map) => map.scriptName === scriptName)) {
+            console.warn(`Map ${scriptName} already installed`);
             return;
         }
         if (this.currentDownloads.some((download) => download.name === scriptName)) {

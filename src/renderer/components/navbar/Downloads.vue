@@ -22,10 +22,12 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, inject, Ref } from "vue";
+import { inject, ref, Ref, watch } from "vue";
 
 import Progress from "@renderer/components/common/Progress.vue";
 import PopOutPanel from "@renderer/components/navbar/PopOutPanel.vue";
+import { downloadsStore } from "@renderer/store/downloads.store";
+import { DownloadInfo } from "@main/content/downloads";
 
 const props = defineProps<{
     modelValue: boolean;
@@ -40,6 +42,17 @@ const toggleMessages = inject<Ref<(open?: boolean, userId?: number) => void>>("t
 const toggleFriends = inject<Ref<(open?: boolean) => void>>("toggleFriends")!;
 const toggleDownloads = inject<Ref<(open?: boolean) => void>>("toggleDownloads")!;
 
+const downloads = ref<DownloadInfo[]>([]);
+
+watch(
+    () => downloadsStore.downloads,
+    (arr) => {
+        console.log(`downloads changed: ${arr.length}`);
+        downloads.value = arr;
+    },
+    { deep: true }
+);
+
 toggleDownloads.value = async (open?: boolean) => {
     if (open) {
         toggleMessages.value(false);
@@ -48,12 +61,6 @@ toggleDownloads.value = async (open?: boolean) => {
 
     emits("update:modelValue", open ?? !props.modelValue);
 };
-
-const downloads = computed(() =>
-    //TODO replace witgh a listener on downloads in progress
-    // api.content.engine.currentDownloads.concat(api.content.game.currentDownloads, api.content.maps.currentDownloads)
-    []
-);
 
 function progressText(currentBytes: number, totalBytes: number) {
     const percent = currentBytes / totalBytes;

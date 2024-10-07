@@ -13,6 +13,7 @@ import { logger } from "./utils/logger";
 import { APP_NAME, CONTENT_PATH } from "./config/app";
 import url from "url";
 import { shellService } from "@main/services/shell.service";
+import downloadsService from "@main/services/downloads.service";
 
 const log = logger("main/index.ts");
 log.info("Starting Electron main process");
@@ -135,4 +136,5 @@ app.whenReady().then(() => {
     gameService.registerIpcHandlers(mainWindow);
     mapsService.registerIpcHandlers(mainWindow);
     shellService.registerIpcHandlers();
+    downloadsService.registerIpcHandlers(mainWindow);
 });

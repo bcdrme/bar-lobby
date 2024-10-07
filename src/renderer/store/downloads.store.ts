@@ -1,108 +1,38 @@
-// TODO to implement
+import { DownloadInfo } from "@main/content/downloads";
+import { reactive } from "vue";
 
-// this.downloads = computed(() => [...this.engine.currentDownloads, ...this.game.currentDownloads, ...this.maps.currentDownloads]);
-// this.currentDownloadCurrent = computed(() => this.downloads.value.reduce((acc, cur) => acc + cur.currentBytes, 0));
-// this.currentDownloadTotal = computed(() => this.downloads.value.reduce((acc, cur) => acc + cur.totalBytes, 0));
-// this.currentDownloadPercent = computed(() => this.currentDownloadCurrent.value / this.currentDownloadTotal.value);
+export const downloadsStore = reactive({
+    isInitialized: false,
+    downloads: [],
+} as {
+    isInitialized: boolean;
+    downloads: DownloadInfo[];
+});
 
-// TODO There was some lobby status to update when downloading stuff, should probably go into a lobby component or service of some sort and reacting to store changes
+export function initDownloadsStore() {
+    window.downloads.onDownloadMapStart((downloadInfo) => {
+        console.debug("Download started", downloadInfo);
+        downloadsStore.downloads.push(downloadInfo);
+    });
 
-// this.engine.onDownloadStart.add((data) => {
-//     const battle = api.session.onlineBattle.value;
-//     const me = api.session.onlineUser;
+    window.downloads.onDownloadMapComplete((downloadInfo) => {
+        console.debug("Download complete", downloadInfo);
+        downloadsStore.downloads = downloadsStore.downloads.filter((download) => download.name !== downloadInfo.name);
+    });
 
-//     if (battle && battle.battleOptions.engineVersion === data.name) {
-//         api.comms.request("c.lobby.update_status", {
-//             client: {
-//                 sync: {
-//                     engine: 0,
-//                     game: me.battleStatus.sync.game,
-//                     map: me.battleStatus.sync.map,
-//                 },
-//             },
-//         });
-//     }
-// });
+    window.downloads.onDownloadMapProgress((downloadInfo) => {
+        console.debug("Download progress", downloadInfo);
+        const index = downloadsStore.downloads.findIndex((download) => download.name === downloadInfo.name);
+        if (index !== -1) {
+            downloadsStore.downloads[index] = downloadInfo;
+        }
+    });
 
-// this.engine.onDownloadComplete.add((data) => {
-//     const battle = api.session.onlineBattle.value;
-//     const me = api.session.onlineUser;
+    // TODO handle download failure correctly in the UI
+    window.downloads.onDownloadMapFail((downloadInfo) => {
+        console.debug("Download failed", downloadInfo);
+        downloadsStore.downloads = downloadsStore.downloads.filter((download) => download.name !== downloadInfo.name);
+    });
 
-//     if (battle && battle.battleOptions.engineVersion === data.name) {
-//         api.comms.request("c.lobby.update_status", {
-//             client: {
-//                 sync: {
-//                     engine: 1,
-//                     game: me.battleStatus.sync.game,
-//                     map: me.battleStatus.sync.map,
-//                 },
-//             },
-//         });
-//     }
-// });
-
-// this.game.onDownloadStart.add((data) => {
-//     const battle = api.session.onlineBattle.value;
-//     const me = api.session.onlineUser;
-
-//     if (battle && battle.battleOptions.gameVersion === data.name) {
-//         api.comms.request("c.lobby.update_status", {
-//             client: {
-//                 sync: {
-//                     engine: me.battleStatus.sync.engine,
-//                     game: 0,
-//                     map: me.battleStatus.sync.map,
-//                 },
-//             },
-//         });
-//     }
-// });
-// this.game.onDownloadComplete.add((data) => {
-//     const battle = api.session.onlineBattle.value;
-//     const me = api.session.onlineUser;
-
-//     if (battle && battle.battleOptions.gameVersion === data.name) {
-//         api.comms.request("c.lobby.update_status", {
-//             client: {
-//                 sync: {
-//                     engine: me.battleStatus.sync.engine,
-//                     game: 1,
-//                     map: me.battleStatus.sync.map,
-//                 },
-//             },
-//         });
-//     }
-// });
-
-// this.maps.onDownloadStart.add((data) => {
-//     const battle = api.session.onlineBattle.value;
-//     const me = api.session.onlineUser;
-
-//     if (battle && battle.battleOptions.map === data.name) {
-//         api.comms.request("c.lobby.update_status", {
-//             client: {
-//                 sync: {
-//                     engine: me.battleStatus.sync.engine,
-//                     game: me.battleStatus.sync.game,
-//                     map: 0,
-//                 },
-//             },
-//         });
-//     }
-// });
-// this.maps.onDownloadComplete.add((data) => {
-//     const battle = api.session.onlineBattle.value;
-//     const me = api.session.onlineUser;
-
-//     if (battle && battle.battleOptions.map === data.name) {
-//         api.comms.request("c.lobby.update_status", {
-//             client: {
-//                 sync: {
-//                     engine: me.battleStatus.sync.engine,
-//                     game: me.battleStatus.sync.game,
-//                     map: 1,
-//                 },
-//             },
-//         });
-//     }
-// });
+    downloadsStore.isInitialized = true;
+}

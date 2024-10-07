@@ -4,8 +4,11 @@ import { DownloadInfo } from "./downloads";
 export abstract class AbstractContentAPI<T> {
     public installedVersions: T[] = [];
     public currentDownloads: DownloadInfo[] = [];
+
     public onDownloadStart: Signal<DownloadInfo> = new Signal();
     public onDownloadComplete: Signal<DownloadInfo> = new Signal();
+    public onDownloadProgress: Signal<DownloadInfo> = new Signal();
+    public onDownloadFail: Signal<DownloadInfo> = new Signal();
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public async init(...args: any[]) {
@@ -22,5 +25,13 @@ export abstract class AbstractContentAPI<T> {
 
     protected async downloadComplete(downloadInfo: DownloadInfo) {
         this.onDownloadComplete.dispatch(downloadInfo);
+    }
+
+    protected async downloadProgress(downloadInfo: DownloadInfo) {
+        this.onDownloadProgress.dispatch(downloadInfo);
+    }
+
+    protected async downloadFailed(downloadInfo: DownloadInfo) {
+        this.onDownloadFail.dispatch(downloadInfo);
     }
 }

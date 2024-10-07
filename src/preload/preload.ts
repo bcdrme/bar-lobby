@@ -2,7 +2,6 @@ import { contextBridge, ipcRenderer } from "electron";
 
 import { Replay } from "@main/cache/model/replay";
 import { Settings } from "@main/services/settings.service";
-import { Info } from "@main/utils/info";
 import { Account } from "@main/services/account.service";
 import { ReplayQueryOptions } from "@main/services/replays.service";
 import { EngineVersion } from "@main/cache/model/engine-version";
@@ -11,6 +10,8 @@ import { MapData } from "@main/cache/model/map-data";
 import { LuaOptionSection } from "@main/content/game/lua-options";
 import { Scenario } from "@main/content/game/scenario";
 import { MapImages } from "@main/content/maps/map-model";
+import { DownloadInfo } from "@main/content/downloads";
+import { Info } from "@main/services/info.service";
 
 console.log("preload.ts loaded");
 
@@ -108,3 +109,24 @@ const mapsApi = {
 };
 export type MapsApi = typeof mapsApi;
 contextBridge.exposeInMainWorld("maps", mapsApi);
+
+const downloadsApi = {
+    // Events
+    // Engine
+    onDownloadEngineStart: (callback: (downloadInfo: DownloadInfo) => void) => ipcRenderer.on("downloads:engine:start", (_event, downloadInfo) => callback(downloadInfo as DownloadInfo)),
+    onDownloadEngineComplete: (callback: (downloadInfo: DownloadInfo) => void) => ipcRenderer.on("downloads:engine:complete", (_event, downloadInfo) => callback(downloadInfo as DownloadInfo)),
+    onDownloadEngineProgress: (callback: (downloadInfo: DownloadInfo) => void) => ipcRenderer.on("downloads:engine:progress", (_event, downloadInfo) => callback(downloadInfo as DownloadInfo)),
+    onDownloadEngineFailed: (callback: (downloadInfo: DownloadInfo) => void) => ipcRenderer.on("downloads:engine:fail", (_event, downloadInfo) => callback(downloadInfo as DownloadInfo)),
+    // Game
+    onDownloadGameStart: (callback: (downloadInfo: DownloadInfo) => void) => ipcRenderer.on("downloads:game:start", (_event, downloadInfo) => callback(downloadInfo as DownloadInfo)),
+    onDownloadGameComplete: (callback: (downloadInfo: DownloadInfo) => void) => ipcRenderer.on("downloads:game:complete", (_event, downloadInfo) => callback(downloadInfo as DownloadInfo)),
+    onDownloadGameProgress: (callback: (downloadInfo: DownloadInfo) => void) => ipcRenderer.on("downloads:game:progress", (_event, downloadInfo) => callback(downloadInfo as DownloadInfo)),
+    onDownloadGameFail: (callback: (downloadInfo: DownloadInfo) => void) => ipcRenderer.on("downloads:game:fail", (_event, downloadInfo) => callback(downloadInfo as DownloadInfo)),
+    // Maps
+    onDownloadMapStart: (callback: (downloadInfo: DownloadInfo) => void) => ipcRenderer.on("downloads:map:start", (_event, downloadInfo) => callback(downloadInfo as DownloadInfo)),
+    onDownloadMapComplete: (callback: (downloadInfo: DownloadInfo) => void) => ipcRenderer.on("downloads:map:complete", (_event, downloadInfo) => callback(downloadInfo as DownloadInfo)),
+    onDownloadMapProgress: (callback: (downloadInfo: DownloadInfo) => void) => ipcRenderer.on("downloads:map:progress", (_event, downloadInfo) => callback(downloadInfo as DownloadInfo)),
+    onDownloadMapFail: (callback: (downloadInfo: DownloadInfo) => void) => ipcRenderer.on("downloads:map:failed", (_event, downloadInfo) => callback(downloadInfo as DownloadInfo)),
+};
+export type DownloadsApi = typeof downloadsApi;
+contextBridge.exposeInMainWorld("downloads", downloadsApi);

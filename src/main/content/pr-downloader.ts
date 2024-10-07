@@ -2,7 +2,6 @@ import { spawn } from "child_process";
 import { lastInArray, removeFromArray } from "$/jaz-ts-utils/object";
 import os from "os";
 import path from "path";
-import { reactive } from "vue";
 
 import { DownloadInfo } from "./downloads";
 import { AbstractContentAPI } from "./abstract-content";
@@ -64,17 +63,18 @@ export abstract class PrDownloaderAPI<T> extends AbstractContentAPI<T> {
                         };
                         if (progress.totalBytes > 1) {
                             if (!downloadInfo) {
-                                downloadInfo = reactive({
+                                downloadInfo = {
                                     type,
                                     name,
                                     currentBytes: progress.currentBytes,
                                     totalBytes: progress.totalBytes,
-                                });
+                                };
                                 this.currentDownloads.push(downloadInfo);
                                 this.downloadStarted(downloadInfo);
                             } else {
                                 downloadInfo.currentBytes = progress.currentBytes;
                                 downloadInfo.totalBytes = progress.totalBytes;
+                                this.downloadProgress(downloadInfo);
                             }
                         }
                     } else if (message.includes("download_name():[Download] ") && downloadInfo) {
