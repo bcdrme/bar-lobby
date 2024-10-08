@@ -12,8 +12,9 @@
                 </div>
                 <Progress
                     :percent="download.currentBytes / download.totalBytes"
-                    :text="progressText(download.currentBytes, download.totalBytes)"
+                    :text="progressText(download.currentBytes, download.totalBytes, download.caching)"
                     themed
+                    :pulsating="download.caching"
                 />
             </div>
         </div>
@@ -42,7 +43,15 @@ const toggleMessages = inject<Ref<(open?: boolean, userId?: number) => void>>("t
 const toggleFriends = inject<Ref<(open?: boolean) => void>>("toggleFriends")!;
 const toggleDownloads = inject<Ref<(open?: boolean) => void>>("toggleDownloads")!;
 
-const downloads = ref<DownloadInfo[]>([]);
+const downloads = ref<DownloadInfo[]>([
+    {
+        name: "Test Download",
+        type: "map",
+        currentBytes: 10000000,
+        totalBytes: 10000000,
+        caching: true,
+    },
+]);
 
 watch(
     () => downloadsStore.downloads,
@@ -62,11 +71,13 @@ toggleDownloads.value = async (open?: boolean) => {
     emits("update:modelValue", open ?? !props.modelValue);
 };
 
-function progressText(currentBytes: number, totalBytes: number) {
+function progressText(currentBytes: number, totalBytes: number, caching: boolean): string {
+    if (caching) {
+        return "Caching...";
+    }
     const percent = currentBytes / totalBytes;
     const currentMB = currentBytes / Math.pow(1024, 2);
     const totalMB = totalBytes / Math.pow(1024, 2);
-
     return `${currentMB.toFixed(2)}MB/${totalMB.toFixed(2)}MB (${(percent * 100).toFixed(2)}%)`;
 }
 </script>

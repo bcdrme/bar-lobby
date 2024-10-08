@@ -34,7 +34,7 @@ export type RapidVersion = {
  */
 export abstract class PrDownloaderAPI<T> extends AbstractContentAPI<T> {
     protected downloadContent(type: "game" | "map", name: string) {
-        return new Promise<void>((resolve) => {
+        return new Promise<DownloadInfo>((resolve) => {
             log.debug(`Downloading ${name}...`);
             const latestEngine = lastInArray(engineContentAPI.installedVersions)!.id;
             const binaryName = process.platform === "win32" ? "pr-downloader.exe" : "pr-downloader";
@@ -68,6 +68,7 @@ export abstract class PrDownloaderAPI<T> extends AbstractContentAPI<T> {
                                     name,
                                     currentBytes: progress.currentBytes,
                                     totalBytes: progress.totalBytes,
+                                    caching: false,
                                 };
                                 this.currentDownloads.push(downloadInfo);
                                 this.downloadStarted(downloadInfo);
@@ -92,12 +93,7 @@ export abstract class PrDownloaderAPI<T> extends AbstractContentAPI<T> {
             });
 
             prdProcess.on("exit", () => {
-                if (downloadInfo) {
-                    this.downloadComplete(downloadInfo);
-                    removeFromArray(this.currentDownloads, downloadInfo);
-                    log.debug(`Downloaded ${downloadInfo.name}`);
-                }
-                resolve();
+                resolve(downloadInfo);
             });
         });
     }

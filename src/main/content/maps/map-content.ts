@@ -11,6 +11,7 @@ import { PrDownloaderAPI } from "@main/content/pr-downloader";
 import { MapImages } from "@main/content/maps/map-model";
 import { CONTENT_PATH } from "@main/config/app";
 import { asyncParseMap } from "@main/content/maps/parse-map";
+import { DownloadInfo } from "@main/content/downloads";
 
 const log = logger("map-content.ts");
 
@@ -61,7 +62,9 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
                 });
             });
         } else {
-            await this.downloadContent("map", scriptName);
+            const downloadInfo = await this.downloadContent("map", scriptName);
+            downloadInfo.caching = true;
+            this.onDownloadProgress.dispatch(downloadInfo);
         }
         await this.queueMapsToCache();
     }
@@ -173,6 +176,8 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
                 .returningAll()
                 .executeTakeFirst();
             this.installedVersions.push(mapData);
+            const cachedMapDownloadInfo = this.currentDownloads.find((download) => download.name === mapData.scriptName);
+            this.onDownloadComplete.dispatch(cachedMapDownloadInfo);
             this.onMapCached.dispatch(mapData);
             console.timeEnd(`Cached: ${mapFileName}`);
         } catch (err) {
