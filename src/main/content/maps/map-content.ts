@@ -11,6 +11,7 @@ import { parseMap } from "@main/content/maps/parse-map";
 import { PrDownloaderAPI } from "@main/content/pr-downloader";
 import { MapImages } from "@main/content/maps/map-model";
 import { CONTENT_PATH } from "@main/config/app";
+import { asyncParseMap } from "@main/content/maps/parse-map-parent";
 
 const log = logger("map-content.ts");
 
@@ -156,7 +157,10 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
             log.debug(`Caching: ${mapFileName}`);
             console.time(`Cached: ${mapFileName}`);
             const mapPath = path.join(this.mapsDir, mapFileName);
-            const parsedMap = await parseMap(mapPath, this.mapImagesDir);
+
+            log.debug(`Trying to parse map asynchronously: ${mapFileName}`);
+            const parsedMap = await asyncParseMap(mapPath, this.mapImagesDir);
+            log.debug(`Parsed map: ${mapFileName}`);
             const mapData = await cacheDb
                 .insertInto("map")
                 .values({

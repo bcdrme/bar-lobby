@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 
 import path from "path";
+import { worker } from "globals";
 
 // https://vitejs.dev/config
 export default defineConfig({
@@ -15,6 +16,10 @@ export default defineConfig({
     build: {
         rollupOptions: {
             external: ["better-sqlite3", "7zip-min"],
+            input: {
+                index: path.resolve(__dirname, "src/main/index.ts"),
+                "parse-map-worker": path.resolve(__dirname, "src/main/content/maps/parse-map-worker.ts"),
+            },
         },
         sourcemap: true,
     },
