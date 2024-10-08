@@ -51,6 +51,7 @@ const filteredMaps = ref<Array<MapData>>([]);
 
 watch(() => mapsStore.installedMaps, updateFilteredMap, { immediate: true, deep: true });
 watch(searchVal, updateFilteredMap);
+watch(sortMethod, updateFilteredMap);
 
 function updateFilteredMap() {
     let maps: MapData[] = [];

@@ -143,7 +143,7 @@ $active-color: #ccc;
         &.search {
             color: $icon-color;
             left: 12px;
-            bottom: 12px;
+            bottom: 14px;
             box-sizing: border-box;
             display: block;
             width: 16px;
