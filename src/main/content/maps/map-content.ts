@@ -7,11 +7,10 @@ import { logger } from "@main/utils/logger";
 import { Signal } from "$/jaz-ts-utils/signal";
 import { removeFromArray } from "$/jaz-ts-utils/object";
 import { delay } from "$/jaz-ts-utils/delay";
-import { parseMap } from "@main/content/maps/parse-map";
 import { PrDownloaderAPI } from "@main/content/pr-downloader";
 import { MapImages } from "@main/content/maps/map-model";
 import { CONTENT_PATH } from "@main/config/app";
-import { asyncParseMap } from "@main/content/maps/parse-map-parent";
+import { asyncParseMap } from "@main/content/maps/parse-map";
 
 const log = logger("map-content.ts");
 

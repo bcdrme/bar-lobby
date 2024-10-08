@@ -3,6 +3,8 @@ import { MapParser } from "@main/content/maps/spring-map-parser";
 import { logger } from "@main/utils/logger";
 import path from "path";
 import fs from "fs";
+import { MapData } from "@main/cache/model/map-data";
+import { Worker } from "worker_threads";
 
 const log = logger("parse-map.ts");
 
@@ -52,3 +54,16 @@ export const parseMap = async (mapPath: string, mapImagesPath: string) => {
         mapInfo: map.mapInfo || null,
     };
 };
+
+export function asyncParseMap(mapPath: string, mapImagePath: string) {
+    return new Promise<MapData>((resolve, reject) => {
+        const worker = new Worker(path.join(__dirname, "parse-map-worker.js"), {
+            workerData: { mapPath, mapImagePath },
+        });
+        worker.on("message", resolve);
+        worker.on("error", reject);
+        worker.on("exit", (code) => {
+            if (code !== 0) reject(new Error(`Worker stopped with exit code ${code}`));
+        });
+    });
+}
