@@ -40,7 +40,7 @@ const searchVal = ref("");
  * if they start come as spads commands, it could break the script
  **/
 
-const commands = reactive<Command[]>(structuredClone(serverCommandList));
+const commands: Command[] = []; // reactive<Command[]>(structuredClone(serverCommandList));
 
 // Sort the commands array based on the sort method
 function filterCommands(commands: Command[], filterMethod: FilterMethod) {

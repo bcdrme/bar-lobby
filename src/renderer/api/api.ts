@@ -127,6 +127,9 @@ export async function apiInit() {
     api.comms = {
         connect: () => {},
         disconnect: () => {},
+        onResponse: (command: string) => {
+            return { add: () => {} };
+        },
         request: () => {},
         isConnected: false,
         config: {
