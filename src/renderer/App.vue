@@ -22,8 +22,7 @@
         <transition mode="out-in" name="fade">
             <Preloader v-if="state === 'preloader'" @complete="onPreloadDone" />
             <InitialSetup v-else-if="state === 'initial-setup'" @complete="onInitialSetupDone" />
-            <div v-else class="fullsize">
-                <NavBar :class="{ hidden: empty }" />
+            <div class="fullsize" v-else>
                 <router-view v-slot="{ Component }">
                     <transition name="slide-left">
                         <Suspense>
@@ -38,6 +37,7 @@
                 </router-view>
             </div>
         </transition>
+        <NavBar :class="{ hidden: empty }" />
         <Settings v-model="settingsOpen" />
         <Error />
     </div>
@@ -47,7 +47,7 @@
 import { Icon } from "@iconify/vue";
 import closeThick from "@iconify-icons/mdi/close-thick";
 import cog from "@iconify-icons/mdi/cog";
-import { computed, provide, Ref, toRef, toValue, Transition } from "vue";
+import { provide, Ref, toRef, toValue, Transition } from "vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
