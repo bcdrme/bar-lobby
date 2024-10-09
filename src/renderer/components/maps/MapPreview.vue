@@ -42,6 +42,7 @@ onMounted(async () => {
         antialias: true,
         resizeTo: canvasContainerEl.value,
     });
+    app.canvas.style.position = "absolute";
     app.stage.addChild(boxesGfx);
     app.stage.addChild(startPositionsGfx);
     setMapImage();
@@ -56,9 +57,6 @@ onUnmounted(() => {
 watch([parentSize.width, parentSize.height], ([width, height]) => {
     console.debug("Parent size changed", width, height);
     if (width && height) {
-        // const smallestDimension = Math.min(width, height);
-        // app.renderer.resize(smallestDimension, smallestDimension);
-        // app.render();
         onResize();
     }
 });
@@ -83,12 +81,12 @@ watch(
 );
 
 function onResize() {
-    // this is often 0 in modals, don't want to waste render time
-    if (parentSize.width.value > 0 && parentSize.height.value > 0) {
-        resizeMapImage();
-        drawBoxes();
-        drawStartPositions();
+    if (app.resize) {
+        app.resize();
     }
+    resizeMapImage();
+    drawBoxes();
+    drawStartPositions();
 }
 
 async function setMapImage() {
@@ -201,10 +199,8 @@ function drawStartPositions() {
 
 <style lang="scss" scoped>
 .canvas-container {
+    border: 1px solid rgba(255, 255, 255, 0.1);
     width: 100%;
     height: 100%;
-    min-width: 100%;
-    max-height: 100%;
-    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 </style>
