@@ -27,3 +27,6 @@ export interface ReplayTable {
 };
 
 export type Replay = Selectable<ReplayTable>;
+export function isReplay(replay: any): replay is Replay {
+    return "replayId" in replay;
+}

@@ -85,7 +85,7 @@
         <div v-if="!loading" class="right">
             <BattlePreview v-if="selectedBattle" :battle="selectedBattle">
                 <template #actions="{ battle }">
-                    <template v-if="isSpadsBattle(battle)">
+                    <template v-if="isOfflineBattle(battle)">
                         <Button class="green flex-grow" @click="attemptJoinBattle(battle)">Join</Button>
                     </template>
                 </template>
@@ -119,18 +119,17 @@ import Checkbox from "@renderer/components/controls/Checkbox.vue";
 import SearchBox from "@renderer/components/controls/SearchBox.vue";
 import { attemptJoinBattle } from "@renderer/utils/attempt-join-battle";
 import { getFriendlyDuration } from "@renderer/utils/misc";
-import { isSpadsBattle } from "@main/utils/type-checkers";
-import { SpadsBattle } from "@main/game/battle/spads-battle";
+import { OfflineBattle } from "@renderer/game/offline-battle";
 
 const loading = ref(false);
 const intervalId = ref(0);
 const active = ref(true);
 const hostBattleOpen = ref(false);
 const searchVal = ref("");
-const selectedBattle: Ref<SpadsBattle | null> = shallowRef(null);
+const selectedBattle: Ref<OfflineBattle | null> = shallowRef(null);
 const settings = api.settings.model;
 
-interface ScoredSpadsBattle extends SpadsBattle {
+interface ScoredOfflineBattle extends OfflineBattle {
     score: number;
     factors: { [factorName: string]: number };
     primaryFactor: string;
@@ -189,7 +188,7 @@ const battles = computed(() => {
     return scoredBattles;
 });
 
-function battleScoreTooltip(data: ScoredSpadsBattle) {
+function battleScoreTooltip(data: ScoredOfflineBattle) {
     const scoreExplanation = `\
 All Sorting Factors: ${data.score.toFixed(2)}
 ---
@@ -219,9 +218,9 @@ ${Object.entries(data.factors)
     return scoreExplanation;
 }
 
-function scoreBattle(battle: SpadsBattle) {
+function scoreBattle(battle: OfflineBattle) {
     let score = 0;
-    let factors: ScoredSpadsBattle["factors"] = {};
+    let factors: ScoredOfflineBattle["factors"] = {};
     let primaryFactor = "";
 
     const inBattle = battle.players.value.find((p) => p.userId === api.session.onlineUser?.userId);
@@ -293,7 +292,7 @@ function scoreBattle(battle: SpadsBattle) {
         score,
         factors,
         primaryFactor,
-    } as ScoredSpadsBattle;
+    } as ScoredOfflineBattle;
 
     function addFactor(factorName: string, factorScore: number) {
         score += factorScore;
@@ -328,7 +327,7 @@ if (active.value) {
 }
 
 function onRowSelect(event: DataTableRowDoubleClickEvent) {
-    const data = event.data as ScoredSpadsBattle;
+    const data = event.data as ScoredOfflineBattle;
     const scoreExplanation = `\
 Score explanation for ${data.battleOptions.title}
 Primary Factor: ${data.primaryFactor}

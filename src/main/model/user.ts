@@ -1,5 +1,3 @@
-import { BattleContenderConfig } from "@main/game/battle/battle-types";
-
 export type User = {
     userId: number;
     username: string;
@@ -11,6 +9,10 @@ export type User = {
     battleStatus: BattleStatus;
 };
 
+export function isUser(user: any): user is User {
+    return "username" in user;
+}
+
 export type CurrentUser = User & {
     permissions: Set<string>;
     friendUserIds: Set<number>;
@@ -19,7 +21,7 @@ export type CurrentUser = User & {
     ignoreUserIds: Set<number>;
 };
 
-export type BattleStatus = BattleContenderConfig & {
+export type BattleStatus = {
     away: boolean;
     inBattle: boolean;
     battleId: number | null;

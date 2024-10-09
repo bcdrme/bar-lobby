@@ -1,21 +1,11 @@
 import { User } from "@main/model/user";
 import { defaultMapBoxes, getBoxes, StartBoxOrientation } from "@renderer/utils/start-boxes";
 import { AbstractBattle } from "./abstract-battle";
-import { Bot, StartPosType } from "./battle-types";
-import { gameAPI } from "@main/game/game";
+import { Bot, StartPosType } from "../../main/game/battle/battle-types";
 
 export class OfflineBattle extends AbstractBattle {
-    public override leave() {
-        super.leave();
-        api.session.offlineBattle.value = null;
-        api.session.onlineUser.battleStatus.battleId = -1;
-
-        // TODO emit an event instead "battle:leftBattle"
-        // api.router.replace("/home");
-    }
-
     public start() {
-        gameAPI.launch(this);
+        // window.game.launchGame();
     }
 
     public setEngine(engineVersion: string) {

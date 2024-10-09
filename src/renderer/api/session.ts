@@ -5,17 +5,16 @@ import { computed, ComputedRef, nextTick, reactive, Ref, ref, shallowReactive, s
 
 import { Message } from "@renderer/model/messages";
 import { CurrentUser, User } from "@main/model/user";
-import { OfflineBattle } from "@main/game/battle/offline-battle";
-import { SpadsBattle } from "@main/game/battle/spads-battle";
+import { OfflineBattle } from "@renderer/game/offline-battle";
 
 export class SessionAPI {
     public readonly offlineMode: Ref<boolean> = ref(false);
     public readonly offlineBattle: Ref<OfflineBattle | null> = shallowRef(null);
-    public readonly onlineBattle: Ref<SpadsBattle | null> = shallowRef(null);
+    public readonly onlineBattle: Ref<OfflineBattle | null> = shallowRef(null);
     public readonly users: Map<number, User> = reactive(new Map<number, User>([]));
     public readonly offlineUser: CurrentUser;
     public readonly onlineUser: CurrentUser;
-    public readonly battles: Map<number, SpadsBattle> = shallowReactive(new Map<number, SpadsBattle>());
+    public readonly battles: Map<number, OfflineBattle> = shallowReactive(new Map<number, OfflineBattle>());
     public readonly battleMessages: Message[] = reactive([]);
     public readonly serverStats: Ref<ResponseType<"s.system.server_stats">["data"] | null> = shallowRef(null);
     public readonly outgoingFriendRequests: ComputedRef<User[]>;

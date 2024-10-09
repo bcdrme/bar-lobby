@@ -70,11 +70,10 @@ import { computed, ComputedRef } from "vue";
 
 import BattlePreviewParticipant from "@renderer/components/battle/BattlePreviewParticipant.vue";
 import MapOverviewCard from "@renderer/components/maps/MapOverviewCard.vue";
-import { isBattle, isReplay, isUser } from "@main/utils/type-checkers";
-import { AbstractBattle } from "@main/game/battle/abstract-battle";
 import { Replay } from "@main/cache/model/replay";
 import { StartBox, StartPosType } from "@main/game/battle/battle-types";
 import { asyncComputed } from "@vueuse/core";
+import { AbstractBattle } from "@renderer/game/abstract-battle";
 
 const props = defineProps<{
     battle: AbstractBattle | Replay;

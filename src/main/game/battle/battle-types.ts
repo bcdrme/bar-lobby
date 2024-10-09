@@ -5,15 +5,12 @@ export type BattleOptions = {
     map: string;
     startPosType: StartPosType;
     startBoxes: Record<number, StartBox>;
-    startTime: Date | null;
     gameOptions: Record<string, string | number | boolean>;
     mapOptions: Record<string, string | number | boolean>;
     restrictions: Restriction[];
 };
 
-export type OfflineBattleOptions = BattleOptions;
-
-export type SpadsBattleOptions = BattleOptions & {
+export type SpadsBattleOptions = {
     id: number;
     isHost: boolean;
     passworded: boolean;
@@ -75,10 +72,14 @@ export type BattleContenderConfig = {
     color?: string;
 };
 
-export type Bot = BattleContenderConfig & {
+export type Bot = {
     ownerUserId: number;
     aiShortName: string; // TODO: point directly to AI obj and object.freeze it?
     name: string;
     aiOptions: Record<string, unknown>;
     faction?: Faction;
 };
+
+export function isBot(bot: any): bot is Bot {
+    return "ownerUserId" in bot;
+}

@@ -9,14 +9,13 @@ import { engineContentAPI } from "@main/content/engine/engine-content";
 import { mapContentAPI } from "@main/content/maps/map-content";
 import { replaysDir, replaysService } from "@main/services/replays.service";
 
-import { Replay } from "@main/cache/model/replay";
-import { StartScriptConverter } from "@main/utils/start-script-converter";
+import { isReplay, Replay } from "@main/cache/model/replay";
+import { startScriptConverter } from "@main/utils/start-script-converter";
 import { defaultEngineVersion } from "@main/config/default-versions";
-import { isReplay } from "@main/utils/type-checkers";
 import { logger } from "@main/utils/logger";
 import { gameContentAPI } from "@main/content/game/game-content";
-import { AbstractBattle } from "@main/game/battle/abstract-battle";
 import { CONTENT_PATH } from "@main/config/app";
+import { AbstractBattle as Battle } from "@renderer/game/abstract-battle";
 
 const log = logger("main/game/game.ts");
 
@@ -26,23 +25,22 @@ export class GameAPI {
     public readonly scriptName = "script.txt";
 
     protected gameProcess: ChildProcess | null = null;
-    protected scriptConverter = new StartScriptConverter();
 
-    public async launch(battle: AbstractBattle): Promise<void>;
+    public async launch(battle: Battle): Promise<void>;
     public async launch(replay: Replay): Promise<void>;
     public async launch(script: string): Promise<void>;
-    public async launch(arg: AbstractBattle | Replay | string): Promise<void> {
+    public async launch(arg: Battle | Replay | string): Promise<void> {
         try {
             let engineVersion: string;
             let gameVersion: string;
             let mapName: string;
             let script: string | undefined;
 
-            if (arg instanceof AbstractBattle) {
+            if (arg instanceof Battle) {
                 engineVersion = arg.battleOptions.engineVersion;
                 gameVersion = arg.battleOptions.gameVersion;
                 mapName = arg.battleOptions.map;
-                script = this.scriptConverter.generateScriptStr(arg);
+                script = startScriptConverter.generateScriptStr(arg);
             } else if (typeof arg === "string") {
                 engineVersion = defaultEngineVersion;
                 gameVersion = arg.match(/gametype\s*=\s*(.*);/)?.[1]!;

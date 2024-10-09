@@ -7,7 +7,7 @@
         <h1>{{ map.friendlyName }}</h1>
 
         <div class="container">
-            <MapPreview class="map-preview" :map="map" />
+            <!-- <MapPreview class="map-preview" :map="map" /> -->
 
             <div class="details">
                 <div class="detail-text"><b>Description:</b> {{ map.description }}</div>
@@ -47,21 +47,22 @@ import { computed } from "vue";
 
 import Button from "@renderer/components/controls/Button.vue";
 import MapPreview from "@renderer/components/maps/MapPreview.vue";
-import { defaultBattle } from "@renderer/config/default-battle";
+import { mapsStore } from "@renderer/store/maps.store";
 
 const props = defineProps<{
     id: string;
 }>();
 
-const map = computed(() => api.content.maps.getMapByScriptName(props.id));
+const map = mapsStore.installedMaps.find((m) => m.scriptName === props.id);
 
 async function downloadMap() {
-    await api.content.maps.downloadMap(props.id);
+    // await api.content.maps.downloadMap(props.id);
 }
 
 async function play() {
-    const battle = defaultBattle(map.value?.scriptName);
-    await window.game.launchGame(battle);
+    // const battle = defaultBattle(props.id);
+    // battle.start();
+    // await window.game.launchGame();
 }
 </script>
 

@@ -5,13 +5,12 @@ import path from "path";
 import fs from "fs";
 import { MapData } from "@main/cache/model/map-data";
 import { Worker } from "worker_threads";
+import { MIPMAP_SIZE } from "@main/config/map-parsing";
 
 const log = logger("parse-map.ts");
 
-export const mipmapSize = 8;
-
 const mapParser = new MapParser({
-    mipmapSize: mipmapSize,
+    mipmapSize: MIPMAP_SIZE,
 });
 
 export const parseMap = async (mapPath: string, mapImagesPath: string) => {

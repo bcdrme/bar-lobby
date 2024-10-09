@@ -1,10 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { assign } from "$/jaz-ts-utils/object";
-import { AbstractBattle } from "@main/game/battle/abstract-battle";
 import { StartPosType } from "@main/game/battle/battle-types";
-import { OfflineBattle } from "@main/game/battle/offline-battle";
-import { SpadsBattle } from "@main/game/battle/spads-battle";
 import { StartScriptTypes } from "@main/model/start-script";
+import { AbstractBattle } from "@renderer/game/abstract-battle";
+import { OfflineBattle } from "@renderer/game/offline-battle";
 
 /**
  * https://springrts.com/wiki/Script.txt
@@ -13,14 +12,12 @@ import { StartScriptTypes } from "@main/model/start-script";
  * TODO:
  * - parse and convert restrictions
  */
-export class StartScriptConverter {
+class StartScriptConverter {
     public generateScriptStr(battle: AbstractBattle): string {
         let scriptStr = "";
         if (battle instanceof OfflineBattle) {
             const script = this.offlineBattleToStartScript(battle);
             scriptStr = this.generateScriptString(script);
-        } else if (battle instanceof SpadsBattle) {
-            scriptStr = this.generateOnlineScript(battle);
         }
         return scriptStr;
     }
@@ -42,7 +39,7 @@ export class StartScriptConverter {
         let allyTeamId = 0;
         let playerId = 0;
 
-        battle.teams.value.forEach((allyTeamConfig) => {
+        battle.teams.forEach((allyTeamConfig) => {
             const allyTeam: StartScriptTypes.AllyTeam = {
                 id: allyTeamId,
                 numallies: 0,
@@ -102,7 +99,7 @@ export class StartScriptConverter {
             });
         });
 
-        battle.spectators.value.forEach((spectatorConfig) => {
+        battle.spectators.forEach((spectatorConfig) => {
             const spectator: StartScriptTypes.Player = {
                 id: spectatorConfig.battleStatus.playerId,
                 spectator: 1,
@@ -269,13 +266,15 @@ export class StartScriptConverter {
         return str;
     }
 
-    protected generateOnlineScript(battle: SpadsBattle) {
-        return `[game] {
-    hostip = ${battle.battleOptions.ip};
-    hostport = ${battle.battleOptions.port};
-    ishost = 0;
-    mypasswd = ${battle.battleOptions.scriptPassword};
-    myplayername = ${api.session.onlineUser.username};
-}`;
-    }
+    //     protected generateOnlineScript(battle: SpadsBattle) {
+    //         return `[game] {
+    //     hostip = ${battle.battleOptions.ip};
+    //     hostport = ${battle.battleOptions.port};
+    //     ishost = 0;
+    //     mypasswd = ${battle.battleOptions.scriptPassword};
+    //     myplayername = ${api.session.onlineUser.username};
+    // }`;
+    //     }
 }
+
+export const startScriptConverter = new StartScriptConverter();

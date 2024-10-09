@@ -41,7 +41,7 @@ export enum StartBoxOrientation {
     NorthwestVsSouthEast = "NorthwestVsSouthEast",
 }
 
-export function defaultMapBoxes(mapScriptName?: string) {
+export function defaultMapBoxes(mapScriptName?: "Red Comet Remake 1.8" | "Quicksilver Remake 1.24") {
     if (!mapScriptName) {
         return getBoxes(StartBoxOrientation.EastVsWest);
     }

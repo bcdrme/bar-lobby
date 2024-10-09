@@ -20,12 +20,12 @@
             <BattleChat />
         </div>
         <div class="settings flex-col gap-md">
-            <MapPreview
+            <!-- <MapPreview
                 :map="map"
                 :startPosType="props.battle.battleOptions.startPosType"
                 :startBoxes="props.battle.battleOptions.startBoxes"
                 :currentUser="me"
-            />
+            /> -->
 
             <div class="flex-row gap-md">
                 <Select

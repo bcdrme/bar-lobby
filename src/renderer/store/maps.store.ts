@@ -9,6 +9,10 @@ export const mapsStore = reactive({
     installedMaps: MapData[];
 });
 
+export async function getMapByScriptName(scriptName: string) {
+    return mapsStore.installedMaps.find((map) => map.scriptName === scriptName);
+}
+
 export async function initMapsStore() {
     window.maps.onMapCached((mapData: MapData) => {
         console.debug("Received map cached event", mapData);

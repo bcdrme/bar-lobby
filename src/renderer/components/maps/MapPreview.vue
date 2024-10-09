@@ -5,11 +5,11 @@
 <script lang="ts" setup>
 import { useElementSize } from "@vueuse/core";
 import { Application, Assets, Graphics, Sprite, Texture, Color } from "pixi.js";
-import { onMounted, onUnmounted, ref, toRaw, watch } from "vue";
+import { onUnmounted, ref, toRaw, watch } from "vue";
 import { CurrentUser } from "@main/model/user";
 import { MapData } from "@main/cache/model/map-data";
 import { StartBox, StartPosType } from "@main/game/battle/battle-types";
-import { mipmapSize } from "@main/content/maps/parse-map";
+import { MIPMAP_SIZE } from "@main/config/map-parsing";
 
 const props = defineProps<{
     map?: MapData;
@@ -25,23 +25,37 @@ const props = defineProps<{
     >;
 }>();
 
-const app = ref<Application>();
+const app: Application = new Application();
+app.init({
+    background: "#000",
+    backgroundAlpha: 0.3,
+    antialias: true,
+});
+// if (app.value.view && app.value.view instanceof HTMLCanvasElement) {
+//     canvasContainerEl.value?.appendChild(app.value.view);
+// }
+const boxesGfx = new Graphics();
+app.stage.addChild(boxesGfx);
+const startPositionsGfx = new Graphics();
+app.stage.addChild(startPositionsGfx);
+let mapSprite: Sprite;
+setMapImage();
+
 const canvasContainerEl = ref<HTMLElement>();
 const parentSize = useElementSize(canvasContainerEl);
 
-onMounted(setup);
 onUnmounted(() => {
     // make sure pixi app is properly destroyed after out transition has finished
     setTimeout(() => {
-        app.value?.destroy(true);
+        app.destroy(true);
     }, 150);
 });
 
-watch([parentSize.width, parentSize.height], ([width, height], [oldWidth, oldHeight]) => {
-    if (app.value && width && height) {
+watch([parentSize.width, parentSize.height], ([width, height]) => {
+    if (app && width && height) {
         const smallestDimension = Math.min(width, height);
-        app.value.renderer.resize(smallestDimension, smallestDimension);
-        app.value.render();
+        app.renderer.resize(smallestDimension, smallestDimension);
+        app.render();
         onResize();
     }
 });
@@ -65,27 +79,6 @@ watch(
     }
 );
 
-let mapSprite: Sprite | undefined;
-let boxesGfx: Graphics | undefined;
-let startPositionsGfx: Graphics | undefined;
-
-async function setup() {
-    app.value = new Application();
-    await app.value.init({
-        background: "#000",
-        backgroundAlpha: 0.3,
-        antialias: true,
-    });
-    if (app.value.view && app.value.view instanceof HTMLCanvasElement) {
-        canvasContainerEl.value?.appendChild(app.value.view);
-    }
-    boxesGfx = new Graphics();
-    app.value.stage.addChild(boxesGfx);
-    startPositionsGfx = new Graphics();
-    app.value.stage.addChild(startPositionsGfx);
-    setMapImage();
-}
-
 function onResize() {
     // this is often 0 in modals, don't want to waste render time
     if (parentSize.width.value > 0 && parentSize.height.value > 0) {
@@ -96,11 +89,11 @@ function onResize() {
 }
 
 async function setMapImage() {
-    if (!app.value || !props.map) {
+    if (!props.map) {
         return;
     }
     if (mapSprite) {
-        app.value.stage.removeChild(mapSprite);
+        app.stage.removeChild(mapSprite);
     }
     const textureImage = (await window.maps.getMapImages(toRaw(props.map))).textureImagePath;
     console.log("Loading map image", textureImage);
@@ -108,30 +101,30 @@ async function setMapImage() {
     console.log("Loaded map image", texture);
     mapSprite = Sprite.from(texture);
     mapSprite.setSize({
-        width: props.map.width * mipmapSize * 16,
-        height: props.map.height * mipmapSize * 16,
+        width: props.map.width * MIPMAP_SIZE * 16,
+        height: props.map.height * MIPMAP_SIZE * 16,
     });
-    app.value.stage.addChildAt(mapSprite, 0);
+    app.stage.addChildAt(mapSprite, 0);
     onResize();
 }
 
 function resizeMapImage() {
-    if (!app.value || !mapSprite) {
+    if (!mapSprite) {
         return;
     }
     if (mapSprite.width > mapSprite.height) {
-        mapSprite.width = app.value.view.width;
+        mapSprite.width = app.view.width;
         mapSprite.scale.y = mapSprite.scale.x;
     } else {
-        mapSprite.height = app.value.view.height;
+        mapSprite.height = app.view.height;
         mapSprite.scale.x = mapSprite.scale.y;
     }
-    mapSprite.x = app.value.view.width * 0.5 - mapSprite.width * 0.5;
-    mapSprite.y = app.value.view.height * 0.5 - mapSprite.height * 0.5;
+    mapSprite.x = app.view.width * 0.5 - mapSprite.width * 0.5;
+    mapSprite.y = app.view.height * 0.5 - mapSprite.height * 0.5;
 }
 
 function drawBoxes() {
-    if (!app.value || !boxesGfx || !mapSprite) {
+    if (!boxesGfx || !mapSprite) {
         return;
     }
     if (props.startPosType !== StartPosType.Boxes) {
@@ -167,7 +160,7 @@ function drawBoxes() {
 }
 
 function drawStartPositions() {
-    if (!app.value || !mapSprite || !startPositionsGfx || !props.map) {
+    if (!mapSprite || !startPositionsGfx || !props.map) {
         return;
     }
     if (props.startPosType === StartPosType.Boxes) {

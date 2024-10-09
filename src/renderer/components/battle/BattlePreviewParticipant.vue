@@ -13,7 +13,6 @@ import { computed } from "vue";
 
 import Flag from "@renderer/components/misc/Flag.vue";
 import { User } from "@main/model/user";
-import { isUser } from "@main/utils/type-checkers";
 import { DemoModel } from "$/sdfz-demo-parser/demo-model";
 import { Bot } from "@main/game/battle/battle-types";
 

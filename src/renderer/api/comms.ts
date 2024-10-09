@@ -18,7 +18,6 @@ import { directMessageHandlers } from "@renderer/api/response-handlers/messages/
 import { Message, MessageHandler } from "@renderer/model/messages";
 import { spadsBoxToStartBox } from "@renderer/utils/start-boxes";
 import { tachyonLog } from "@renderer/utils/tachyon-log";
-import { SpadsBattle } from "@main/game/battle/spads-battle";
 
 /**
  * TODO: move most of the response logic into separate response-handler files

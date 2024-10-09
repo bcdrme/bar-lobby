@@ -105,7 +105,6 @@ import Button from "@renderer/components/controls/Button.vue";
 import Checkbox from "@renderer/components/controls/Checkbox.vue";
 import TriStateCheckbox from "@renderer/components/controls/TriStateCheckbox.vue";
 import { getFriendlyDuration } from "@renderer/utils/misc";
-import { isBattle, isReplay } from "@main/utils/type-checkers";
 import { Replay } from "@main/cache/model/replay";
 
 const endedNormally: Ref<boolean | null> = ref(true);

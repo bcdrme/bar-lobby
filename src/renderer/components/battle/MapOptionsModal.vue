@@ -1,7 +1,7 @@
 <template>
     <Modal ref="modal" :title="title" class="map-list-modal">
         <div class="container">
-            <MapPreview :map="map" :currentUser="me" :startPosType="startPosType" :startBoxes="startBoxes" />
+            <!-- <MapPreview :map="map" :currentUser="me" :startPosType="startPosType" :startBoxes="startBoxes" /> -->
 
             <div class="options flex-col gap-md">
                 <Options
