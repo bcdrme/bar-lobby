@@ -3,11 +3,13 @@
 </route>
 
 <template>
-    <div v-if="map" class="flex-col fullheight gap-md">
+    <div v-if="map" class="gap-md page">
         <h1>{{ map.friendlyName }}</h1>
 
         <div class="container">
-            <MapPreview class="map-preview" :map="map" />
+            <div class="map-preview-container">
+                <MapPreview class="map-preview" :map="map" />
+            </div>
 
             <div class="details">
                 <div class="detail-text"><b>Description:</b> {{ map.description }}</div>
@@ -67,21 +69,32 @@ async function play() {
 </script>
 
 <style lang="scss" scoped>
+.page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: 100%;
+}
+
 .container {
     display: flex;
     flex-direction: row;
     flex: 1 1 auto;
     gap: 15px;
-}
-:deep(canvas) {
-    height: 100%;
     max-height: 100%;
-    width: 100%;
-    max-width: 100%;
 }
-.map-preview {
+
+.map-preview-container {
     aspect-ratio: 1;
 }
+
+.map-preview {
+    max-height: 100%;
+    height: 100%;
+    max-width: 100%;
+    width: 100%;
+}
+
 .details {
     display: flex;
     flex-direction: column;

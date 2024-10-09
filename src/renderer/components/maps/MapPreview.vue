@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import { useElementSize } from "@vueuse/core";
 import { Application, Assets, Graphics, Sprite, Texture, Color } from "pixi.js";
-import { onUnmounted, ref, toRaw, watch } from "vue";
+import { onMounted, onUnmounted, ref, toRaw, useTemplateRef, watch } from "vue";
 import { CurrentUser } from "@main/model/user";
 import { MapData } from "@main/cache/model/map-data";
 import { StartBox, StartPosType } from "@main/game/battle/battle-types";
@@ -25,37 +25,39 @@ const props = defineProps<{
     >;
 }>();
 
-const app: Application = new Application();
-await app.init({
-    background: "#000",
-    backgroundAlpha: 0.3,
-    antialias: true,
-});
-// if (app.value.view && app.value.view instanceof HTMLCanvasElement) {
-//     canvasContainerEl.value?.appendChild(app.value.view);
-// }
-const boxesGfx = new Graphics();
-app.stage.addChild(boxesGfx);
-const startPositionsGfx = new Graphics();
-app.stage.addChild(startPositionsGfx);
-let mapSprite: Sprite;
-setMapImage();
-
-const canvasContainerEl = ref<HTMLElement>();
+const canvasContainerEl = useTemplateRef<HTMLDivElement>("canvasContainerEl");
 const parentSize = useElementSize(canvasContainerEl);
+
+let app: Application;
+let mapSprite: Sprite;
+const boxesGfx = new Graphics();
+const startPositionsGfx = new Graphics();
+
+onMounted(async () => {
+    app = new Application();
+    await app.init({
+        background: "#000",
+        backgroundAlpha: 0.3,
+        antialias: true,
+        resizeTo: canvasContainerEl.value,
+    });
+    app.stage.addChild(boxesGfx);
+    app.stage.addChild(startPositionsGfx);
+    setMapImage();
+    canvasContainerEl.value.appendChild(app.canvas);
+});
 
 onUnmounted(() => {
     // make sure pixi app is properly destroyed after out transition has finished
-    setTimeout(() => {
-        app.destroy(true);
-    }, 150);
+    app.destroy(true);
 });
 
 watch([parentSize.width, parentSize.height], ([width, height]) => {
-    if (app && width && height) {
+    console.debug("Parent size changed", width, height);
+    if (width && height) {
         const smallestDimension = Math.min(width, height);
-        app.renderer.resize(smallestDimension, smallestDimension);
-        app.render();
+        // app.renderer.resize(smallestDimension, smallestDimension);
+        // app.render();
         onResize();
     }
 });
@@ -199,11 +201,10 @@ function drawStartPositions() {
 
 <style lang="scss" scoped>
 .canvas-container {
-    overflow: hidden;
     width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    height: 100%;
+    min-width: 100%;
+    max-height: 100%;
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 </style>
