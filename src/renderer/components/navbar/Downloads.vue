@@ -43,15 +43,7 @@ const toggleMessages = inject<Ref<(open?: boolean, userId?: number) => void>>("t
 const toggleFriends = inject<Ref<(open?: boolean) => void>>("toggleFriends")!;
 const toggleDownloads = inject<Ref<(open?: boolean) => void>>("toggleDownloads")!;
 
-const downloads = ref<DownloadInfo[]>([
-    {
-        name: "Test Download",
-        type: "map",
-        currentBytes: 10000000,
-        totalBytes: 10000000,
-        caching: true,
-    },
-]);
+const downloads = ref<DownloadInfo[]>([]);
 
 watch(
     () => downloadsStore.downloads,
