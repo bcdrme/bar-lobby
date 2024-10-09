@@ -3,21 +3,25 @@
 </route>
 
 <template>
-    <div class="flex-col gap-lg flex-grow fullheight">
-        <h1>{{ route.meta.title }}</h1>
-        <div class="flex-row gap-md">
-            <SearchBox v-model="searchVal" />
-            <Select v-model="filterMethod" :options="filterMethods" label="Type" />
-        </div>
+    <div class="view">
+        <Panel class="fullheight">
+            <div class="flex-col gap-lg flex-grow fullheight">
+                <h1>{{ route.meta.title }}</h1>
+                <div class="flex-row gap-md">
+                    <SearchBox v-model="searchVal" />
+                    <Select v-model="filterMethod" :options="filterMethods" label="Type" />
+                </div>
 
-        <div class="flex-col flex-grow fullheight">
-            <div class="scroll-container">
-                <div v-for="command in filteredCommands" :key="command.cmd" class="command">
-                    <div class="cmd">{{ command.cmd }}</div>
-                    <div class="cmdDescription">{{ command.cmdDescription }}</div>
+                <div class="flex-col flex-grow fullheight">
+                    <div class="scroll-container">
+                        <div v-for="command in filteredCommands" :key="command.cmd" class="command">
+                            <div class="cmd">{{ command.cmd }}</div>
+                            <div class="cmdDescription">{{ command.cmdDescription }}</div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </Panel>
     </div>
 </template>
 
@@ -28,6 +32,7 @@ import { Command, serverCommandList } from "@renderer/api/commands";
 import SearchBox from "@renderer/components/controls/SearchBox.vue";
 import Select from "@renderer/components/controls/Select.vue";
 import { useRouter } from "vue-router";
+import Panel from "@renderer/components/common/Panel.vue";
 
 type FilterMethod = "All" | "Spads" | "Server";
 const filterMethods: FilterMethod[] = ["All", "Spads", "Server"];
@@ -40,7 +45,7 @@ const searchVal = ref("");
  * if they start come as spads commands, it could break the script
  **/
 
-const commands: Command[] = []; // reactive<Command[]>(structuredClone(serverCommandList));
+const commands: Command[] = serverCommandList;
 
 // Sort the commands array based on the sort method
 function filterCommands(commands: Command[], filterMethod: FilterMethod) {
