@@ -3,81 +3,85 @@
 </route>
 
 <template>
-    <div class="flex-row flex-grow gap-md">
-        <div class="flex-col flex-grow gap-md">
-            <div class="flex-row gap-md">
-                <h1>Local Replays</h1>
-                <!-- <Divider layout="vertical" />
+    <div class="view">
+        <Panel class="flex-grow">
+            <div class="flex-row flex-grow gap-md">
+                <div class="flex-col flex-grow gap-md">
+                    <div class="flex-row gap-md">
+                        <h1>Local Replays</h1>
+                        <!-- <Divider layout="vertical" />
                 <h1>Online Replays</h1> -->
-            </div>
+                    </div>
+                    <div class="flex-row gap-md">
+                        <TriStateCheckbox v-model="endedNormally" label="Ended Normally" @update:model-value="fetchReplays" />
+                        <Checkbox v-model="showSpoilers" label="Show Spoilers" />
+                        <div class="flex-right flex-row gap-md">
+                            <Button @click="refresh">Refresh</Button>
+                            <Button @click="openReplaysFolder">Open Replays Folder</Button>
+                        </div>
+                    </div>
 
-            <div class="flex-row gap-md">
-                <TriStateCheckbox v-model="endedNormally" label="Ended Normally" @update:model-value="fetchReplays" />
-                <Checkbox v-model="showSpoilers" label="Show Spoilers" />
-                <div class="flex-right flex-row gap-md">
-                    <Button @click="refresh">Refresh</Button>
-                    <Button @click="openReplaysFolder">Open Replays Folder</Button>
-                </div>
-            </div>
-
-            <div class="flex-col fullheight">
-                <div class="scroll-container padding-right-sm">
-                    <DataTable
-                        v-model:first="offset"
-                        v-model:selection="selectedReplay"
-                        :lazy="true"
-                        :value="replays"
-                        :paginator="true"
-                        :rows="limit"
-                        :totalRecords="totalReplays"
-                        selectionMode="single"
-                        dataKey="replayId"
-                        :sortOrder="sortOrder === 'asc' ? 1 : -1"
-                        :sortField="sortField"
-                        @page="onPage"
-                        @sort="onSort"
-                    >
-                        <Column header="Name">
-                            <template #body="{ data }">
-                                <template v-if="isBattle(data)">{{ data.battleOptions.title }}</template>
-                                <template v-else-if="isReplay(data)">
-                                    <template v-if="data.preset === 'duel'">
-                                        {{ data.contenders?.[0]?.name ?? "Nobody" }} vs
-                                        {{ data.contenders?.[1]?.name ?? "Nobody" }}
+                    <div class="flex-col fullheight">
+                        <div class="scroll-container padding-right-sm">
+                            <DataTable
+                                v-model:first="offset"
+                                v-model:selection="selectedReplay"
+                                :lazy="true"
+                                :value="replays"
+                                :paginator="true"
+                                :rows="limit"
+                                :totalRecords="totalReplays"
+                                selectionMode="single"
+                                dataKey="replayId"
+                                :sortOrder="sortOrder === 'asc' ? 1 : -1"
+                                :sortField="sortField"
+                                @page="onPage"
+                                @sort="onSort"
+                            >
+                                <Column header="Name">
+                                    <template #body="{ data }">
+                                        <!-- <template v-if="isBattle(data)">{{ data.battleOptions.title }}</template> -->
+                                        <!-- <template v-else-if="isReplay(data)"> -->
+                                        <template v-if="data.preset === 'duel'">
+                                            {{ data.contenders?.[0]?.name ?? "Nobody" }} vs
+                                            {{ data.contenders?.[1]?.name ?? "Nobody" }}
+                                        </template>
+                                        <template v-else-if="data.preset === 'team'">
+                                            {{ data.teams[0].playerCount }} vs {{ data.teams[1].playerCount }}
+                                        </template>
+                                        <template v-if="data.preset === 'ffa'"> {{ data.contenders.length }} Way FFA </template>
+                                        <template v-if="data.preset === 'teamffa'"> {{ data.teams[0].playerCount }} Way Team FFA </template>
+                                        <!-- </template> -->
                                     </template>
-                                    <template v-else-if="data.preset === 'team'">
-                                        {{ data.teams[0].playerCount }} vs {{ data.teams[1].playerCount }}
+                                </Column>
+                                <Column header="Date" :sortable="true" sortField="startTime">
+                                    <template #body="{ data }">
+                                        {{ format(data.startTime, "yyyy/MM/dd hh:mm a") }}
                                     </template>
-                                    <template v-if="data.preset === 'ffa'"> {{ data.contenders.length }} Way FFA </template>
-                                    <template v-if="data.preset === 'teamffa'"> {{ data.teams[0].playerCount }} Way Team FFA </template>
-                                </template>
-                            </template>
-                        </Column>
-                        <Column header="Date" :sortable="true" sortField="startTime">
-                            <template #body="{ data }">
-                                {{ format(data.startTime, "yyyy/MM/dd hh:mm a") }}
-                            </template>
-                        </Column>
-                        <Column header="Duration" :sortable="true" sortField="gameDurationMs">
-                            <template #body="{ data }">
-                                {{ getFriendlyDuration(data.gameDurationMs) }}
-                            </template>
-                        </Column>
-                        <Column field="mapScriptName" header="Map" :sortable="true" sortField="mapScriptName" />
-                    </DataTable>
+                                </Column>
+                                <Column header="Duration" :sortable="true" sortField="gameDurationMs">
+                                    <template #body="{ data }">
+                                        {{ getFriendlyDuration(data.gameDurationMs) }}
+                                    </template>
+                                </Column>
+                                <Column field="mapScriptName" header="Map" :sortable="true" sortField="mapScriptName" />
+                            </DataTable>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="right">
-            <BattlePreview v-if="selectedReplay" :battle="selectedReplay" :showSpoilers="showSpoilers">
+                <div class="right">
+                    <!-- TODO depends on abstractBattle -->
+                    <!-- <BattlePreview v-if="selectedReplay" :battle="selectedReplay" :showSpoilers="showSpoilers">
                 <template #actions="{ battle }">
                     <template v-if="isReplay(battle)">
                         <Button class="green flex-grow" @click="watchReplay(battle)">Watch</Button>
                         <Button @click="showReplayFile(battle)">Show File</Button>
                     </template>
                 </template>
-            </BattlePreview>
-        </div>
+            </BattlePreview> -->
+                </div>
+            </div>
+        </Panel>
     </div>
 </template>
 
@@ -97,15 +101,15 @@
 
 import { format } from "date-fns";
 import Column from "primevue/column";
-import DataTable, { DataTablePageEvent, DataTableStateEvent } from "primevue/datatable";
 import { Ref, ref, shallowRef } from "vue";
 
-import BattlePreview from "@renderer/components/battle/BattlePreview.vue";
 import Button from "@renderer/components/controls/Button.vue";
 import Checkbox from "@renderer/components/controls/Checkbox.vue";
 import TriStateCheckbox from "@renderer/components/controls/TriStateCheckbox.vue";
 import { getFriendlyDuration } from "@renderer/utils/misc";
 import { Replay } from "@main/cache/model/replay";
+import DataTable, { DataTablePageEvent, DataTableStateEvent } from "primevue/datatable";
+import Panel from "@renderer/components/common/Panel.vue";
 
 const endedNormally: Ref<boolean | null> = ref(true);
 const showSpoilers = ref(true);
@@ -162,7 +166,7 @@ function openReplaysFolder() {
 
 function watchReplay(replay: Replay) {
     //TODO implement this for replay watching, window.game or window.replays?
-    window.game.launchGame(replay);
+    // window.game.launchGame(replay);
 }
 
 function showReplayFile(replay: Replay) {
