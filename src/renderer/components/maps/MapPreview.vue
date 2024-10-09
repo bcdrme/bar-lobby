@@ -26,7 +26,7 @@ const props = defineProps<{
 }>();
 
 const app: Application = new Application();
-app.init({
+await app.init({
     background: "#000",
     backgroundAlpha: 0.3,
     antialias: true,
@@ -95,9 +95,10 @@ async function setMapImage() {
     if (mapSprite) {
         app.stage.removeChild(mapSprite);
     }
-    const textureImage = (await window.maps.getMapImages(toRaw(props.map))).textureImagePath;
-    console.log("Loading map image", textureImage);
-    const texture = await Assets.load<Texture>(textureImage);
+    // TODO replace that with map store
+    const textureImagePath = (await window.maps.getMapImages(toRaw(props.map))).textureImagePath;
+    console.log("Loading map image", textureImagePath);
+    const texture = await Assets.load<Texture>(`bar://${textureImagePath}`);
     console.log("Loaded map image", texture);
     mapSprite = Sprite.from(texture);
     mapSprite.setSize({
@@ -113,14 +114,14 @@ function resizeMapImage() {
         return;
     }
     if (mapSprite.width > mapSprite.height) {
-        mapSprite.width = app.view.width;
+        mapSprite.width = app.canvas.width;
         mapSprite.scale.y = mapSprite.scale.x;
     } else {
-        mapSprite.height = app.view.height;
+        mapSprite.height = app.canvas.height;
         mapSprite.scale.x = mapSprite.scale.y;
     }
-    mapSprite.x = app.view.width * 0.5 - mapSprite.width * 0.5;
-    mapSprite.y = app.view.height * 0.5 - mapSprite.height * 0.5;
+    mapSprite.x = app.canvas.width * 0.5 - mapSprite.width * 0.5;
+    mapSprite.y = app.canvas.height * 0.5 - mapSprite.height * 0.5;
 }
 
 function drawBoxes() {
@@ -144,13 +145,13 @@ function drawBoxes() {
         }
         const teamId = parseInt(teamIdStr);
         if (isSpectator) {
-            boxesGfx?.beginFill(0xffffff);
+            boxesGfx?.fill(0xffffff);
         } else if (myTeamId === teamId) {
-            boxesGfx?.beginFill(0x00ff00);
+            boxesGfx?.fill(0x00ff00);
         } else {
-            boxesGfx?.beginFill(0xff0000);
+            boxesGfx?.fill(0xff0000);
         }
-        boxesGfx?.drawRect(
+        boxesGfx?.rect(
             box.xPercent * mapSprite.width + mapSprite.x,
             box.yPercent * mapSprite.height + mapSprite.y,
             box.widthPercent * mapSprite.width,
@@ -187,11 +188,11 @@ function drawStartPositions() {
         if (startPos.rgbColor) {
             color = new Color([startPos.rgbColor.r / 255, startPos.rgbColor.g / 255, startPos.rgbColor.b / 255]);
         }
-        startPositionsGfx.beginFill(color);
+        startPositionsGfx.fill(color);
         const x = (startPos.position.x / (props.map.width * 512)) * mapSprite.width + mapSprite.x;
         const y = (startPos.position.z / (props.map.height * 512)) * mapSprite.height + mapSprite.y;
         const radius = 5;
-        startPositionsGfx.drawEllipse(x - radius * 0.5, y - radius * 0.5, radius, radius);
+        startPositionsGfx.ellipse(x - radius * 0.5, y - radius * 0.5, radius, radius);
     }
 }
 </script>

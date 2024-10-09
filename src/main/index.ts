@@ -41,6 +41,7 @@ protocol.registerSchemesAsPrivileged([
         scheme: "bar",
         privileges: {
             bypassCSP: true,
+            supportFetchAPI: true, // Required for fetch calls, such as in pixi.js
         },
     },
 ]);
@@ -112,7 +113,7 @@ app.whenReady().then(() => {
         callback({
             responseHeaders: {
                 ...details.responseHeaders,
-                "Content-Security-Policy": ["default-src 'self' 'unsafe-inline'"],
+                "Content-Security-Policy": ["default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob:"], //unsafe-eval, data: and blob: are required for PIXI.js
             },
         });
     });

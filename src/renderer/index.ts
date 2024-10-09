@@ -15,8 +15,7 @@ import { elementInViewDirective } from "@renderer/utils/element-in-view-directiv
 import { audioApi } from "@renderer/audio/audio";
 import { apiInit } from "@renderer/api/api";
 import { router } from "@renderer/router";
-import { initSettingsStore, settingsStore } from "@renderer/store/settings.store";
-import { initInfosStore } from "@renderer/store/infos.store";
+import { settingsStore } from "@renderer/store/settings.store";
 import { initStores } from "@renderer/store/stores";
 
 declare module "vue-router" {
