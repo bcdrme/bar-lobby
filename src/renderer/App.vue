@@ -8,6 +8,7 @@
         <Background :blur="blurBg" />
         <Notifications />
         <PromptContainer />
+        <NavBar :class="{ hidden: empty }" />
         <div class="lobby-version">
             {{ infosStore.lobby.version }}
         </div>
@@ -22,7 +23,7 @@
         <transition mode="out-in" name="fade">
             <Preloader v-if="state === 'preloader'" @complete="onPreloadDone" />
             <InitialSetup v-else-if="state === 'initial-setup'" @complete="onInitialSetupDone" />
-            <div class="fullsize" v-else>
+            <div class="view-container" v-else>
                 <router-view v-slot="{ Component }">
                     <transition name="slide-left">
                         <Suspense>
@@ -37,7 +38,6 @@
                 </router-view>
             </div>
         </transition>
-        <NavBar :class="{ hidden: empty }" />
         <Settings v-model="settingsOpen" />
         <Error />
     </div>
@@ -126,6 +126,10 @@ function onInitialSetupDone() {
 </script>
 
 <style lang="scss" scoped>
+.view-container {
+    flex: auto;
+}
+
 .wrapper {
     overflow: hidden;
 }
