@@ -45,17 +45,25 @@
  * Back button to return to map list
  */
 
-import { computed } from "vue";
+import { computed, ref, watch } from "vue";
 
 import Button from "@renderer/components/controls/Button.vue";
 import MapPreview from "@renderer/components/maps/MapPreview.vue";
 import { mapsStore } from "@renderer/store/maps.store";
+import { MapData } from "@main/cache/model/map-data";
 
 const props = defineProps<{
     id: string;
 }>();
 
-const map = mapsStore.installedMaps.find((m) => m.scriptName === props.id);
+const map = ref<MapData>();
+watch(
+    () => props.id,
+    () => {
+        map.value = mapsStore.installedMaps.find((m) => m.scriptName === props.id);
+    },
+    { immediate: true }
+);
 
 async function downloadMap() {
     // await api.content.maps.downloadMap(props.id);

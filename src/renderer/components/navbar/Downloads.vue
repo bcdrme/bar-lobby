@@ -47,10 +47,7 @@ const downloads = ref<DownloadInfo[]>([]);
 
 watch(
     () => downloadsStore.downloads,
-    (arr) => {
-        console.log(`downloads changed: ${arr.length}`);
-        downloads.value = arr;
-    },
+    (arr) => (downloads.value = arr),
     { deep: true }
 );
 

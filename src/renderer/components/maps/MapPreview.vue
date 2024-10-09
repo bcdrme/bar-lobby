@@ -34,6 +34,7 @@ const boxesGfx = new Graphics();
 const startPositionsGfx = new Graphics();
 
 onMounted(async () => {
+    console.debug("Map preview mounted");
     app = new Application();
     await app.init({
         background: "#000",
@@ -55,14 +56,14 @@ onUnmounted(() => {
 watch([parentSize.width, parentSize.height], ([width, height]) => {
     console.debug("Parent size changed", width, height);
     if (width && height) {
-        const smallestDimension = Math.min(width, height);
+        // const smallestDimension = Math.min(width, height);
         // app.renderer.resize(smallestDimension, smallestDimension);
         // app.render();
         onResize();
     }
 });
 
-watch(() => props.map, setMapImage);
+watch(() => props.map, setMapImage, { deep: true });
 watch(() => props.startBoxes, drawBoxes, { deep: true });
 watch(() => props.startPositions, drawStartPositions);
 watch(
@@ -91,6 +92,7 @@ function onResize() {
 }
 
 async function setMapImage() {
+    console.debug("Setting map image");
     if (!props.map) {
         return;
     }
@@ -99,9 +101,7 @@ async function setMapImage() {
     }
     // TODO replace that with map store
     const textureImagePath = (await window.maps.getMapImages(toRaw(props.map))).textureImagePath;
-    console.log("Loading map image", textureImagePath);
     const texture = await Assets.load<Texture>(`bar://${textureImagePath}`);
-    console.log("Loaded map image", texture);
     mapSprite = Sprite.from(texture);
     mapSprite.setSize({
         width: props.map.width * MIPMAP_SIZE * 16,
