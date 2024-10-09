@@ -38,13 +38,4 @@ async function onMapSelected(map: MapData) {
 }
 </script>
 
-<style lang="scss" scoped>
-.view {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    gap: 10px;
-    overflow: hidden;
-}
-</style>
+<style lang="scss" scoped></style>

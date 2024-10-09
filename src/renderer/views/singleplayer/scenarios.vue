@@ -3,41 +3,44 @@
 </route>
 
 <template>
-    <div class="flex-col fullheight">
-        <h1>{{ route.meta.title }}</h1>
+    <div class="view">
+        <Panel class="flex-grow">
+            <div class="flex-col fullheight">
+                <h1>{{ route.meta.title }}</h1>
+                <div class="flex-row gap-lg fullheight">
+                    <div class="fullwidth flex-col">
+                        <div class="scroll-container">
+                            <div class="scenarios">
+                                <ScenarioTile
+                                    v-for="(scenario, i) in scenarios"
+                                    :key="i"
+                                    :scenario="scenario"
+                                    :class="{ selected: selectedScenario.scenarioid === scenario.scenarioid }"
+                                    @click="selectedScenario = scenario"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex-col">
+                        <div class="scroll-container scenario-preview flex-col gap-md">
+                            <h4>{{ selectedScenario.title }}</h4>
+                            <Markdown :source="selectedScenario.summary" />
+                            <Markdown :source="selectedScenario.briefing" />
+                            <div class="gridform">
+                                <div>Victory condition</div>
+                                <div>{{ selectedScenario.victorycondition }}</div>
 
-        <div class="flex-row gap-lg fullheight">
-            <div class="fullwidth flex-col">
-                <div class="scroll-container">
-                    <div class="scenarios">
-                        <ScenarioTile
-                            v-for="(scenario, i) in scenarios"
-                            :key="i"
-                            :scenario="scenario"
-                            :class="{ selected: selectedScenario.scenarioid === scenario.scenarioid }"
-                            @click="selectedScenario = scenario"
-                        />
+                                <div>Lose condition</div>
+                                <div>{{ selectedScenario.losscondition }}</div>
+                            </div>
+                            <Select v-model="selectedFaction" label="Faction" :options="factions" />
+                            <Select v-model="selectedDifficulty" label="Difficulty" :options="difficulties" optionLabel="name" />
+                            <Button class="green" @click="launch">Launch</Button>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="flex-col">
-                <div class="scroll-container scenario-preview flex-col gap-md">
-                    <h4>{{ selectedScenario.title }}</h4>
-                    <Markdown :source="selectedScenario.summary" />
-                    <Markdown :source="selectedScenario.briefing" />
-                    <div class="gridform">
-                        <div>Victory condition</div>
-                        <div>{{ selectedScenario.victorycondition }}</div>
-
-                        <div>Lose condition</div>
-                        <div>{{ selectedScenario.losscondition }}</div>
-                    </div>
-                    <Select v-model="selectedFaction" label="Faction" :options="factions" />
-                    <Select v-model="selectedDifficulty" label="Difficulty" :options="difficulties" optionLabel="name" />
-                    <Button class="green" @click="launch">Launch</Button>
-                </div>
-            </div>
-        </div>
+        </Panel>
     </div>
 </template>
 
@@ -51,6 +54,7 @@ import ScenarioTile from "@renderer/components/misc/ScenarioTile.vue";
 import { useRouter } from "vue-router";
 import { Scenario } from "@main/content/game/scenario";
 import { defaultGameVersion } from "@main/config/default-versions";
+import Panel from "@renderer/components/common/Panel.vue";
 
 const router = useRouter();
 const route = router.currentRoute.value;

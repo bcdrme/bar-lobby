@@ -20,30 +20,23 @@
             </div>
         </div>
         <transition mode="out-in" name="fade">
-            <Suspense>
-                <Preloader v-if="state === 'preloader'" @complete="onPreloadDone" />
-                <InitialSetup v-else-if="state === 'initial-setup'" @complete="onInitialSetupDone" />
-                <div v-else class="fullsize">
-                    <NavBar :class="{ hidden: empty }" />
-                    <div :class="`view view--${router.currentRoute.value.name?.toString()}`">
-                        <Panel :empty="empty" class="flex-grow">
-                            <Breadcrumbs :class="{ hidden: empty }" />
-                            <router-view v-slot="{ Component, route }">
-                                <transition name="slide-left">
-                                    <template v-if="Component">
-                                        <suspense timeout="0">
-                                            <component :is="Component" :key="route.path" />
-                                            <template #fallback>
-                                                <Loader />
-                                            </template>
-                                        </suspense>
-                                    </template>
-                                </transition>
-                            </router-view>
-                        </Panel>
-                    </div>
-                </div>
-            </Suspense>
+            <Preloader v-if="state === 'preloader'" @complete="onPreloadDone" />
+            <InitialSetup v-else-if="state === 'initial-setup'" @complete="onInitialSetupDone" />
+            <div v-else class="fullsize">
+                <NavBar :class="{ hidden: empty }" />
+                <router-view v-slot="{ Component }">
+                    <transition name="slide-left">
+                        <Suspense>
+                            <keep-alive>
+                                <component :is="Component" />
+                            </keep-alive>
+                            <template #fallback>
+                                <Loader />
+                            </template>
+                        </Suspense>
+                    </transition>
+                </router-view>
+            </div>
         </transition>
         <Settings v-model="settingsOpen" />
         <Error />
@@ -54,31 +47,29 @@
 import { Icon } from "@iconify/vue";
 import closeThick from "@iconify-icons/mdi/close-thick";
 import cog from "@iconify-icons/mdi/cog";
-import { computed, onBeforeMount, provide, Ref, toRaw, toRef, toValue } from "vue";
+import { computed, provide, Ref, toRef, toValue, Transition } from "vue";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
 import StickyBattle from "@renderer/components/battle/StickyBattle.vue";
 import Loader from "@renderer/components/common/Loader.vue";
-import Panel from "@renderer/components/common/Panel.vue";
 import Background from "@renderer/components/misc/Background.vue";
 import DebugSidebar from "@renderer/components/misc/DebugSidebar.vue";
 import Error from "@renderer/components/misc/Error.vue";
 import InitialSetup from "@renderer/components/misc/InitialSetup.vue";
 import IntroVideo from "@renderer/components/misc/IntroVideo.vue";
 import Preloader from "@renderer/components/misc/Preloader.vue";
-import Breadcrumbs from "@renderer/components/navbar/Breadcrumbs.vue";
 import NavBar from "@renderer/components/navbar/NavBar.vue";
 import Settings from "@renderer/components/navbar/Settings.vue";
 import Notifications from "@renderer/components/notifications/Notifications.vue";
 import PromptContainer from "@renderer/components/prompts/PromptContainer.vue";
 
 import { playRandomMusic } from "@renderer/utils/play-random-music";
-import { asyncComputed, watchOnce } from "@vueuse/core";
 import { defaultEngineVersion, defaultGameVersion } from "@main/config/default-versions";
 import { defaultMaps } from "@main/config/default-maps";
 import { settingsStore } from "./store/settings.store";
 import { infosStore } from "@renderer/store/infos.store";
+import { Suspense } from "vue";
 
 const router = useRouter();
 const videoVisible = toRef(!toValue(settingsStore.skipIntro));
@@ -86,7 +77,6 @@ const videoVisible = toRef(!toValue(settingsStore.skipIntro));
 const state: Ref<"preloader" | "initial-setup" | "default"> = ref("preloader");
 const empty = ref(false);
 const blurBg = ref(true);
-const viewOverflowY = computed(() => (router.currentRoute.value.meta.overflowY ? router.currentRoute.value.meta.overflowY : "auto"));
 
 const settingsOpen = ref(false);
 const exitOpen = ref(false);
@@ -139,17 +129,7 @@ function onInitialSetupDone() {
 .wrapper {
     overflow: hidden;
 }
-.view {
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    gap: 10px;
-    overflow: hidden;
-}
-:deep(.view > .panel) {
-    overflow-y: v-bind(viewOverflowY);
-}
+
 .lobby-version {
     position: absolute;
     left: 3px;
