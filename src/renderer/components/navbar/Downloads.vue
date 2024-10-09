@@ -1,24 +1,28 @@
 <template>
     <PopOutPanel :open="modelValue">
-        <div v-if="downloads.length" class="downloads">
-            <div v-for="(download, i) in downloads" :key="i" class="downloads__download">
-                <div class="downloads__info">
-                    <div class="downloads__name">
-                        {{ download.name }}
+        <Transition name="fade" mode="out-in">
+            <div v-if="downloads.length" class="downloads">
+                <TransitionGroup tag="div" name="downloads-list">
+                    <div v-for="(download, i) in downloads" :key="i" class="downloads__download">
+                        <div class="downloads__info">
+                            <div class="downloads__name">
+                                {{ download.name }}
+                            </div>
+                            <div class="downloads__type">
+                                {{ download.type }}
+                            </div>
+                        </div>
+                        <Progress
+                            :percent="download.currentBytes / download.totalBytes"
+                            :text="progressText(download.currentBytes, download.totalBytes, download.caching)"
+                            themed
+                            :pulsating="download.caching"
+                        />
                     </div>
-                    <div class="downloads__type">
-                        {{ download.type }}
-                    </div>
-                </div>
-                <Progress
-                    :percent="download.currentBytes / download.totalBytes"
-                    :text="progressText(download.currentBytes, download.totalBytes, download.caching)"
-                    themed
-                    :pulsating="download.caching"
-                />
+                </TransitionGroup>
             </div>
-        </div>
-        <div v-else class="flex-row flex-grow flex-center">No downloads active</div>
+            <div v-else class="flex-row flex-grow flex-center">No downloads active</div>
+        </Transition>
     </PopOutPanel>
 </template>
 
@@ -78,13 +82,14 @@ function progressText(currentBytes: number, totalBytes: number, caching: boolean
 .downloads {
     display: flex;
     flex-direction: column;
-    gap: 10px;
     &__info {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
     }
     &__download {
+        height: 75px; // fixed size for the animations to work well
+        width: 100%; // fixed size for the animations to work well
         display: flex;
         flex-direction: column;
         padding: 15px;
@@ -98,5 +103,22 @@ function progressText(currentBytes: number, totalBytes: number, caching: boolean
         font-weight: 700;
         color: rgba(255, 255, 255, 0.7);
     }
+}
+
+// Transition
+.downloads-list-move {
+    transition: all 0.2s ease;
+    transition-delay: 0.2s;
+}
+.downloads-list-enter-active,
+.downloads-list-leave-active {
+    transition: all 0.2s ease;
+}
+.downloads-list-enter-from,
+.downloads-list-leave-to {
+    transform: translate(100%, 0);
+}
+.downloads-list-leave-active {
+    position: absolute;
 }
 </style>

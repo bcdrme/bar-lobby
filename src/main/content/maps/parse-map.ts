@@ -18,19 +18,23 @@ export const parseMap = async (mapPath: string, mapImagesPath: string) => {
     const fileNameWithoutExt = path.parse(mapPath).name;
 
     const textureJpg = await map.textureMap!.getBuffer("image/jpeg", { quality: 80 });
-    await fs.promises.writeFile(path.join(mapImagesPath, `${fileNameWithoutExt}-texture.jpg`), textureJpg);
+    const textureMapPath = path.join(mapImagesPath, `${fileNameWithoutExt}-texture.jpg`);
+    await fs.promises.writeFile(textureMapPath, textureJpg);
     log.debug(`Wrote texture jpg for ${fileNameWithoutExt} to ${mapImagesPath}`);
 
     const metalJpg = await map.metalMap.getBuffer("image/jpeg", { quality: 80 });
-    await fs.promises.writeFile(path.join(mapImagesPath, `${fileNameWithoutExt}-metal.jpg`), metalJpg);
+    const metalMapPath = path.join(mapImagesPath, `${fileNameWithoutExt}-metal.jpg`);
+    await fs.promises.writeFile(metalMapPath, metalJpg);
     log.debug(`Wrote metal jpg for ${fileNameWithoutExt} to ${mapImagesPath}`);
 
     const heightJpg = await map.heightMap.getBuffer("image/jpeg", { quality: 80 });
-    await fs.promises.writeFile(path.join(mapImagesPath, `${fileNameWithoutExt}-height.jpg`), heightJpg);
+    const heightMapPath = path.join(mapImagesPath, `${fileNameWithoutExt}-height.jpg`);
+    await fs.promises.writeFile(heightMapPath, heightJpg);
     log.debug(`Wrote height jpg for ${fileNameWithoutExt} to ${mapImagesPath}`);
 
     const typeJpg = await map.typeMap.getBuffer("image/jpeg", { quality: 80 });
-    await fs.promises.writeFile(path.join(mapImagesPath, `${fileNameWithoutExt}-type.jpg`), typeJpg);
+    const typeMapPath = path.join(mapImagesPath, `${fileNameWithoutExt}-type.jpg`);
+    await fs.promises.writeFile(typeMapPath, typeJpg);
     log.debug(`Wrote type jpg for ${fileNameWithoutExt} to ${mapImagesPath}`);
 
     return {
@@ -51,7 +55,13 @@ export const parseMap = async (mapPath: string, mapImagesPath: string) => {
         minDepth: map.minHeight,
         maxDepth: map.maxHeight,
         mapInfo: map.mapInfo || null,
-    };
+        images: {
+            textureMapPath,
+            metalMapPath,
+            heightMapPath,
+            typeMapPath,
+        },
+    } as MapData;
 };
 
 export function asyncParseMap(mapPath: string, mapImagePath: string) {

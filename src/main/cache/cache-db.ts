@@ -64,9 +64,9 @@ async function migrateToLatest() {
     }
 }
 
+// TODO is this necessary?
 function migrations(): Record<string, Migration> {
     log.info("Running migrations");
-
     return {
         // yyyy-mm-dd
         "2023-04-10": {
@@ -128,6 +128,7 @@ async function init() {
         .addColumn("minDepth", "double precision", (col) => col.notNull())
         .addColumn("maxDepth", "double precision", (col) => col.notNull())
         .addColumn("mapInfo", "json")
+        .addColumn("images", "json")
         .execute();
 
     await db.schema

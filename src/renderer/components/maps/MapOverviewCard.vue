@@ -1,8 +1,8 @@
 <template>
     <div class="map">
-        <div class="background" :style="`background-image: url('bar://${mapTextureImage}')`"></div>
+        <div class="background" :style="`background-image: url('bar://${map.images.textureMapPath}')`"></div>
         <div class="name">
-            {{ map?.friendlyName ?? friendlyName }}
+            {{ map.friendlyName ?? friendlyName }}
         </div>
         <div class="attributes">
             <div>{{ mapSize }}</div>
@@ -12,20 +12,14 @@
 
 <script lang="ts" setup>
 import { MapData } from "@main/cache/model/map-data";
-import { computedAsync } from "@vueuse/core";
 import { computed, toRaw } from "vue";
 
 const props = defineProps<{
-    map?: MapData;
+    map: MapData;
     friendlyName: string;
 }>();
 
 const mapSize = computed(() => (props.map ? props.map.width + "x" + props.map.height : "Unknown"));
-
-const mapTextureImage = computedAsync(async () => {
-    const images = await window.maps.getMapImages(toRaw(props.map));
-    return images.textureImagePath;
-});
 </script>
 
 <style lang="scss" scoped>

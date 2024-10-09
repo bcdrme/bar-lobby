@@ -20,24 +20,28 @@
                 <Icon :icon="closeThick" height="21" />
             </div>
         </div>
-        <transition mode="out-in" name="fade">
+        <Transition mode="out-in" name="fade">
             <Preloader v-if="state === 'preloader'" @complete="onPreloadDone" />
             <InitialSetup v-else-if="state === 'initial-setup'" @complete="onInitialSetupDone" />
             <div class="view-container" v-else>
-                <router-view v-slot="{ Component }">
-                    <transition name="slide-left">
-                        <Suspense>
-                            <keep-alive>
-                                <component :is="Component" />
-                            </keep-alive>
-                            <template #fallback>
-                                <Loader />
-                            </template>
-                        </Suspense>
-                    </transition>
-                </router-view>
+                <RouterView v-slot="{ Component, route }">
+                    <template v-if="Component">
+                        <!-- <Transition v-bind="route.meta.transition" mode="out-in" appear> -->
+                        <Transition name="slide-left" mode="out-in">
+                            <KeepAlive>
+                                <Suspense suspensible timeout="0">
+                                    <component :is="Component" />
+                                    <template #fallback>
+                                        <Loader />
+                                    </template>
+                                </Suspense>
+                            </KeepAlive>
+                        </Transition>
+                        <!-- </Transition> -->
+                    </template>
+                </RouterView>
             </div>
-        </transition>
+        </Transition>
         <Settings v-model="settingsOpen" />
         <Error />
     </div>

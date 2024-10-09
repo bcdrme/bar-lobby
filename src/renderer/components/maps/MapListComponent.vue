@@ -8,13 +8,15 @@
         <div class="flex-col flex-grow fullheight">
             <div class="scroll-container">
                 <div class="maps">
-                    <MapOverviewCard
-                        v-for="(map, i) in filteredMaps"
-                        :key="i"
-                        :map="map"
-                        :friendlyName="map.friendlyName"
-                        @click="mapSelected(map)"
-                    />
+                    <TransitionGroup name="maps-list">
+                        <MapOverviewCard
+                            v-for="(map, i) in filteredMaps"
+                            :key="i"
+                            :map="map"
+                            :friendlyName="map.friendlyName"
+                            @click="mapSelected(map)"
+                        />
+                    </TransitionGroup>
                 </div>
             </div>
         </div>
@@ -76,6 +78,8 @@ function updateFilteredMap() {
 function mapSelected(map: MapData) {
     emit("map-selected", map);
 }
+
+await new Promise((resolve) => setTimeout(resolve, 1000));
 </script>
 
 <style lang="scss" scoped>
@@ -83,6 +87,20 @@ function mapSelected(map: MapData) {
     display: grid;
     grid-gap: 15px;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    padding-right: 10px;
+}
+
+// Transition
+.maps-list-move,
+.maps-list-enter-active,
+.maps-list-leave-active {
+    transition: all 0.5s ease;
+}
+.maps-list-enter-from,
+.maps-list-leave-to {
+    opacity: 0;
+    transform: translateX(0, 30px);
+}
+.maps-list-leave-active {
+    position: absolute;
 }
 </style>

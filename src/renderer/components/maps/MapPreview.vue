@@ -97,9 +97,7 @@ async function setMapImage() {
     if (mapSprite) {
         app.stage.removeChild(mapSprite);
     }
-    // TODO replace that with map store
-    const textureImagePath = (await window.maps.getMapImages(toRaw(props.map))).textureImagePath;
-    const texture = await Assets.load<Texture>(`bar://${textureImagePath}`);
+    const texture = await Assets.load<Texture>(`bar://${props.map.images.textureMapPath}`);
     mapSprite = Sprite.from(texture);
     mapSprite.setSize({
         width: props.map.width * MIPMAP_SIZE * 16,
@@ -195,6 +193,8 @@ function drawStartPositions() {
         startPositionsGfx.ellipse(x - radius * 0.5, y - radius * 0.5, radius, radius);
     }
 }
+
+await new Promise((resolve) => setTimeout(resolve, 1000));
 </script>
 
 <style lang="scss" scoped>

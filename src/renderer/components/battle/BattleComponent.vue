@@ -20,12 +20,12 @@
             <BattleChat />
         </div>
         <div class="settings flex-col gap-md">
-            <!-- <MapPreview
+            <MapPreview
                 :map="map"
                 :startPosType="props.battle.battleOptions.startPosType"
                 :startBoxes="props.battle.battleOptions.startBoxes"
                 :currentUser="me"
-            /> -->
+            />
 
             <div class="flex-row gap-md">
                 <Select
@@ -221,12 +221,12 @@ import MapPreview from "@renderer/components/maps/MapPreview.vue";
 import Flag from "@renderer/components/misc/Flag.vue";
 import { CurrentUser } from "@main/model/user";
 import { StartBoxOrientation } from "@renderer/utils/start-boxes";
-import { isOfflineBattle, isSpadsBattle } from "@main/utils/type-checkers";
 import { LuaOptionSection } from "@main/content/game/lua-options";
 import { asyncComputed } from "@vueuse/core";
 import { StartPosType } from "@main/game/battle/battle-types";
-import { AbstractBattle } from "@main/game/battle/abstract-battle";
 import { gameStore } from "@renderer/store/game.store";
+import { getMapByScriptName } from "@renderer/store/maps.store";
+import { AbstractBattle } from "@renderer/game/abstract-battle";
 
 const props = defineProps<{
     battle: AbstractBattle;
@@ -240,7 +240,7 @@ const installedMaps = asyncComputed(async () => {
         return a.friendlyName.localeCompare(b.friendlyName);
     });
 });
-const map = asyncComputed(async () => await window.maps.getMapByScriptName(props.battle.battleOptions.map));
+const map = getMapByScriptName(props.battle.battleOptions.map);
 const installedGames = computed(() => Array.from(api.content.game.installedVersions));
 const mapListOpen = ref(false);
 const mapOptionsOpen = ref(false);

@@ -11,13 +11,15 @@
                     <div class="fullwidth flex-col">
                         <div class="scroll-container">
                             <div class="scenarios">
-                                <ScenarioTile
-                                    v-for="(scenario, i) in scenarios"
-                                    :key="i"
-                                    :scenario="scenario"
-                                    :class="{ selected: selectedScenario.scenarioid === scenario.scenarioid }"
-                                    @click="selectedScenario = scenario"
-                                />
+                                <TransitionGroup name="fade">
+                                    <ScenarioTile
+                                        v-for="(scenario, i) in scenarios"
+                                        :key="i"
+                                        :scenario="scenario"
+                                        :class="{ selected: selectedScenario.scenarioid === scenario.scenarioid }"
+                                        @click="selectedScenario = scenario"
+                                    />
+                                </TransitionGroup>
                             </div>
                         </div>
                     </div>
@@ -45,7 +47,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, ref, watch } from "vue";
+import { computed, ref, TransitionGroup, watch } from "vue";
 import Markdown from "vue3-markdown-it";
 
 import Button from "@renderer/components/controls/Button.vue";
@@ -100,6 +102,8 @@ async function launch() {
 
     await window.game.launchGame(script);
 }
+
+await new Promise((resolve) => setTimeout(resolve, 1000));
 </script>
 
 <style lang="scss" scoped>

@@ -25,6 +25,12 @@ export interface MapDataTable {
     maxDepth: number;
     mapInfo: DeepPartial<MapInfo> | null;
     lastLaunched: Date;
+    images: {
+        textureMapPath: string;
+        heightMapPath: string;
+        metalMapPath: string;
+        typeMapPath: string;
+    };
 }
 
 export type MapData = Selectable<MapDataTable>;
