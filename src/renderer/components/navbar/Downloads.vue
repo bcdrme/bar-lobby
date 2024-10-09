@@ -1,9 +1,9 @@
 <template>
     <PopOutPanel :open="modelValue">
         <Transition name="fade" mode="out-in">
-            <div v-if="downloads.length" class="downloads">
+            <div v-if="downloadsStore.downloads.length" class="downloads">
                 <TransitionGroup tag="div" name="downloads-list">
-                    <div v-for="(download, i) in downloads" :key="i" class="downloads__download">
+                    <div v-for="(download, i) in downloadsStore.downloads" :key="i" class="downloads__download">
                         <div class="downloads__info">
                             <div class="downloads__name">
                                 {{ download.name }}
@@ -46,14 +46,6 @@ const emits = defineEmits<{
 const toggleMessages = inject<Ref<(open?: boolean, userId?: number) => void>>("toggleMessages")!;
 const toggleFriends = inject<Ref<(open?: boolean) => void>>("toggleFriends")!;
 const toggleDownloads = inject<Ref<(open?: boolean) => void>>("toggleDownloads")!;
-
-const downloads = ref<DownloadInfo[]>([]);
-
-watch(
-    () => downloadsStore.downloads,
-    (arr) => (downloads.value = arr),
-    { deep: true }
-);
 
 toggleDownloads.value = async (open?: boolean) => {
     if (open) {

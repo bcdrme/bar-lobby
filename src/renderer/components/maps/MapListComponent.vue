@@ -79,6 +79,7 @@ function mapSelected(map: MapData) {
     emit("map-selected", map);
 }
 
+// Trying to smooth out initial load
 await new Promise((resolve) => setTimeout(resolve, 1000));
 </script>
 
