@@ -113,7 +113,7 @@ app.whenReady().then(() => {
         callback({
             responseHeaders: {
                 ...details.responseHeaders,
-                "Content-Security-Policy": ["default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob:"], //unsafe-eval, data: and blob: are required for PIXI.js
+                "Content-Security-Policy": ["default-src 'self' 'unsafe-inline' data: blob:"], // data: and blob: are required for PIXI.js
             },
         });
     });

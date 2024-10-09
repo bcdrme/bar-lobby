@@ -18,6 +18,9 @@ import { router } from "@renderer/router";
 import { settingsStore } from "@renderer/store/settings.store";
 import { initStores } from "@renderer/store/stores";
 
+// Apply unsafe-eval patch for pixi.js
+import "pixi.js/unsafe-eval";
+
 declare module "vue-router" {
     interface RouteMeta {
         title?: string;
