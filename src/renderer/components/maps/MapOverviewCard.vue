@@ -82,7 +82,6 @@ const mapTextureImage = computedAsync(async () => {
     }
 }
 .name {
-    z-index: 21;
     @extend .fullsize;
     top: 0;
     left: 0;

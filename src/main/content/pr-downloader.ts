@@ -66,7 +66,7 @@ export abstract class PrDownloaderAPI<T> extends AbstractContentAPI<T> {
                                 downloadInfo = {
                                     type,
                                     name,
-                                    currentBytes: progress.currentBytes,
+                                    currentBytes: 0,
                                     totalBytes: progress.totalBytes,
                                     caching: false,
                                 };

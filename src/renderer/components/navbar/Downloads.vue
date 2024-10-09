@@ -64,6 +64,9 @@ function progressText(currentBytes: number, totalBytes: number, caching: boolean
     if (caching) {
         return "Caching...";
     }
+    if (currentBytes === 0) {
+        return "Starting...";
+    }
     const percent = currentBytes / totalBytes;
     const currentMB = currentBytes / Math.pow(1024, 2);
     const totalMB = totalBytes / Math.pow(1024, 2);
