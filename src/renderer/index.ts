@@ -32,6 +32,7 @@ declare module "vue-router" {
         transition?: TransitionProps;
         overflowY?: "scroll" | "hidden";
         devOnly?: boolean;
+        redirect?: string;
     }
 }
 

@@ -99,7 +99,18 @@ provide("toggleDownloads", toggleDownloads);
 
 playRandomMusic();
 
+const simpleRouterMemory = new Map<string, string>();
+router.beforeEach(async (to, from) => {
+    if (to.meta?.redirect) {
+        const redirection = simpleRouterMemory.get(to.fullPath.split("/")[1]) ?? to.meta.redirect;
+        return {
+            path: redirection,
+        };
+    }
+});
+
 router.afterEach(async (to, from) => {
+    simpleRouterMemory.set(to.fullPath.split("/")[1], to.fullPath);
     empty.value = to?.meta?.empty ?? false;
     blurBg.value = to?.meta?.blurBg ?? blurBg.value;
 });
