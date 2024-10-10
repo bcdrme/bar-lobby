@@ -33,9 +33,8 @@ import TeamParticipant from "@renderer/components/battle/TeamParticipant.vue";
 import ContextMenu from "@renderer/components/common/ContextMenu.vue";
 import Flag from "@renderer/components/misc/Flag.vue";
 import { User } from "@main/model/user";
-import { isSpadsBattle } from "@main/utils/type-checkers";
-import { AbstractBattle } from "@main/game/battle/abstract-battle";
 import { useRouter } from "vue-router";
+import { AbstractBattle } from "@renderer/game/abstract-battle";
 
 const router = useRouter();
 

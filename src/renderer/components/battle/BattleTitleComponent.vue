@@ -22,8 +22,7 @@ import { ref } from "vue";
 
 import Textbox from "@renderer/components/controls/Textbox.vue";
 import { CurrentUser } from "@main/model/user";
-import { isSpadsBattle } from "@main/utils/type-checkers";
-import { AbstractBattle } from "@main/game/battle/abstract-battle";
+import { AbstractBattle } from "@renderer/game/abstract-battle";
 
 const props = defineProps<{
     battle: AbstractBattle;
