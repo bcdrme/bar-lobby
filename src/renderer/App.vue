@@ -26,8 +26,7 @@
             <div class="view-container" v-else>
                 <RouterView v-slot="{ Component, route }">
                     <template v-if="Component">
-                        <!-- <Transition v-bind="route.meta.transition" mode="out-in" appear> -->
-                        <Transition name="slide-left" mode="out-in">
+                        <Transition v-bind="route.meta.transition" mode="out-in">
                             <KeepAlive>
                                 <Suspense suspensible timeout="0">
                                     <component :is="Component" />
@@ -37,7 +36,6 @@
                                 </Suspense>
                             </KeepAlive>
                         </Transition>
-                        <!-- </Transition> -->
                     </template>
                 </RouterView>
             </div>
