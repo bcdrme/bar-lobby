@@ -33,6 +33,7 @@
         "axios": "^1.7.7",
         "better-sqlite3": "^11.3.0",
         "date-fns": "^4.1.0",
+        "dexie": "^4.0.8",
         "dompurify": "^3.1.7",
         "env-paths": "^3.0.0",
         "flag-icons": "^7.2.3",

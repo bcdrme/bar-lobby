@@ -2,9 +2,24 @@ import { intervalToDuration } from "date-fns";
 
 export function getFriendlyDuration(durationMs: number, withSeconds = true) {
     const durationValues = intervalToDuration({ start: 0, end: durationMs });
-    const result = `${durationValues.hours}:${durationValues.minutes?.toString().padStart(2, "0")}`;
-    if (withSeconds) {
-        return result + `:${durationValues.seconds?.toString().padStart(2, "0")}`;
+
+    let durationStr = "";
+    if (durationValues.years) {
+        durationStr += `${durationValues.years}y `;
     }
-    return result;
+    if (durationValues.months) {
+        durationStr += `${durationValues.months}mo `;
+    }
+    if (durationValues.days) {
+        durationStr += `${durationValues.days}d `;
+    }
+    if (durationValues.hours) {
+        durationStr += `${durationValues.hours}h `;
+    }
+    if (durationValues.minutes) {
+        durationStr += `${durationValues.minutes}m `;
+    }
+    if (withSeconds && durationValues.seconds) {
+        durationStr += `${durationValues.seconds}s`;
+    }
 }

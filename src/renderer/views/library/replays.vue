@@ -15,7 +15,7 @@
                     <div class="flex-row gap-md">
                         <TriStateCheckbox v-model="endedNormally" label="Ended Normally" @update:model-value="fetchReplays" />
                         <Checkbox v-model="showSpoilers" label="Show Spoilers" />
-                        <div class="flex-right flex-row gap-md">
+                        <div class="flex-right flex-row gap-md" style="padding-right: 5px">
                             <Button @click="refresh">Refresh</Button>
                             <Button @click="openReplaysFolder">Open Replays Folder</Button>
                         </div>
@@ -110,6 +110,7 @@ import { getFriendlyDuration } from "@renderer/utils/misc";
 import { Replay } from "@main/cache/model/replay";
 import DataTable, { DataTablePageEvent, DataTableStateEvent } from "primevue/datatable";
 import Panel from "@renderer/components/common/Panel.vue";
+import { db } from "@renderer/store/db";
 
 const endedNormally: Ref<boolean | null> = ref(true);
 const showSpoilers = ref(true);
@@ -122,15 +123,21 @@ const replays: Ref<Replay[]> = shallowRef([]);
 const selectedReplay: Ref<Replay | null> = shallowRef(null);
 
 async function fetchReplays() {
-    totalReplays.value = await window.replays.getTotalReplayCount();
+    totalReplays.value = await db.replays.count();
+    // replays.value = await window.replays.getReplays({
+    //     offset: offset.value,
+    //     limit: limit.value,
+    //     endedNormally: endedNormally.value,
+    //     sortField: sortField.value,
+    //     sortOrder: sortOrder.value,
+    // });
 
-    replays.value = await window.replays.getReplays({
-        offset: offset.value,
-        limit: limit.value,
-        endedNormally: endedNormally.value,
-        sortField: sortField.value,
-        sortOrder: sortOrder.value,
-    });
+    // paginate replays with dixie.js
+    replays.value = await db.replays
+        // .where({ gameEndedNormally: endedNormally.value })
+        // .offset(offset.value)
+        // .limit(limit.value)
+        .toArray();
 
     if (selectedReplay.value === null) {
         selectedReplay.value = replays.value[0];
@@ -160,8 +167,7 @@ function refresh() {
 }
 
 function openReplaysFolder() {
-    //TODO implement this
-    // shell.openPath(path.join(window.replays.replaysDir));
+    window.shell.openReplaysDir();
 }
 
 function watchReplay(replay: Replay) {

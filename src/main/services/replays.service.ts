@@ -5,10 +5,10 @@ import fs from "fs";
 import path from "path";
 import { delay } from "$/jaz-ts-utils/delay";
 import { isFileInUse } from "@main/utils/file";
-// import { DemoParser } from "sdfz-demo-parser";
 import { Replay } from "@main/cache/model/replay";
 import { CONTENT_PATH } from "@main/config/app";
 import { Signal } from "$/jaz-ts-utils/signal";
+import { DemoParser } from "$/sdfz-demo-parser";
 
 const replayCacheQueue: Set<string> = new Set();
 export const replaysDir = path.join(CONTENT_PATH, "demos");
@@ -23,12 +23,12 @@ async function init() {
 async function refreshCache() {
     let replayFiles = await fs.promises.readdir(replaysDir);
     replayFiles = replayFiles.filter((replayFile) => replayFile.endsWith("sdfz"));
-    const cachedReplayFiles = await cacheDb.selectFrom("replay").select(["fileName"]).execute();
-    const cachedReplayFileNames = cachedReplayFiles.map((file) => file.fileName);
-    const erroredReplayFiles = await cacheDb.selectFrom("replayError").select(["fileName"]).execute();
-    const erroredReplayFileNames = erroredReplayFiles.map((file) => file.fileName);
-    const replaysFilesToCache = replayFiles.filter((file) => !cachedReplayFileNames.includes(file) && !erroredReplayFileNames.includes(file));
-    for (const replayFileToCache of replaysFilesToCache) {
+    // const cachedReplayFiles = await cacheDb.selectFrom("replay").select(["fileName"]).execute();
+    // const cachedReplayFileNames = cachedReplayFiles.map((file) => file.fileName);
+    // const erroredReplayFiles = await cacheDb.selectFrom("replayError").select(["fileName"]).execute();
+    // const erroredReplayFileNames = erroredReplayFiles.map((file) => file.fileName);
+    // const replaysFilesToCache = replayFiles.filter((file) => !cachedReplayFileNames.includes(file) && !erroredReplayFileNames.includes(file));
+    for (const replayFileToCache of replayFiles) {
         replayCacheQueue.add(path.join(replaysDir, replayFileToCache));
     }
 }
@@ -52,13 +52,9 @@ async function startCacheReplaysRoutine() {
     }
 }
 
-// const demoParser = new DemoParser({
-//     skipPackets: true,
-// });
-
+const demoParser = new DemoParser();
 async function parseReplay(replayPath: string) {
-    // const replayData = await demoParser.parseDemo(replayPath);
-    const replayData = {} as any;
+    const replayData = await demoParser.parseDemo(replayPath);
 
     const numOfPlayers = replayData.info.players.length + replayData.info.ais.length;
     let preset: "duel" | "team" | "ffa" | "teamffa" = "duel";
@@ -110,24 +106,24 @@ async function cacheReplay(replayFilePath: string) {
                 await fs.promises.rm(replayFilePath);
             } else {
                 await fs.promises.rm(conflictingReplay.filePath);
-                await cacheDb
-                    .insertInto("replay")
-                    .values(replayData)
-                    .onConflict((oc) => oc.doUpdateSet(replayData))
-                    .execute();
+                // await cacheDb
+                //     .insertInto("replay")
+                //     .values(replayData)
+                //     .onConflict((oc) => oc.doUpdateSet(replayData))
+                //     .execute();
             }
         } else {
-            await cacheDb.insertInto("replay").values(replayData).execute();
+            // await cacheDb.insertInto("replay").values(replayData).execute();
         }
         console.debug(`Cached replay: ${replayFileName}`);
         onReplayCached.dispatch(replayData);
     } catch (err) {
         console.error(`Error caching replay: ${replayFileName}`, err);
-        await cacheDb
-            .insertInto("replayError")
-            .onConflict((oc) => oc.doNothing())
-            .values({ fileName: replayFileName })
-            .execute();
+        // await cacheDb
+        //     .insertInto("replayError")
+        //     .onConflict((oc) => oc.doNothing())
+        //     .values({ fileName: replayFileName })
+        //     .execute();
     }
 }
 
