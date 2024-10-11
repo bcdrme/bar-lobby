@@ -111,7 +111,7 @@ export async function apiInit() {
                 },
             },
         },
-        offlineMode: false,
+        offlineMode: true,
         outgoingFriendRequests: [],
         incomingFriendRequests: [],
         friends: [],

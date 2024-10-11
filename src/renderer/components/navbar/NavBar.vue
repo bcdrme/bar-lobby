@@ -117,9 +117,7 @@ const primaryRoutes = computed(() => {
             (r) =>
                 (r.meta.hide === false || r.meta.hide === undefined) &&
                 ((r.meta.devOnly && settingsStore.devMode) || !r.meta.devOnly) &&
-                (r.meta.availableOffline === undefined ||
-                    r.meta.availableOffline ||
-                    (r.meta.availableOffline === false && !offlineMode.value))
+                (r.meta.availableOffline === undefined || r.meta.availableOffline || (r.meta.availableOffline === false && !offlineMode))
         )
         .sort((a, b) => (a.meta.order ?? 99) - (b.meta.order ?? 99));
 });
@@ -130,9 +128,7 @@ const secondaryRoutes = computed(() => {
             (r) =>
                 (r.meta.hide === false || r.meta.hide === undefined) &&
                 ((r.meta.devOnly && settingsStore.devMode) || !r.meta.devOnly) &&
-                (r.meta.availableOffline === undefined ||
-                    r.meta.availableOffline ||
-                    (r.meta.availableOffline === false && !offlineMode.value))
+                (r.meta.availableOffline === undefined || r.meta.availableOffline || (r.meta.availableOffline === false && !offlineMode))
         )
         .sort((a, b) => (a.meta.order ?? 99) - (b.meta.order ?? 99));
 });
