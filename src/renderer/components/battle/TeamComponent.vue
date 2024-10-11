@@ -38,10 +38,10 @@ import SpectatorParticipant from "@renderer/components/battle/SpectatorParticipa
 import Button from "@renderer/components/controls/Button.vue";
 import { CurrentUser, User } from "@main/model/user";
 import { Bot } from "@main/game/battle/battle-types";
-import { AbstractBattle } from "@renderer/game/abstract-battle";
+import { Battle } from "@renderer/game/abstract-battle";
 
 const props = defineProps<{
-    battle: AbstractBattle;
+    battle: Battle;
     teamId: number;
     me: CurrentUser;
 }>();

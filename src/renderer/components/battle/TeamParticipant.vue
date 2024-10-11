@@ -5,11 +5,11 @@
 </template>
 
 <script lang="ts" setup>
-import { AbstractBattle } from "@main/game/battle/abstract-battle";
 import { audioApi } from "@renderer/audio/audio";
+import { Battle } from "@renderer/game/abstract-battle";
 
 const props = defineProps<{
-    battle: AbstractBattle;
+    battle: Battle;
 }>();
 
 function onMouseEnter() {

@@ -1,12 +1,20 @@
+import { EngineVersion } from "@main/cache/model/engine-version";
+import { GameVersion } from "@main/cache/model/game-version";
+import { MapData } from "@main/cache/model/map-data";
 import { Replay } from "@main/cache/model/replay";
 import Dexie, { EntityTable } from "dexie";
 
 export const db = new Dexie("BarLobby") as Dexie & {
-    replays: EntityTable<Replay, "replayId">;
+    replays: EntityTable<Replay, "filePath">;
+    maps: EntityTable<MapData, "scriptName">;
+    gameVersions: EntityTable<GameVersion, "id">;
+    engineVersions: EntityTable<EngineVersion, "id">;
 };
 
 db.version(1).stores({
-    // replays: "++replayId, gameId, fileName, filePath, engineVersion, gameVersion, mapScriptName, startTime, gameDurationMs, gameEndedNormally, chatlog, hasBots, preset, winningTeamId, teams, contenders, spectators, script, battleSettings, hostSettings, gameSettings, mapSettings",
     replays:
-        "++replayId, gameId, fileName, filePath, engineVersion, gameVersion, mapScriptName, startTime, gameDurationMs, gameEndedNormally, chatlog, hasBots, preset, winningTeamId, teams, contenders, spectators, script, battleSettings, hostSettings, gameSettings, mapSettings",
+        "gameId, fileName, filePath, engineVersion, gameVersion, mapScriptName, startTime, gameDurationMs, gameEndedNormally, chatlog, hasBots, preset, winningTeamId, teams, contenders, spectators, script, battleSettings, hostSettings, gameSettings, mapSettings",
+    maps: "scriptName, fileName, friendlyName, description, mapHardness, gravity, tidalStrength, maxMetal, extractorRadius, minWind, maxWind, width, height, minDepth, maxDepth, lastLaunched",
+    gameVersions: "id, md5, lastLaunched, ais",
+    engineVersions: "id, lastLaunched, ais",
 });

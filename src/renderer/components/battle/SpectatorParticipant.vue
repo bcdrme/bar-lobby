@@ -17,13 +17,13 @@ import TeamParticipant from "@renderer/components/battle/TeamParticipant.vue";
 import ContextMenu from "@renderer/components/common/ContextMenu.vue";
 import Flag from "@renderer/components/misc/Flag.vue";
 import { User } from "@main/model/user";
-import { AbstractBattle } from "@main/game/battle/abstract-battle";
 import { useRouter } from "vue-router";
+import { Battle } from "@renderer/game/abstract-battle";
 
 const router = useRouter();
 
 const props = defineProps<{
-    battle: AbstractBattle;
+    battle: Battle;
     player: User;
 }>();
 

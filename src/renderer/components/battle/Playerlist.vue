@@ -49,10 +49,10 @@ import { CurrentUser, User } from "@main/model/user";
 import { EngineAI } from "@main/cache/model/engine-version";
 import { GameAI } from "@main/cache/model/game-version";
 import { Bot, Faction } from "@main/game/battle/battle-types";
-import { AbstractBattle } from "@main/game/battle/abstract-battle";
+import { Battle } from "@renderer/game/abstract-battle";
 
 const props = defineProps<{
-    battle: AbstractBattle;
+    battle: Battle;
     me: CurrentUser;
 }>();
 const botListOpen = ref(false);

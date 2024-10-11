@@ -22,10 +22,10 @@ import { ref } from "vue";
 
 import Textbox from "@renderer/components/controls/Textbox.vue";
 import { CurrentUser } from "@main/model/user";
-import { AbstractBattle } from "@renderer/game/abstract-battle";
+import { Battle } from "@renderer/game/abstract-battle";
 
 const props = defineProps<{
-    battle: AbstractBattle;
+    battle: Battle;
     me: CurrentUser;
 }>();
 const titleLength = computed(() => props.battle.battleOptions.title.length);

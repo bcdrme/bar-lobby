@@ -70,15 +70,12 @@
                     </div>
                 </div>
                 <div class="right">
-                    <!-- TODO depends on abstractBattle -->
-                    <!-- <BattlePreview v-if="selectedReplay" :battle="selectedReplay" :showSpoilers="showSpoilers">
-                <template #actions="{ battle }">
-                    <template v-if="isReplay(battle)">
-                        <Button class="green flex-grow" @click="watchReplay(battle)">Watch</Button>
-                        <Button @click="showReplayFile(battle)">Show File</Button>
-                    </template>
-                </template>
-            </BattlePreview> -->
+                    <BattlePreview v-if="selectedReplay" :battle="selectedReplay" :showSpoilers="showSpoilers">
+                        <template #actions="{ battle }">
+                            <Button class="green flex-grow" @click="watchReplay(battle)">Watch</Button>
+                            <Button @click="showReplayFile(battle)">Show File</Button>
+                        </template>
+                    </BattlePreview>
                 </div>
             </div>
         </Panel>
@@ -107,10 +104,11 @@ import Button from "@renderer/components/controls/Button.vue";
 import Checkbox from "@renderer/components/controls/Checkbox.vue";
 import TriStateCheckbox from "@renderer/components/controls/TriStateCheckbox.vue";
 import { getFriendlyDuration } from "@renderer/utils/misc";
-import { Replay } from "@main/cache/model/replay";
+import { isReplay, Replay } from "@main/cache/model/replay";
 import DataTable, { DataTablePageEvent, DataTableStateEvent } from "primevue/datatable";
 import Panel from "@renderer/components/common/Panel.vue";
 import { db } from "@renderer/store/db";
+import BattlePreview from "@renderer/components/battle/BattlePreview.vue";
 
 const endedNormally: Ref<boolean | null> = ref(true);
 const showSpoilers = ref(true);

@@ -1,13 +1,12 @@
 <template>
     <div class="flex-col gap-md fullheight">
         <MapOverviewCard :map="map" :friendlyName="mapName" />
-
         <div class="teams scroll-container">
             <div v-if="isFFA">
                 <div class="team-title">Players</div>
                 <div class="contenders">
                     <template v-if="isBattle(battle)">
-                        <template v-for="(contender, i) in battle.contenders.value" :key="`contender${i}`">
+                        <template v-for="(contender, i) in battle.contenders" :key="`contender${i}`">
                             <BattlePreviewParticipant :contender="contender" />
                         </template>
                     </template>
@@ -24,7 +23,6 @@
                     </template>
                 </div>
             </div>
-
             <div v-for="[teamId, contenders] in teams" v-else :key="`team${teamId}`">
                 <div class="team-title">
                     <div>Team {{ teamId + 1 }}</div>
@@ -43,19 +41,17 @@
                     />
                 </div>
             </div>
-
-            <div v-if="isReplay(battle) ? battle.spectators.length : battle.spectators.value.length">
+            <div v-if="isReplay(battle) ? battle.spectators.length : battle.spectators.length">
                 <div class="team-title">Spectators</div>
                 <div class="contenders">
                     <BattlePreviewParticipant
-                        v-for="(spectator, spectatorIndex) in isReplay(battle) ? battle.spectators : battle.spectators.value"
+                        v-for="(spectator, spectatorIndex) in isReplay(battle) ? battle.spectators : battle.spectators"
                         :key="`spectator${spectatorIndex}`"
                         :contender="spectator"
                     />
                 </div>
             </div>
         </div>
-
         <div class="flex-row flex-bottom gap-md">
             <slot name="actions" :battle="battle"></slot>
         </div>
@@ -70,63 +66,69 @@ import { computed, ComputedRef } from "vue";
 
 import BattlePreviewParticipant from "@renderer/components/battle/BattlePreviewParticipant.vue";
 import MapOverviewCard from "@renderer/components/maps/MapOverviewCard.vue";
-import { Replay } from "@main/cache/model/replay";
+import { isReplay, Replay } from "@main/cache/model/replay";
 import { StartBox, StartPosType } from "@main/game/battle/battle-types";
-import { asyncComputed } from "@vueuse/core";
-import { AbstractBattle } from "@renderer/game/abstract-battle";
+import { Battle, isBattle } from "@renderer/game/abstract-battle";
+import { mapsStore } from "@renderer/store/maps.store";
 
 const props = defineProps<{
-    battle: AbstractBattle | Replay;
+    battle: Battle | Replay;
     showSpoilers?: boolean;
 }>();
 
-const map = asyncComputed(async () => {
-    return props.battle instanceof AbstractBattle
-        ? await window.maps.getMapByScriptName(props.battle.battleOptions.map)
-        : await window.maps.getMapByScriptName(props.battle.mapScriptName);
+const map = computed(() => {
+    return mapsStore.installedMaps.at(0);
+    // return props.battle instanceof Battle
+    //     ? await window.maps.getMapByScriptName(props.battle.battleOptions.map)
+    //     : await window.maps.getMapByScriptName(props.battle.mapScriptName);
 });
 
 const mapName = computed(() => {
-    return props.battle instanceof AbstractBattle ? props.battle.battleOptions.map : props.battle.mapScriptName;
+    return "";
+    // return props.battle instanceof Battle ? props.battle.battleOptions.map : props.battle.mapScriptName;
 });
 
-const gameVersion = computed(() =>
-    props.battle instanceof AbstractBattle ? props.battle.battleOptions.gameVersion : props.battle.gameVersion
+const gameVersion = computed(
+    () => ""
+    //(props.battle instanceof Battle ? props.battle.battleOptions.gameVersion : props.battle.gameVersion)
 );
 
-const engineVersion = computed(() =>
-    props.battle instanceof AbstractBattle ? props.battle.battleOptions.engineVersion : props.battle.engineVersion
+const engineVersion = computed(
+    () => ""
+    // props.battle instanceof Battle ? props.battle.battleOptions.engineVersion : props.battle.engineVersion
 );
 
 const isFFA = computed(() => {
-    if (props.battle instanceof AbstractBattle) {
-        // TODO: get preset from spads/server
-        return false;
-    } else {
-        return props.battle.preset === "ffa";
-    }
+    return false;
+    // if (props.battle instanceof Battle) {
+    //     // TODO: get preset from spads/server
+    //     return false;
+    // } else {
+    //     return props.battle.preset === "ffa";
+    // }
 });
 
 const teams = computed(() => {
-    if (isBattle(props.battle)) {
-        const teams = groupBy(props.battle.contenders.value, (contender) =>
-            isUser(contender) ? contender.battleStatus.teamId : contender.teamId
-        );
-        const sortedTeams = new Map([...teams.entries()].sort());
-        return sortedTeams;
-    } else {
-        const teams = groupBy(props.battle.contenders, (contender) => contender.allyTeamId);
-        const sortedTeams = new Map([...teams.entries()].sort());
-        return sortedTeams;
-        // const orderedTeams = new Map<number, (User | Bot)[]>();
-        // for (const contender of props.battle.contenders) {
-        //     if (!orderedTeams[contender.allyTeamId]) {
-        //         orderedTeams[contender.allyTeamId] = [];
-        //     }
-        //     orderedTeams[contender.allyTeamId].push(contender);
-        // }
-        // return orderedTeams;
-    }
+    return [];
+    // if (isBattle(props.battle)) {
+    //     const teams = groupBy(props.battle.contenders.value, (contender) =>
+    //         isUser(contender) ? contender.battleStatus.teamId : contender.teamId
+    //     );
+    //     const sortedTeams = new Map([...teams.entries()].sort());
+    //     return sortedTeams;
+    // } else {
+    //     const teams = groupBy(props.battle.contenders, (contender) => contender.allyTeamId);
+    //     const sortedTeams = new Map([...teams.entries()].sort());
+    //     return sortedTeams;
+    //     // const orderedTeams = new Map<number, (User | Bot)[]>();
+    //     // for (const contender of props.battle.contenders) {
+    //     //     if (!orderedTeams[contender.allyTeamId]) {
+    //     //         orderedTeams[contender.allyTeamId] = [];
+    //     //     }
+    //     //     orderedTeams[contender.allyTeamId].push(contender);
+    //     // }
+    //     // return orderedTeams;
+    // }
 });
 
 const startPosType: ComputedRef<StartPosType> = computed(() => {
@@ -142,30 +144,30 @@ const startBoxes = computed(() => {
         return undefined;
     }
     const startBoxes: Record<number, StartBox | undefined> = {};
-    teams.value.forEach((team) => {
-        if (team.startBox) {
-            startBoxes[team.allyTeamId] = {
-                xPercent: team.startBox.left,
-                yPercent: team.startBox.top,
-                widthPercent: team.startBox.right - team.startBox.left,
-                heightPercent: team.startBox.bottom - team.startBox.top,
-            };
-        }
-    });
+    // teams.value.forEach((team) => {
+    //     if (team.startBox) {
+    //         startBoxes[team.allyTeamId] = {
+    //             xPercent: team.startBox.left,
+    //             yPercent: team.startBox.top,
+    //             widthPercent: team.startBox.right - team.startBox.left,
+    //             heightPercent: team.startBox.bottom - team.startBox.top,
+    //         };
+    //     }
+    // });
     return startBoxes;
 });
 
 const startPositions = computed(() => {
-    const contenders = isBattle(props.battle) ? props.battle.contenders.value : props.battle.contenders;
-    return contenders.map((contender) => {
-        if (!contender.startPos) {
-            return;
-        }
-        return {
-            position: contender.startPos,
-            rgbColor: contender.rgbColor,
-        };
-    });
+    // const contenders = isBattle(props.battle) ? props.battle.contenders.value : props.battle.contenders;
+    // return contenders.map((contender) => {
+    //     if (!contender.startPos) {
+    //         return;
+    //     }
+    //     return {
+    //         position: contender.startPos,
+    //         rgbColor: contender.rgbColor,
+    //     };
+    // });
 });
 </script>
 

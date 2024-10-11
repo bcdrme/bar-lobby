@@ -226,10 +226,10 @@ import { asyncComputed } from "@vueuse/core";
 import { StartPosType } from "@main/game/battle/battle-types";
 import { gameStore } from "@renderer/store/game.store";
 import { getMapByScriptName } from "@renderer/store/maps.store";
-import { AbstractBattle } from "@renderer/game/abstract-battle";
+import { Battle } from "@renderer/game/abstract-battle";
 
 const props = defineProps<{
-    battle: AbstractBattle;
+    battle: Battle;
     me: CurrentUser;
 }>();
 

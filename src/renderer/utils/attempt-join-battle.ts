@@ -1,7 +1,7 @@
 import Password from "@renderer/components/prompts/Password.vue";
-import { OfflineBattle } from "@renderer/game/offline-battle";
+import { Battle } from "@renderer/game/abstract-battle";
 
-export async function attemptJoinBattle(battle: OfflineBattle) {
+export async function attemptJoinBattle(battle: Battle) {
     if (battle.battleOptions.passworded) {
         const data = await api.prompt({
             title: "Battle Password",

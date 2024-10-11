@@ -34,12 +34,12 @@ import ContextMenu from "@renderer/components/common/ContextMenu.vue";
 import Flag from "@renderer/components/misc/Flag.vue";
 import { User } from "@main/model/user";
 import { useRouter } from "vue-router";
-import { AbstractBattle } from "@renderer/game/abstract-battle";
+import { Battle } from "@renderer/game/abstract-battle";
 
 const router = useRouter();
 
 const props = defineProps<{
-    battle: AbstractBattle;
+    battle: Battle;
     player: User;
 }>();
 

@@ -85,9 +85,7 @@
         <div v-if="!loading" class="right">
             <BattlePreview v-if="selectedBattle" :battle="selectedBattle">
                 <template #actions="{ battle }">
-                    <template v-if="isOfflineBattle(battle)">
-                        <Button class="green flex-grow" @click="attemptJoinBattle(battle)">Join</Button>
-                    </template>
+                    <Button class="green flex-grow" @click="attemptJoinBattle(battle)">Join</Button>
                 </template>
             </BattlePreview>
         </div>
@@ -119,14 +117,14 @@ import Checkbox from "@renderer/components/controls/Checkbox.vue";
 import SearchBox from "@renderer/components/controls/SearchBox.vue";
 import { attemptJoinBattle } from "@renderer/utils/attempt-join-battle";
 import { getFriendlyDuration } from "@renderer/utils/misc";
-import { OfflineBattle } from "@renderer/game/offline-battle";
+import { Battle } from "@renderer/game/abstract-battle";
 
 const loading = ref(false);
 const intervalId = ref(0);
 const active = ref(true);
 const hostBattleOpen = ref(false);
 const searchVal = ref("");
-const selectedBattle: Ref<OfflineBattle | null> = shallowRef(null);
+const selectedBattle: Ref<Battle | null> = shallowRef(null);
 const settings = api.settings.model;
 
 interface ScoredOfflineBattle extends OfflineBattle {

@@ -1,4 +1,4 @@
-import { DemoModel } from "$/sdfz-demo-parser/demo-model";
+import { DemoModel } from "$/sdfz-demo-parser";
 import { Generated, Selectable } from "kysely";
 
 export interface ReplayTable {
@@ -24,7 +24,7 @@ export interface ReplayTable {
     hostSettings: Record<string, string>;
     gameSettings: Record<string, string>;
     mapSettings: Record<string, string>;
-};
+}
 
 export type Replay = Selectable<ReplayTable>;
 export function isReplay(replay: any): replay is Replay {

@@ -2,8 +2,7 @@
 import { assign } from "$/jaz-ts-utils/object";
 import { StartPosType } from "@main/game/battle/battle-types";
 import { StartScriptTypes } from "@main/model/start-script";
-import { AbstractBattle } from "@renderer/game/abstract-battle";
-import { OfflineBattle } from "@renderer/game/offline-battle";
+import { Battle } from "@renderer/game/abstract-battle";
 
 /**
  * https://springrts.com/wiki/Script.txt
@@ -13,12 +12,12 @@ import { OfflineBattle } from "@renderer/game/offline-battle";
  * - parse and convert restrictions
  */
 class StartScriptConverter {
-    public generateScriptStr(battle: AbstractBattle): string {
+    public generateScriptStr(battle: Battle): string {
         let scriptStr = "";
-        if (battle instanceof OfflineBattle) {
-            const script = this.offlineBattleToStartScript(battle);
-            scriptStr = this.generateScriptString(script);
-        }
+        // if (battle instanceof OfflineBattle) {
+        const script = this.offlineBattleToStartScript(battle);
+        scriptStr = this.generateScriptString(script);
+        // }
         return scriptStr;
     }
 
@@ -30,7 +29,7 @@ class StartScriptConverter {
         return obj;
     }
 
-    protected offlineBattleToStartScript(battle: AbstractBattle): StartScriptTypes.Game {
+    protected offlineBattleToStartScript(battle: Battle): StartScriptTypes.Game {
         const allyTeams: StartScriptTypes.AllyTeam[] = [];
         const teams: StartScriptTypes.Team[] = [];
         const players: StartScriptTypes.Player[] = [];
@@ -39,75 +38,77 @@ class StartScriptConverter {
         let allyTeamId = 0;
         let playerId = 0;
 
-        battle.teams.forEach((allyTeamConfig) => {
-            const allyTeam: StartScriptTypes.AllyTeam = {
-                id: allyTeamId,
-                numallies: 0,
-            };
-            allyTeams.push(allyTeam);
-            allyTeamId++;
+        //TODO teams
+        // battle.teams.forEach((allyTeamConfig) => {
+        //     const allyTeam: StartScriptTypes.AllyTeam = {
+        //         id: allyTeamId,
+        //         numallies: 0,
+        //     };
+        //     allyTeams.push(allyTeam);
+        //     allyTeamId++;
 
-            if (battle.battleOptions.startPosType === StartPosType.Boxes) {
-                const box = battle.battleOptions.startBoxes[allyTeam.id];
-                if (box) {
-                    assign(allyTeam, {
-                        startrectleft: box.xPercent,
-                        startrecttop: box.yPercent,
-                        startrectright: box.xPercent + box.widthPercent,
-                        startrectbottom: box.yPercent + box.heightPercent,
-                    });
-                } else {
-                    console.warn(`Ally team ${allyTeam.id} has no defined start area for this map`);
-                }
-            }
+        //     if (battle.battleOptions.startPosType === StartPosType.Boxes) {
+        //         const box = battle.battleOptions.startBoxes[allyTeam.id];
+        //         if (box) {
+        //             assign(allyTeam, {
+        //                 startrectleft: box.xPercent,
+        //                 startrecttop: box.yPercent,
+        //                 startrectright: box.xPercent + box.widthPercent,
+        //                 startrectbottom: box.yPercent + box.heightPercent,
+        //             });
+        //         } else {
+        //             console.warn(`Ally team ${allyTeam.id} has no defined start area for this map`);
+        //         }
+        //     }
 
-            allyTeamConfig.forEach((contender) => {
-                const contenderOptions = "userId" in contender ? contender.battleStatus : contender;
+        //     allyTeamConfig.forEach((contender) => {
+        //         const contenderOptions = "userId" in contender ? contender.battleStatus : contender;
 
-                const team: StartScriptTypes.Team = {
-                    id: contenderOptions.playerId,
-                    allyteam: contenderOptions.teamId,
-                    teamleader: 0,
-                    advantage: contenderOptions.advantage,
-                    handicap: contenderOptions.handicap,
-                    incomemultiplier: contenderOptions.incomeMultiplier,
-                    startposx: contenderOptions.startPos?.x,
-                    startposz: contenderOptions.startPos?.z,
-                };
-                teams.push(team);
+        //         const team: StartScriptTypes.Team = {
+        //             id: contenderOptions.playerId,
+        //             allyteam: contenderOptions.teamId,
+        //             teamleader: 0,
+        //             advantage: contenderOptions.advantage,
+        //             handicap: contenderOptions.handicap,
+        //             incomemultiplier: contenderOptions.incomeMultiplier,
+        //             startposx: contenderOptions.startPos?.x,
+        //             startposz: contenderOptions.startPos?.z,
+        //         };
+        //         teams.push(team);
 
-                if ("userId" in contender) {
-                    const player: StartScriptTypes.Player = {
-                        id: contenderOptions.playerId,
-                        team: team.id,
-                        name: api.session.getUserById(contender.userId)?.username || "Player",
-                        userId: contender.userId,
-                    };
-                    players.push(player);
-                    playerId++;
-                } else {
-                    const bot: StartScriptTypes.Bot = {
-                        id: contenderOptions.playerId,
-                        team: team.id,
-                        shortname: contender.aiShortName,
-                        name: contender.name,
-                        host: contender.ownerUserId,
-                        options: contender.aiOptions,
-                    };
-                    bots.push(bot);
-                }
-            });
-        });
+        //         if ("userId" in contender) {
+        //             const player: StartScriptTypes.Player = {
+        //                 id: contenderOptions.playerId,
+        //                 team: team.id,
+        //                 name: api.session.getUserById(contender.userId)?.username || "Player",
+        //                 userId: contender.userId,
+        //             };
+        //             players.push(player);
+        //             playerId++;
+        //         } else {
+        //             const bot: StartScriptTypes.Bot = {
+        //                 id: contenderOptions.playerId,
+        //                 team: team.id,
+        //                 shortname: contender.aiShortName,
+        //                 name: contender.name,
+        //                 host: contender.ownerUserId,
+        //                 options: contender.aiOptions,
+        //             };
+        //             bots.push(bot);
+        //         }
+        //     });
+        // });
 
-        battle.spectators.forEach((spectatorConfig) => {
-            const spectator: StartScriptTypes.Player = {
-                id: spectatorConfig.battleStatus.playerId,
-                spectator: 1,
-                name: api.session.getUserById(spectatorConfig.userId)?.username || "Player",
-                userId: spectatorConfig.userId,
-            };
-            players.push(spectator);
-        });
+        //TODO spectators
+        // battle.spectators.forEach((spectatorConfig) => {
+        //     const spectator: StartScriptTypes.Player = {
+        //         id: spectatorConfig.battleStatus.playerId,
+        //         spectator: 1,
+        //         name: api.session.getUserById(spectatorConfig.userId)?.username || "Player",
+        //         userId: spectatorConfig.userId,
+        //     };
+        //     players.push(spectator);
+        // });
 
         for (const bot of bots) {
             const owner = players.find((player) => player.userId === bot.host);

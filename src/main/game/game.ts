@@ -15,7 +15,7 @@ import { defaultEngineVersion } from "@main/config/default-versions";
 import { logger } from "@main/utils/logger";
 import { gameContentAPI } from "@main/content/game/game-content";
 import { CONTENT_PATH } from "@main/config/app";
-import { AbstractBattle as Battle } from "@renderer/game/abstract-battle";
+import { Battle, isBattle } from "@renderer/game/abstract-battle";
 
 const log = logger("main/game/game.ts");
 
@@ -36,7 +36,7 @@ export class GameAPI {
             let mapName: string;
             let script: string | undefined;
 
-            if (arg instanceof Battle) {
+            if (isBattle(arg)) {
                 engineVersion = arg.battleOptions.engineVersion;
                 gameVersion = arg.battleOptions.gameVersion;
                 mapName = arg.battleOptions.map;

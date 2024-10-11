@@ -4,19 +4,15 @@
 
 <template>
     <div class="flex-col flex-grow">
-        <!-- <BattleComponent v-if="battle" :battle="battle" :me="me" /> -->
-        <!-- <div v-else>Error: no offline battle set</div> -->
+        <BattleComponent v-if="battle" :battle="battle" :me="me" />
+        <div v-else>Error: no offline battle set</div>
     </div>
 </template>
 
 <script lang="ts" setup>
 import { onUnmounted } from "vue";
 
-// import BattleComponent from "@renderer/components/battle/BattleComponent.vue";
-// import { defaultBattle } from "@renderer/config/default-battle";
-
-// api.session.offlineBattle.value = defaultBattle();
-api.session.offlineBattle.open();
+import BattleComponent from "@renderer/components/battle/BattleComponent.vue";
 
 const battle = api.session.offlineBattle;
 const me = api.session.offlineUser;
