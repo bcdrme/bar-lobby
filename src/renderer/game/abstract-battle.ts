@@ -1,6 +1,5 @@
 import { User } from "@main/model/user";
 import { BattleOptions, Bot, StartPosType } from "@main/game/battle/battle-types";
-import Battle from "@renderer/views/multiplayer/battle.vue";
 
 export interface BattleConfig<T extends BattleOptions = BattleOptions> {
     battleOptions: T;
@@ -108,7 +107,8 @@ export interface Battle {
 // }
 
 export function isBattle(battle: any): battle is Battle {
-    return battle instanceof Battle;
+    return true;
+    // return battle instanceof Battle;
 }
 
 // export function isOfflineBattle(battle: any): battle is OfflineBattle {
