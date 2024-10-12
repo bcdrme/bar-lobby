@@ -26,10 +26,10 @@ export interface MapDataTable {
     mapInfo: DeepPartial<MapInfo> | null;
     lastLaunched: Date;
     images: {
-        textureMapPath: string;
-        heightMapPath: string;
-        metalMapPath: string;
-        typeMapPath: string;
+        texture: string;
+        height: string;
+        metal: string;
+        type: string;
     };
 }
 

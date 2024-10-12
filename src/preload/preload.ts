@@ -9,7 +9,6 @@ import { GameVersion } from "@main/cache/model/game-version";
 import { MapData } from "@main/cache/model/map-data";
 import { LuaOptionSection } from "@main/content/game/lua-options";
 import { Scenario } from "@main/content/game/scenario";
-import { MapImages } from "@main/content/maps/map-model";
 import { DownloadInfo } from "@main/content/downloads";
 import { Info } from "@main/services/info.service";
 
@@ -101,7 +100,6 @@ const mapsApi = {
     downloadMaps: (scriptNames: string[]): Promise<void> => ipcRenderer.invoke("maps:downloadMaps", scriptNames),
     getInstalledVersions: (): Promise<MapData[]> => ipcRenderer.invoke("maps:getInstalledVersions"),
     getMapByScriptName: (scriptName: string): Promise<MapData> => ipcRenderer.invoke("maps:getMapByScriptName", scriptName),
-    getMapImages: (mapData: MapData | undefined): Promise<MapImages> => ipcRenderer.invoke("maps:getMapImages", mapData),
     isVersionInstalled: (id: string): Promise<boolean> => ipcRenderer.invoke("maps:isVersionInstalled", id),
     attemptCacheErrorMaps: (): Promise<void> => ipcRenderer.invoke("maps:attemptCacheErrorMaps"),
 

@@ -265,10 +265,3 @@ export const defaultWaterOptions: Optionals<WaterOptions> = {
     rgbColor: { r: 33, g: 35, b: 77 },
     rgbModifier: { r: 1, g: 1.2, b: 1 },
 };
-
-export interface MapImages {
-    textureImagePath: string;
-    heightImagePath: string;
-    metalImagePath: string;
-    typeImagePath: string;
-}

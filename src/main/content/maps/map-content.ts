@@ -8,10 +8,8 @@ import { Signal } from "$/jaz-ts-utils/signal";
 import { removeFromArray } from "$/jaz-ts-utils/object";
 import { delay } from "$/jaz-ts-utils/delay";
 import { PrDownloaderAPI } from "@main/content/pr-downloader";
-import { MapImages } from "@main/content/maps/map-model";
 import { CONTENT_PATH } from "@main/config/app";
 import { asyncParseMap } from "@main/content/maps/parse-map";
-import { DownloadInfo } from "@main/content/downloads";
 
 const log = logger("map-content.ts");
 
@@ -22,13 +20,11 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
     public readonly onMapCached: Signal<MapData> = new Signal();
 
     protected readonly mapsDir = path.join(CONTENT_PATH, "maps");
-    protected readonly mapImagesDir = path.join(CONTENT_PATH, "map-images");
     protected readonly mapCacheQueue: Set<string> = new Set();
     protected cachingMaps = false;
 
     public override async init() {
         await fs.promises.mkdir(this.mapsDir, { recursive: true });
-        await fs.promises.mkdir(this.mapImagesDir, { recursive: true });
         const maps = await cacheDb.selectFrom("map").selectAll().execute();
         this.installedVersions.push(...maps);
         await this.queueMapsToCache();
@@ -69,24 +65,6 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
         await this.queueMapsToCache();
     }
 
-    public getMapImages(mapData: MapData | undefined) {
-        if (!mapData) {
-            return {
-                textureImagePath: "/src/renderer/assets/images/default-minimap.png",
-                heightImagePath: "/src/renderer/assets/images/default-minimap.png",
-                metalImagePath: "/src/renderer/assets/images/default-minimap.png",
-                typeImagePath: "/src/renderer/assets/images/default-minimap.png",
-            };
-        }
-        const fileNameWithoutExt = path.parse(mapData.fileName).name;
-        return {
-            textureImagePath: path.join(this.mapImagesDir, `${fileNameWithoutExt}-texture.jpg`),
-            heightImagePath: path.join(this.mapImagesDir, `${fileNameWithoutExt}-height.jpg`),
-            metalImagePath: path.join(this.mapImagesDir, `${fileNameWithoutExt}-metal.jpg`),
-            typeImagePath: path.join(this.mapImagesDir, `${fileNameWithoutExt}-type.jpg`),
-        } as MapImages;
-    }
-
     public async attemptCacheErrorMaps() {
         await cacheDb.deleteFrom("mapError").execute();
         await this.queueMapsToCache();
@@ -118,11 +96,6 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
     }
 
     protected async uncacheMap(fileName: string) {
-        const fileNameWithoutExt = path.parse(fileName).name;
-        await fs.promises.rm(path.join(this.mapImagesDir, `${fileNameWithoutExt}-texture.jpg`), { force: true });
-        await fs.promises.rm(path.join(this.mapImagesDir, `${fileNameWithoutExt}-height.jpg`), { force: true });
-        await fs.promises.rm(path.join(this.mapImagesDir, `${fileNameWithoutExt}-metal.jpg`), { force: true });
-        await fs.promises.rm(path.join(this.mapImagesDir, `${fileNameWithoutExt}-type.jpg`), { force: true });
         await cacheDb.deleteFrom("map").where("fileName", "=", fileName).execute();
         const index = this.installedVersions.findIndex((map) => map.fileName === fileName);
         if (index) {
@@ -161,20 +134,20 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
             const mapPath = path.join(this.mapsDir, mapFileName);
 
             log.debug(`Trying to parse map asynchronously: ${mapFileName}`);
-            const parsedMap = await asyncParseMap(mapPath, this.mapImagesDir);
+            const mapData = await asyncParseMap(mapPath);
             log.debug(`Parsed map: ${mapFileName}`);
-            const mapData = await cacheDb
-                .insertInto("map")
-                .values({
-                    ...parsedMap,
-                    lastLaunched: new Date(),
-                })
-                .onConflict((oc) => {
-                    const { scriptName, fileName, ...nonUniqueValues } = parsedMap;
-                    return oc.doUpdateSet(nonUniqueValues);
-                })
-                .returningAll()
-                .executeTakeFirst();
+            // const mapData = await cacheDb
+            //     .insertInto("map")
+            //     .values({
+            //         ...parsedMap,
+            //         lastLaunched: new Date(),
+            //     })
+            //     .onConflict((oc) => {
+            //         const { scriptName, fileName, ...nonUniqueValues } = parsedMap;
+            //         return oc.doUpdateSet(nonUniqueValues);
+            //     })
+            //     .returningAll()
+            //     .executeTakeFirst();
             this.installedVersions.push(mapData);
             const cachedMapDownloadInfo = this.currentDownloads.find((download) => download.name === mapData.scriptName);
             this.onDownloadComplete.dispatch(cachedMapDownloadInfo);

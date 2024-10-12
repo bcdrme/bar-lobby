@@ -1,6 +1,6 @@
 <template>
     <div class="map">
-        <div class="background" :style="`background-image: url('bar://${map.images.textureMapPath}')`"></div>
+        <div class="background" :style="`background-image: url('${imageUrl}')`"></div>
         <div class="name">
             {{ map.friendlyName ?? friendlyName }}
         </div>
@@ -12,14 +12,14 @@
 
 <script lang="ts" setup>
 import { MapData } from "@main/cache/model/map-data";
-import { computed, toRaw } from "vue";
 
 const props = defineProps<{
     map: MapData;
     friendlyName: string;
 }>();
 
-const mapSize = computed(() => (props.map ? props.map.width + "x" + props.map.height : "Unknown"));
+const mapSize = props.map.width + "x" + props.map.height;
+const imageUrl = props.map.images.texture;
 </script>
 
 <style lang="scss" scoped>

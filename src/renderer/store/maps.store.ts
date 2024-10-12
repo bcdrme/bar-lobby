@@ -14,7 +14,6 @@ export async function initMapsStore() {
         db.maps.add(mapData);
     });
     const currentMaps = await window.maps.getInstalledVersions();
-    await db.maps.clear();
-    await db.maps.bulkAdd(currentMaps);
+    await db.maps.bulkPut(currentMaps);
     mapsStore.isInitialized = true;
 }

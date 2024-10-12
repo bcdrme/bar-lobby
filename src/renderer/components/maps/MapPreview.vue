@@ -97,7 +97,7 @@ async function setMapImage() {
     if (mapSprite) {
         app.stage.removeChild(mapSprite);
     }
-    const texture = await Assets.load<Texture>(`bar://${props.map.images.textureMapPath}`);
+    const texture = await Assets.load<Texture>(props.map.images.texture);
     mapSprite = Sprite.from(texture);
     mapSprite.setSize({
         width: props.map.width * MIPMAP_SIZE * 16,

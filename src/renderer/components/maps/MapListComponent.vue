@@ -11,7 +11,7 @@
                     <TransitionGroup name="maps-list">
                         <MapOverviewCard
                             v-for="(map, i) in maps"
-                            :key="i"
+                            :key="map.scriptName"
                             :map="map"
                             :friendlyName="map.friendlyName"
                             @click="mapSelected(map)"

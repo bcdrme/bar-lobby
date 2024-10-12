@@ -53,9 +53,9 @@ import { computed, ref, watch } from "vue";
 
 import Button from "@renderer/components/controls/Button.vue";
 import MapPreview from "@renderer/components/maps/MapPreview.vue";
-import { mapsStore } from "@renderer/store/maps.store";
 import { MapData } from "@main/cache/model/map-data";
 import Panel from "@renderer/components/common/Panel.vue";
+import { db } from "@renderer/store/db";
 
 const props = defineProps<{
     id: string;
@@ -64,8 +64,8 @@ const props = defineProps<{
 const map = ref<MapData>();
 watch(
     () => props.id,
-    () => {
-        map.value = mapsStore.installedMaps.find((m) => m.scriptName === props.id);
+    async () => {
+        map.value = await db.maps.get(props.id);
     },
     { immediate: true }
 );

@@ -13,29 +13,13 @@ const mapParser = new MapParser({
     mipmapSize: MIPMAP_SIZE,
 });
 
-export const parseMap = async (mapPath: string, mapImagesPath: string) => {
+export const parseMap = async (mapPath: string) => {
     const map = await mapParser.parseMap(mapPath);
-    const fileNameWithoutExt = path.parse(mapPath).name;
 
-    const textureJpg = await map.textureMap!.getBuffer("image/jpeg", { quality: 80 });
-    const textureMapPath = path.join(mapImagesPath, `${fileNameWithoutExt}-texture.jpg`);
-    await fs.promises.writeFile(textureMapPath, textureJpg);
-    log.debug(`Wrote texture jpg for ${fileNameWithoutExt} to ${mapImagesPath}`);
-
-    const metalJpg = await map.metalMap.getBuffer("image/jpeg", { quality: 80 });
-    const metalMapPath = path.join(mapImagesPath, `${fileNameWithoutExt}-metal.jpg`);
-    await fs.promises.writeFile(metalMapPath, metalJpg);
-    log.debug(`Wrote metal jpg for ${fileNameWithoutExt} to ${mapImagesPath}`);
-
-    const heightJpg = await map.heightMap.getBuffer("image/jpeg", { quality: 80 });
-    const heightMapPath = path.join(mapImagesPath, `${fileNameWithoutExt}-height.jpg`);
-    await fs.promises.writeFile(heightMapPath, heightJpg);
-    log.debug(`Wrote height jpg for ${fileNameWithoutExt} to ${mapImagesPath}`);
-
-    const typeJpg = await map.typeMap.getBuffer("image/jpeg", { quality: 80 });
-    const typeMapPath = path.join(mapImagesPath, `${fileNameWithoutExt}-type.jpg`);
-    await fs.promises.writeFile(typeMapPath, typeJpg);
-    log.debug(`Wrote type jpg for ${fileNameWithoutExt} to ${mapImagesPath}`);
+    const texture = await map.textureMap!.getBase64("image/jpeg", { quality: 80 });
+    const metal = await map.metalMap!.getBase64("image/jpeg", { quality: 80 });
+    const height = await map.heightMap.getBase64("image/jpeg", { quality: 80 });
+    const type = await map.typeMap.getBase64("image/jpeg", { quality: 80 });
 
     return {
         fileName: path.parse(mapPath).base,
@@ -56,18 +40,18 @@ export const parseMap = async (mapPath: string, mapImagesPath: string) => {
         maxDepth: map.maxHeight,
         mapInfo: map.mapInfo || null,
         images: {
-            textureMapPath,
-            metalMapPath,
-            heightMapPath,
-            typeMapPath,
+            texture,
+            metal,
+            height,
+            type,
         },
     } as MapData;
 };
 
-export function asyncParseMap(mapPath: string, mapImagePath: string) {
+export function asyncParseMap(mapPath: string) {
     return new Promise<MapData>((resolve, reject) => {
         const worker = new Worker(path.join(__dirname, "parse-map-worker.js"), {
-            workerData: { mapPath, mapImagePath },
+            workerData: { mapPath },
         });
         worker.on("message", resolve);
         worker.on("error", reject);

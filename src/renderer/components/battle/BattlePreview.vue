@@ -69,13 +69,14 @@ import { isReplay, Replay } from "@main/cache/model/replay";
 import { StartBox, StartPosType } from "@main/game/battle/battle-types";
 import { Battle, isBattle } from "@renderer/game/abstract-battle";
 import { db } from "@renderer/store/db";
+import { computedAsync } from "@vueuse/core";
 
 const props = defineProps<{
     battle: Battle | Replay;
     showSpoilers?: boolean;
 }>();
 
-const map = computed(async () => {
+const map = computedAsync(async () => {
     const allMaps = await db.maps.toArray();
     return allMaps.at(0);
     // return props.battle instanceof Battle
