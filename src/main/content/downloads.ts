@@ -3,7 +3,6 @@ export type DownloadInfo = {
     name: string;
     currentBytes: number;
     totalBytes: number;
-    caching: boolean;
 };
 
 export type SpringFilesMapMeta = {

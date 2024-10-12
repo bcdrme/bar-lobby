@@ -16,6 +16,9 @@ function registerIpcHandlers(mainWindow: Electron.BrowserWindow) {
     ipcMain.handle("maps:attemptCacheErrorMaps", () => mapContentAPI.attemptCacheErrorMaps());
 
     // Events
+    mapContentAPI.onMapCachingStarted.add((filename: string) => {
+        mainWindow.webContents.send("maps:mapCachingStarted", filename);
+    });
     mapContentAPI.onMapCached.add((mapData: MapData) => {
         mainWindow.webContents.send("maps:mapCached", mapData);
     });

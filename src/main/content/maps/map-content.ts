@@ -17,6 +17,7 @@ const log = logger("map-content.ts");
  * @todo replace queue method with syncMapCache function once prd returns map file name
  */
 export class MapContentAPI extends PrDownloaderAPI<MapData> {
+    public readonly onMapCachingStarted: Signal<string> = new Signal();
     public readonly onMapCached: Signal<MapData> = new Signal();
     public readonly onMapDeleted: Signal<string> = new Signal();
 
@@ -78,8 +79,7 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
             });
         }
         const downloadInfo = await this.downloadContent("map", scriptName);
-        downloadInfo.caching = true;
-        this.onDownloadProgress.dispatch(downloadInfo);
+        this.onDownloadComplete.dispatch(downloadInfo);
     }
 
     public async attemptCacheErrorMaps() {
@@ -109,6 +109,7 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
         }
         for (const mapFileToCache of mapFiles) {
             this.mapCacheQueue.add(mapFileToCache);
+            this.onMapCachingStarted.dispatch(mapFileToCache);
         }
     }
 
@@ -141,19 +142,8 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
             console.time(`Cached: ${mapFileName}`);
             const mapPath = path.join(this.mapsDir, mapFileName);
             log.debug(`Parsing map asynchronously: ${mapFileName}`);
-            // not the best way to communicate caching started but it works for now
-            let cachedMapDownloadInfo: DownloadInfo = {
-                type: "map",
-                name: mapFileName,
-                currentBytes: 1,
-                totalBytes: 1,
-                caching: true,
-            };
-            this.onDownloadProgress.dispatch(cachedMapDownloadInfo);
             const mapData = await asyncParseMap(mapPath);
             log.debug(`Parsed map: ${mapFileName}`);
-            //TODO onDownloadComplete and onMapCached are very similar, maybe merge them
-            this.onDownloadComplete.dispatch(cachedMapDownloadInfo);
             this.onMapCached.dispatch(mapData);
             console.timeEnd(`Cached: ${mapFileName}`);
         } catch (err) {

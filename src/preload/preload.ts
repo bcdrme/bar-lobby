@@ -105,6 +105,7 @@ const mapsApi = {
     attemptCacheErrorMaps: (): Promise<void> => ipcRenderer.invoke("maps:attemptCacheErrorMaps"),
 
     // Events
+    onMapCachingStarted: (callback: (filename: string) => void) => ipcRenderer.on("maps:mapCachingStarted", (_event, filename) => callback(filename as string)),
     onMapCached: (callback: (mapData: MapData) => void) => ipcRenderer.on("maps:mapCached", (_event, mapData) => callback(mapData as MapData)),
     onMapDeleted: (callback: (filename: string) => void) => ipcRenderer.on("maps:mapDeleted", (_event, filename) => callback(filename as string)),
 };
