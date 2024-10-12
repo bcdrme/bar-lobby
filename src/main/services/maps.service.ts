@@ -7,6 +7,7 @@ function init() {
 }
 
 function registerIpcHandlers(mainWindow: Electron.BrowserWindow) {
+    ipcMain.handle("maps:sync", (_, maps: { scriptName: string; fileName: string }) => mapContentAPI.sync(maps));
     ipcMain.handle("maps:downloadMap", (_, scriptName: string) => mapContentAPI.downloadMap(scriptName));
     ipcMain.handle("maps:downloadMaps", (_, scriptNames: string[]) => mapContentAPI.downloadMaps(scriptNames));
     ipcMain.handle("maps:getInstalledVersions", () => mapContentAPI.installedVersions);
@@ -17,6 +18,9 @@ function registerIpcHandlers(mainWindow: Electron.BrowserWindow) {
     // Events
     mapContentAPI.onMapCached.add((mapData: MapData) => {
         mainWindow.webContents.send("maps:mapCached", mapData);
+    });
+    mapContentAPI.onMapDeleted.add((filename: string) => {
+        mainWindow.webContents.send("maps:mapDeleted", filename);
     });
 }
 

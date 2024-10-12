@@ -96,6 +96,7 @@ export type GameApi = typeof gameApi;
 contextBridge.exposeInMainWorld("game", gameApi);
 
 const mapsApi = {
+    sync: (maps: { scriptName: string; fileName: string }[]): Promise<void> => ipcRenderer.invoke("maps:sync", maps),
     downloadMap: (version: string): Promise<void> => ipcRenderer.invoke("maps:downloadMap", version),
     downloadMaps: (scriptNames: string[]): Promise<void> => ipcRenderer.invoke("maps:downloadMaps", scriptNames),
     getInstalledVersions: (): Promise<MapData[]> => ipcRenderer.invoke("maps:getInstalledVersions"),
@@ -105,6 +106,7 @@ const mapsApi = {
 
     // Events
     onMapCached: (callback: (mapData: MapData) => void) => ipcRenderer.on("maps:mapCached", (_event, mapData) => callback(mapData as MapData)),
+    onMapDeleted: (callback: (filename: string) => void) => ipcRenderer.on("maps:mapDeleted", (_event, filename) => callback(filename as string)),
 };
 export type MapsApi = typeof mapsApi;
 contextBridge.exposeInMainWorld("maps", mapsApi);

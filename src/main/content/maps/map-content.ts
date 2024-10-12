@@ -9,6 +9,7 @@ import { PrDownloaderAPI } from "@main/content/pr-downloader";
 import { CONTENT_PATH } from "@main/config/app";
 import { asyncParseMap } from "@main/content/maps/parse-map";
 import chokidar from "chokidar";
+import { DownloadInfo } from "@main/content/downloads";
 
 const log = logger("map-content.ts");
 
@@ -17,6 +18,7 @@ const log = logger("map-content.ts");
  */
 export class MapContentAPI extends PrDownloaderAPI<MapData> {
     public readonly onMapCached: Signal<MapData> = new Signal();
+    public readonly onMapDeleted: Signal<string> = new Signal();
 
     protected readonly mapsDir = path.join(CONTENT_PATH, "maps");
     protected readonly mapCacheQueue: Set<string> = new Set();
@@ -44,12 +46,12 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
                 const filename = path.basename(filepath);
                 this.queueMapsToCache([filename]);
             })
-            .on("unlink", (path) => {
-                if (!path.endsWith("sd7")) {
+            .on("unlink", (filepath) => {
+                if (!filepath.endsWith("sd7")) {
                     return;
                 }
-                log.debug(`Chokidar -=- Map removed: ${path}`);
-                //TODO emit signal
+                log.debug(`Chokidar -=- Map removed: ${filepath}`);
+                this.onMapDeleted.dispatch(path.basename(filepath));
             });
     }
 
@@ -62,9 +64,7 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
     }
 
     public async downloadMaps(scriptNames: string[]) {
-        log.debug(`Downloading maps: ${scriptNames}`);
-        return;
-        // return Promise.all(scriptNames.map((scriptName) => this.downloadMap(scriptName)));
+        return Promise.all(scriptNames.map((scriptName) => this.downloadMap(scriptName)));
     }
 
     public async downloadMap(scriptName: string) {
@@ -80,13 +80,20 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
         const downloadInfo = await this.downloadContent("map", scriptName);
         downloadInfo.caching = true;
         this.onDownloadProgress.dispatch(downloadInfo);
-        // TODO replaced by chokidar
-        // await this.queueMapsToCache(downloadInfo.);
     }
 
     public async attemptCacheErrorMaps() {
         throw new Error("Method not implemented.");
-        // await this.queueMapsToCache();
+    }
+
+    //Method to sync the cache with the maps folder, if the folder doesnt have the map, download it. If the folder has a map that is not in the cache, cache it.
+    public async sync(maps: { scriptName: string; fileName: string }[]) {
+        const existingFiles = await this.scanFolderForMaps();
+        const mapsToDownload = maps.filter((map) => !existingFiles.includes(map.fileName));
+        this.downloadMaps(mapsToDownload.map((map) => map.scriptName));
+        const mapFileNames = maps.map((map) => map.fileName);
+        const mapsToCache = existingFiles.filter((map) => !mapFileNames.includes(map));
+        this.queueMapsToCache(mapsToCache);
     }
 
     public async scanFolderForMaps() {
@@ -134,10 +141,17 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
             console.time(`Cached: ${mapFileName}`);
             const mapPath = path.join(this.mapsDir, mapFileName);
             log.debug(`Parsing map asynchronously: ${mapFileName}`);
+            // not the best way to communicate caching started but it works for now
+            let cachedMapDownloadInfo: DownloadInfo = {
+                type: "map",
+                name: mapFileName,
+                currentBytes: 1,
+                totalBytes: 1,
+                caching: true,
+            };
+            this.onDownloadProgress.dispatch(cachedMapDownloadInfo);
             const mapData = await asyncParseMap(mapPath);
             log.debug(`Parsed map: ${mapFileName}`);
-            const cachedMapDownloadInfo = this.currentDownloads.find((download) => download.name === mapData.scriptName);
-
             //TODO onDownloadComplete and onMapCached are very similar, maybe merge them
             this.onDownloadComplete.dispatch(cachedMapDownloadInfo);
             this.onMapCached.dispatch(mapData);

@@ -27,6 +27,8 @@ export function initDownloadsStore() {
         const index = downloadsStore.mapDownloads.findIndex((download) => download.name === downloadInfo.name);
         if (index !== -1) {
             downloadsStore.mapDownloads[index] = downloadInfo;
+        } else {
+            downloadsStore.mapDownloads.push(downloadInfo);
         }
     });
 

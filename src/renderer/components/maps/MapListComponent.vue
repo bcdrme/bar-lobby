@@ -67,6 +67,7 @@ function mapSelected(map: MapData) {
     display: grid;
     grid-gap: 15px;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    overflow: hidden;
 }
 
 // Transition

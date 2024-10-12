@@ -125,9 +125,6 @@ async function onPreloadDone() {
     if (installedEngines.length === 0) {
         state.value = "initial-setup";
     } else {
-        window.engine.downloadEngine(defaultEngineVersion);
-        window.game.downloadGame(defaultGameVersion);
-        window.maps.downloadMaps(defaultMaps);
         state.value = "default";
     }
     console.timeEnd("onPreloadDone");
