@@ -90,6 +90,7 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
     public async sync(maps: { scriptName: string; fileName: string }[]) {
         const existingFiles = await this.scanFolderForMaps();
         const mapsToDownload = maps.filter((map) => !existingFiles.includes(map.fileName));
+        mapsToDownload.forEach((map) => this.onMapDeleted.dispatch(map.fileName));
         this.downloadMaps(mapsToDownload.map((map) => map.scriptName));
         const mapFileNames = maps.map((map) => map.fileName);
         const mapsToCache = existingFiles.filter((map) => !mapFileNames.includes(map));
