@@ -1,24 +1,20 @@
 import { reactive } from "vue";
 import { MapData } from "@main/cache/model/map-data";
+import { db } from "@renderer/store/db";
 
 export const mapsStore = reactive({
     isInitialized: false,
-    installedMaps: [],
 } as {
     isInitialized: boolean;
-    installedMaps: MapData[];
 });
-
-export function getMapByScriptName(scriptName: string) {
-    return mapsStore.installedMaps.find((map) => map.scriptName === scriptName);
-}
 
 export async function initMapsStore() {
     window.maps.onMapCached((mapData: MapData) => {
         console.debug("Received map cached event", mapData);
-        mapsStore.installedMaps.push(mapData);
+        db.maps.add(mapData);
     });
     const currentMaps = await window.maps.getInstalledVersions();
-    mapsStore.installedMaps = currentMaps;
+    await db.maps.clear();
+    await db.maps.bulkAdd(currentMaps);
     mapsStore.isInitialized = true;
 }

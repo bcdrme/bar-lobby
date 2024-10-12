@@ -31,7 +31,7 @@
             <div class="flex-row gap-md">
                 <Select
                     :modelValue="battle.battleOptions.map"
-                    :options="mapsStore.installedMaps"
+                    :options="[]"
                     label="Map"
                     optionLabel="scriptName"
                     optionValue="scriptName"
@@ -204,11 +204,9 @@ import { computed, Ref, ref } from "vue";
 import { CurrentUser } from "@main/model/user";
 import { StartBoxOrientation } from "@renderer/utils/start-boxes";
 import { LuaOptionSection } from "@main/content/game/lua-options";
-import { asyncComputed } from "@vueuse/core";
 import { StartPosType } from "@main/game/battle/battle-types";
 import { gameStore } from "@renderer/store/game.store";
 import { mapsStore } from "@renderer/store/maps.store";
-import { getMapByScriptName } from "@renderer/store/maps.store";
 import { Battle } from "@renderer/game/abstract-battle";
 
 const props = defineProps<{

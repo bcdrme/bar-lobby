@@ -2,7 +2,7 @@
     <div class="flex-col gap-lg flex-grow fullheight">
         <div class="flex-row gap-md">
             <SearchBox v-model="searchVal" />
-            <Select v-model="sortMethod" :options="sortMethods" label="Sort By" />
+            <Select v-model="sortMethod" :options="sortMethods" label="Sort By" optionLabel="label" />
         </div>
 
         <div class="flex-col flex-grow fullheight">
@@ -10,7 +10,7 @@
                 <div class="maps">
                     <TransitionGroup name="maps-list">
                         <MapOverviewCard
-                            v-for="(map, i) in filteredMaps"
+                            v-for="(map, i) in maps"
                             :key="i"
                             :map="map"
                             :friendlyName="map.friendlyName"
@@ -32,55 +32,34 @@
  * - Demo map button that launches a simple offline game on the map
  */
 
-import { Ref, ref, watch } from "vue";
+import { Ref, ref } from "vue";
 
 import SearchBox from "@renderer/components/controls/SearchBox.vue";
 import Select from "@renderer/components/controls/Select.vue";
 import MapOverviewCard from "@renderer/components/maps/MapOverviewCard.vue";
 import { MapData } from "@main/cache/model/map-data";
-import { mapsStore } from "@renderer/store/maps.store";
+import { db } from "@renderer/store/db";
+import { useDexieLiveQueryWithDeps } from "@renderer/composables/useDexieLiveQuery";
 
-type SortMethod = "Name" | "Size";
+type SortMethod = { label: string; dbKey: string };
 
-const sortMethods: SortMethod[] = ["Name", "Size"];
-const sortMethod: Ref<SortMethod> = ref("Name");
+const sortMethods: SortMethod[] = [
+    { label: "Name", dbKey: "friendlyName" },
+    { label: "Size", dbKey: "width" },
+];
+const sortMethod: Ref<SortMethod> = ref(sortMethods.at(0));
 const searchVal = ref("");
 const emit = defineEmits<{
     (event: "map-selected", map: MapData): void;
 }>();
 
-const filteredMaps = ref<Array<MapData>>([]);
-
-watch(() => mapsStore.installedMaps, updateFilteredMap, { immediate: true, deep: true });
-watch(searchVal, updateFilteredMap);
-watch(sortMethod, updateFilteredMap);
-
-function updateFilteredMap() {
-    let maps: MapData[] = [];
-    Object.assign(maps, mapsStore.installedMaps);
-    if (searchVal.value.length > 0) {
-        maps = maps.filter((map: MapData) => map.friendlyName.toLowerCase().includes(searchVal.value.toLowerCase()));
-    }
-    switch (sortMethod.value) {
-        case "Name":
-            maps.sort((a, b) => {
-                return a.friendlyName.localeCompare(b.friendlyName);
-            });
-            break;
-        case "Size":
-            maps.sort((a, b) => {
-                return a.width * a.height - b.width * b.height;
-            });
-    }
-    filteredMaps.value = maps;
-}
+const maps = useDexieLiveQueryWithDeps([searchVal, sortMethod], () =>
+    db.maps.where("friendlyName").startsWithAnyOfIgnoreCase(searchVal.value).sortBy(sortMethod.value.dbKey)
+);
 
 function mapSelected(map: MapData) {
     emit("map-selected", map);
 }
-
-// Trying to smooth out initial load
-await new Promise((resolve) => setTimeout(resolve, 1000));
 </script>
 
 <style lang="scss" scoped>

@@ -61,7 +61,6 @@
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
 import trophyVariant from "@iconify-icons/mdi/trophy-variant";
-import { groupBy } from "$/jaz-ts-utils/object";
 import { computed, ComputedRef } from "vue";
 
 import BattlePreviewParticipant from "@renderer/components/battle/BattlePreviewParticipant.vue";
@@ -69,15 +68,16 @@ import MapOverviewCard from "@renderer/components/maps/MapOverviewCard.vue";
 import { isReplay, Replay } from "@main/cache/model/replay";
 import { StartBox, StartPosType } from "@main/game/battle/battle-types";
 import { Battle, isBattle } from "@renderer/game/abstract-battle";
-import { mapsStore } from "@renderer/store/maps.store";
+import { db } from "@renderer/store/db";
 
 const props = defineProps<{
     battle: Battle | Replay;
     showSpoilers?: boolean;
 }>();
 
-const map = computed(() => {
-    return mapsStore.installedMaps.at(0);
+const map = computed(async () => {
+    const allMaps = await db.maps.toArray();
+    return allMaps.at(0);
     // return props.battle instanceof Battle
     //     ? await window.maps.getMapByScriptName(props.battle.battleOptions.map)
     //     : await window.maps.getMapByScriptName(props.battle.mapScriptName);
