@@ -182,6 +182,7 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
             console.timeEnd(`Cached: ${mapFileName}`);
         } catch (err) {
             log.error(`Error parsing map: ${mapFileName}`, err);
+            log.error(err);
             await cacheDb
                 .insertInto("mapError")
                 .onConflict((oc) => oc.doNothing())

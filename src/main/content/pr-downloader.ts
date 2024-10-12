@@ -1,5 +1,5 @@
 import { spawn } from "child_process";
-import { lastInArray, removeFromArray } from "$/jaz-ts-utils/object";
+import { lastInArray } from "$/jaz-ts-utils/object";
 import os from "os";
 import path from "path";
 
@@ -8,6 +8,7 @@ import { AbstractContentAPI } from "./abstract-content";
 import { engineContentAPI } from "./engine/engine-content";
 import { logger } from "@main/utils/logger";
 import { CONTENT_PATH } from "@main/config/app";
+import { defaultEngineVersion } from "@main/config/default-versions";
 
 const log = logger("pr-downloader.ts");
 
@@ -36,7 +37,7 @@ export abstract class PrDownloaderAPI<T> extends AbstractContentAPI<T> {
     protected downloadContent(type: "game" | "map", name: string) {
         return new Promise<DownloadInfo>((resolve) => {
             log.debug(`Downloading ${name}...`);
-            const latestEngine = lastInArray(engineContentAPI.installedVersions)!.id;
+            const latestEngine = lastInArray(engineContentAPI.installedVersions)?.id || defaultEngineVersion;
             const binaryName = process.platform === "win32" ? "pr-downloader.exe" : "pr-downloader";
             const prBinaryPath = path.join(CONTENT_PATH, "engine", latestEngine, binaryName);
             const downloadArg = type === "game" ? "--download-game" : "--download-map";

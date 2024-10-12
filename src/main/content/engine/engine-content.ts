@@ -78,6 +78,7 @@ export class EngineContentAPI extends AbstractContentAPI<EngineVersion> {
                 name: engineName,
                 currentBytes: 0,
                 totalBytes: 1,
+                caching: false,
             };
             this.currentDownloads.push(downloadInfo);
             this.downloadStarted(downloadInfo);
@@ -90,6 +91,7 @@ export class EngineContentAPI extends AbstractContentAPI<EngineVersion> {
                 onDownloadProgress: (progress) => {
                     downloadInfo.currentBytes = progress.loaded;
                     downloadInfo.totalBytes = progress.total;
+                    this.downloadProgress(downloadInfo);
                 },
             });
             const engine7z = downloadResponse.data as ArrayBuffer;

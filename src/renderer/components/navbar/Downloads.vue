@@ -1,9 +1,9 @@
 <template>
     <PopOutPanel :open="modelValue">
         <Transition name="fade" mode="out-in">
-            <div v-if="downloadsStore.downloads.length" class="downloads">
+            <div v-if="downloadsStore.mapDownloads.length" class="downloads">
                 <TransitionGroup tag="div" name="downloads-list">
-                    <div v-for="(download, i) in downloadsStore.downloads" :key="i" class="downloads__download">
+                    <div v-for="(download, i) in downloadsStore.mapDownloads" :key="i" class="downloads__download">
                         <div class="downloads__info">
                             <div class="downloads__name">
                                 {{ download.name }}
@@ -27,12 +27,11 @@
 </template>
 
 <script lang="ts" setup>
-import { inject, ref, Ref, watch } from "vue";
+import { inject, Ref } from "vue";
 
 import Progress from "@renderer/components/common/Progress.vue";
 import PopOutPanel from "@renderer/components/navbar/PopOutPanel.vue";
 import { downloadsStore } from "@renderer/store/downloads.store";
-import { DownloadInfo } from "@main/content/downloads";
 
 const props = defineProps<{
     modelValue: boolean;

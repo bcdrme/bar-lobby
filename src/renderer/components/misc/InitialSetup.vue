@@ -2,67 +2,87 @@
     <div class="initial-setup fullsize flex-center">
         <h1>Initial Setup</h1>
         <h4>{{ text }}</h4>
-        <h2 v-if="downloadPercent < 1">{{ (downloadPercent * 100).toFixed(2) }}%</h2>
+        <h2 v-if="downloadPercent < 1">{{ (downloadPercent * 100).toFixed(0) }}%</h2>
     </div>
 </template>
 
 <script lang="ts" setup>
 import { defaultMaps } from "@main/config/default-maps";
 import { defaultEngineVersion, defaultGameVersion } from "@main/config/default-versions";
-import { computed, onMounted, ref } from "vue";
+import { DownloadInfo } from "@main/content/downloads";
+import { downloadsStore } from "@renderer/store/downloads.store";
+import { computed, onMounted, ref, watch } from "vue";
 
 const emit = defineEmits<{
     (event: "complete"): void;
 }>();
 
 const text = ref("");
+const state = ref<"engine" | "game" | "maps">("engine");
 
 onMounted(async () => {
     console.debug("Initial setup");
     const installedEngineVersions = await window.engine.getInstalledVersions();
     if (installedEngineVersions.length === 0) {
+        state.value = "engine";
         text.value = "Downloading engine";
         await window.engine.downloadEngine(defaultEngineVersion);
         text.value = "Installing engine";
     }
     const installedGameVersions = await window.game.getInstalledVersions();
     if (installedGameVersions.length === 0) {
+        state.value = "game";
         text.value = "Downloading game";
         await window.game.downloadGame(defaultGameVersion);
         text.value = "Installing game";
     }
     const installedMaps = await window.maps.getInstalledVersions();
     if (Object.keys(installedMaps).length === 0) {
+        state.value = "maps";
         text.value = "Downloading maps";
         await window.maps.downloadMaps(defaultMaps);
     }
     emit("complete");
 });
 
-const downloadPercent = computed(() => {
-    //TODO
-    // const downloads = api.content.engine.currentDownloads.concat(api.content.game.currentDownloads, api.content.maps.currentDownloads);
-    const downloads = [
-        {
-            currentBytes: 0,
-            totalBytes: 1,
-        },
-    ];
+const downloadPercent = ref(0);
 
+watch(
+    downloadsStore.engineDownloads,
+    () => {
+        downloadPercent.value = calculateDownloadPercent(downloadsStore.engineDownloads);
+    },
+    { deep: true }
+);
+
+watch(
+    downloadsStore.gameDownloads,
+    () => {
+        downloadPercent.value = calculateDownloadPercent(downloadsStore.gameDownloads);
+    },
+    { deep: true }
+);
+
+watch(
+    downloadsStore.mapDownloads,
+    () => {
+        downloadPercent.value = calculateDownloadPercent(downloadsStore.mapDownloads);
+    },
+    { deep: true }
+);
+
+function calculateDownloadPercent(downloads: DownloadInfo[]): number {
     if (downloads.length === 0) {
         return 1;
     }
-
     let currentBytes = 0;
     let totalBytes = 0;
-
     for (const download of downloads) {
         currentBytes += download.currentBytes;
         totalBytes += download.totalBytes;
     }
-
     return currentBytes / totalBytes || 0;
-});
+}
 </script>
 
 <style lang="scss" scoped>
