@@ -9,7 +9,6 @@ import { PrDownloaderAPI } from "@main/content/pr-downloader";
 import { CONTENT_PATH } from "@main/config/app";
 import { asyncParseMap } from "@main/content/maps/parse-map";
 import chokidar from "chokidar";
-import { DownloadInfo } from "@main/content/downloads";
 
 const log = logger("map-content.ts");
 

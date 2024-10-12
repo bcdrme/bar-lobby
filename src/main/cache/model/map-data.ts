@@ -1,9 +1,7 @@
 import type { DeepPartial } from "$/jaz-ts-utils/types";
 import { MapInfo } from "@main/content/maps/map-model";
-import { Generated, Selectable } from "kysely";
 
-export interface MapDataTable {
-    mapId: Generated<number>;
+export type MapData = {
     scriptName: string;
     fileName: string;
     friendlyName: string;
@@ -31,6 +29,4 @@ export interface MapDataTable {
         metal: string;
         type: string;
     };
-}
-
-export type MapData = Selectable<MapDataTable>;
+};
