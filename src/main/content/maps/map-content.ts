@@ -2,14 +2,13 @@ import * as fs from "fs";
 import * as path from "path";
 
 import { MapData } from "@main/cache/model/map-data";
-import { cacheDb } from "@main/cache/cache-db";
 import { logger } from "@main/utils/logger";
 import { Signal } from "$/jaz-ts-utils/signal";
-import { removeFromArray } from "$/jaz-ts-utils/object";
 import { delay } from "$/jaz-ts-utils/delay";
 import { PrDownloaderAPI } from "@main/content/pr-downloader";
 import { CONTENT_PATH } from "@main/config/app";
 import { asyncParseMap } from "@main/content/maps/parse-map";
+import chokidar from "chokidar";
 
 const log = logger("map-content.ts");
 
@@ -25,85 +24,94 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
 
     public override async init() {
         await fs.promises.mkdir(this.mapsDir, { recursive: true });
-        const maps = await cacheDb.selectFrom("map").selectAll().execute();
-        this.installedVersions.push(...maps);
-        await this.queueMapsToCache();
-        this.cacheMaps();
+        this.startCacheMapConsumer();
+        this.startWatchingMapFolder();
         return super.init();
     }
 
+    protected startWatchingMapFolder() {
+        //using chokidar to watch for changes in the maps folder
+        chokidar
+            .watch(this.mapsDir, {
+                ignoreInitial: true, //ignore the initial scan
+                awaitWriteFinish: true, //wait for the file to be fully written before emitting the event
+            })
+            .on("add", (filepath) => {
+                if (!filepath.endsWith("sd7")) {
+                    return;
+                }
+                log.debug(`Chokidar -=- Map added: ${filepath}`);
+                const filename = path.basename(filepath);
+                this.queueMapsToCache([filename]);
+            })
+            .on("unlink", (path) => {
+                if (!path.endsWith("sd7")) {
+                    return;
+                }
+                log.debug(`Chokidar -=- Map removed: ${path}`);
+                //TODO emit signal
+            });
+    }
+
     public isVersionInstalled(id: string): boolean {
-        return this.installedVersions.some((map) => map.scriptName === id);
+        throw new Error("Method not implemented.");
     }
 
     public getMapByScriptName(scriptName: string) {
-        return this.installedVersions.find((map) => map.scriptName === scriptName);
+        throw new Error("Method not implemented.");
     }
 
     public async downloadMaps(scriptNames: string[]) {
-        return Promise.all(scriptNames.map((scriptName) => this.downloadMap(scriptName)));
+        log.debug(`Downloading maps: ${scriptNames}`);
+        return;
+        // return Promise.all(scriptNames.map((scriptName) => this.downloadMap(scriptName)));
     }
 
     public async downloadMap(scriptName: string) {
-        if (this.installedVersions.some((map) => map.scriptName === scriptName)) {
-            console.warn(`Map ${scriptName} already installed`);
-            return;
-        }
         if (this.currentDownloads.some((download) => download.name === scriptName)) {
-            await new Promise<void>((resolve) => {
+            return await new Promise<void>((resolve) => {
                 this.onDownloadComplete.addOnce((mapData) => {
                     if (mapData.name === scriptName) {
                         resolve();
                     }
                 });
             });
-        } else {
-            const downloadInfo = await this.downloadContent("map", scriptName);
-            downloadInfo.caching = true;
-            this.onDownloadProgress.dispatch(downloadInfo);
         }
-        await this.queueMapsToCache();
+        const downloadInfo = await this.downloadContent("map", scriptName);
+        downloadInfo.caching = true;
+        this.onDownloadProgress.dispatch(downloadInfo);
+        // TODO replaced by chokidar
+        // await this.queueMapsToCache(downloadInfo.);
     }
 
     public async attemptCacheErrorMaps() {
-        await cacheDb.deleteFrom("mapError").execute();
-        await this.queueMapsToCache();
+        throw new Error("Method not implemented.");
+        // await this.queueMapsToCache();
     }
 
-    protected async queueMapsToCache() {
+    public async scanFolderForMaps() {
         let mapFiles = await fs.promises.readdir(this.mapsDir);
         mapFiles = mapFiles.filter((mapFile) => mapFile.endsWith("sd7"));
-        const cachedMapFiles = await cacheDb.selectFrom("map").select(["fileName"]).execute();
-        const cachedMapFileNames = cachedMapFiles.map((file) => file.fileName);
-        const erroredMapFiles = await cacheDb.selectFrom("mapError").select(["fileName"]).execute();
-        const erroredMapFileNames = erroredMapFiles.map((file) => file.fileName);
-        const mapFilesToCache = mapFiles.filter((file) => !cachedMapFileNames.includes(file) && !erroredMapFileNames.includes(file));
-        const mapFilesToUncache = cachedMapFileNames.filter((fileName) => !mapFiles.includes(fileName));
-        for (const mapFileToCache of mapFilesToCache) {
-            this.mapCacheQueue.add(mapFileToCache);
+        return mapFiles;
+    }
+
+    protected async queueMapsToCache(filenames?: string[]) {
+        let mapFiles = filenames;
+        if (!filenames) {
+            mapFiles = await this.scanFolderForMaps();
         }
-        for (const mapFileToUncache of mapFilesToUncache) {
-            await this.uncacheMap(mapFileToUncache);
+        for (const mapFileToCache of mapFiles) {
+            this.mapCacheQueue.add(mapFileToCache);
         }
     }
 
     public async uninstallVersion(version: MapData) {
         const mapFile = path.join(this.mapsDir, version.fileName);
         await fs.promises.rm(mapFile, { force: true, recursive: true });
-        await this.uncacheMap(version.fileName);
-        removeFromArray(this.installedVersions, version);
         log.debug(`Map removed: ${version.scriptName}`);
     }
 
-    protected async uncacheMap(fileName: string) {
-        await cacheDb.deleteFrom("map").where("fileName", "=", fileName).execute();
-        const index = this.installedVersions.findIndex((map) => map.fileName === fileName);
-        if (index) {
-            this.installedVersions.splice(index, 1);
-        }
-    }
-
-    protected async cacheMaps() {
+    protected async startCacheMapConsumer() {
         if (this.cachingMaps) {
             log.warn("Don't call cacheMaps more than once");
             return;
@@ -122,45 +130,22 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
 
     protected async cacheMap(mapFileName: string) {
         try {
-            const fileName = path.parse(mapFileName).name;
-            const existingCachedMap = await cacheDb.selectFrom("map").select("mapId").where("fileName", "=", fileName).executeTakeFirst();
-            if (existingCachedMap || this.installedVersions.some((map) => map.fileName === mapFileName)) {
-                log.debug(`${fileName} already cached`);
-                this.mapCacheQueue.delete(mapFileName);
-                return;
-            }
             log.debug(`Caching: ${mapFileName}`);
             console.time(`Cached: ${mapFileName}`);
             const mapPath = path.join(this.mapsDir, mapFileName);
-
-            log.debug(`Trying to parse map asynchronously: ${mapFileName}`);
+            log.debug(`Parsing map asynchronously: ${mapFileName}`);
             const mapData = await asyncParseMap(mapPath);
             log.debug(`Parsed map: ${mapFileName}`);
-            // const mapData = await cacheDb
-            //     .insertInto("map")
-            //     .values({
-            //         ...parsedMap,
-            //         lastLaunched: new Date(),
-            //     })
-            //     .onConflict((oc) => {
-            //         const { scriptName, fileName, ...nonUniqueValues } = parsedMap;
-            //         return oc.doUpdateSet(nonUniqueValues);
-            //     })
-            //     .returningAll()
-            //     .executeTakeFirst();
-            this.installedVersions.push(mapData);
             const cachedMapDownloadInfo = this.currentDownloads.find((download) => download.name === mapData.scriptName);
+
+            //TODO onDownloadComplete and onMapCached are very similar, maybe merge them
             this.onDownloadComplete.dispatch(cachedMapDownloadInfo);
             this.onMapCached.dispatch(mapData);
             console.timeEnd(`Cached: ${mapFileName}`);
         } catch (err) {
             log.error(`Error parsing map: ${mapFileName}`, err);
             log.error(err);
-            await cacheDb
-                .insertInto("mapError")
-                .onConflict((oc) => oc.doNothing())
-                .values({ fileName: mapFileName })
-                .execute();
+            //TODO emit error signal
         }
         this.mapCacheQueue.delete(mapFileName);
     }
@@ -173,25 +158,6 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
                 }
             });
         });
-    }
-
-    // currently unused, waiting for prd to return map file name so we know which file to cache
-    /** Remove maps from cache that aren't in the filesystem and add maps to cache that are */
-    protected async syncMapCache() {
-        let mapFiles = await fs.promises.readdir(this.mapsDir);
-        mapFiles = mapFiles.filter((mapFile) => mapFile.endsWith("sd7"));
-        const cachedMapFiles = await cacheDb.selectFrom("map").select(["fileName"]).execute();
-        const cachedMapFileNames = cachedMapFiles.map((file) => file.fileName);
-        const erroredMapFiles = await cacheDb.selectFrom("mapError").select(["fileName"]).execute();
-        const erroredMapFileNames = erroredMapFiles.map((file) => file.fileName);
-        const mapFilesToCache = mapFiles.filter((file) => !cachedMapFileNames.includes(file) && !erroredMapFileNames.includes(file));
-        const mapFilesToUncache = cachedMapFileNames.filter((fileName) => !mapFiles.includes(fileName));
-        for (const mapFileToUncache of mapFilesToUncache) {
-            await this.uncacheMap(mapFileToUncache);
-        }
-        for (const mapFileToCache of mapFilesToCache) {
-            await this.cacheMap(mapFileToCache);
-        }
     }
 }
 

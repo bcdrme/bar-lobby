@@ -2,7 +2,6 @@ import Database from "better-sqlite3";
 import { Kysely, Migration, Migrator, SqliteDialect } from "kysely";
 import path from "path";
 
-import { MapDataTable } from "./model/map-data";
 import { ReplayTable } from "./model/replay";
 import { GameVersionTable } from "./model/game-version";
 import { EngineVersionTable } from "./model/engine-version";
@@ -14,8 +13,6 @@ import { CONTENT_PATH } from "@main/config/app";
 const log = logger("cache-db.ts");
 
 interface CacheDatabase {
-    map: MapDataTable;
-    mapError: { fileName: string };
     replay: ReplayTable;
     replayError: { fileName: string };
     gameVersion: GameVersionTable;
@@ -68,15 +65,6 @@ async function migrateToLatest() {
 function migrations(): Record<string, Migration> {
     log.info("Running migrations");
     return {
-        // yyyy-mm-dd
-        "2023-04-10": {
-            async up(db) {
-                await db.schema
-                    .alterTable("map")
-                    .addColumn("lastLaunched", "datetime", (col) => col.notNull())
-                    .execute();
-            },
-        },
         "2023-04-15": {
             async up(db) {
                 await db.schema.dropTable("game_versions").ifExists().execute();
@@ -106,36 +94,6 @@ function migrations(): Record<string, Migration> {
 
 async function init() {
     log.info(`Initializing cache database at ${dbPath}`);
-
-    await db.schema
-        .createTable("map")
-        .ifNotExists()
-        .addColumn("mapId", "integer", (col) => col.primaryKey().autoIncrement())
-        .addColumn("scriptName", "varchar", (col) => col.notNull().unique())
-        .addColumn("fileName", "varchar", (col) => col.notNull().unique())
-        .addColumn("friendlyName", "varchar", (col) => col.notNull())
-        .addColumn("description", "varchar")
-        .addColumn("mapHardness", "double precision", (col) => col.notNull())
-        .addColumn("gravity", "double precision", (col) => col.notNull())
-        .addColumn("tidalStrength", "double precision", (col) => col.notNull())
-        .addColumn("maxMetal", "double precision", (col) => col.notNull())
-        .addColumn("extractorRadius", "double precision", (col) => col.notNull())
-        .addColumn("minWind", "double precision", (col) => col.notNull())
-        .addColumn("maxWind", "double precision", (col) => col.notNull())
-        .addColumn("startPositions", "json")
-        .addColumn("width", "double precision", (col) => col.notNull())
-        .addColumn("height", "double precision", (col) => col.notNull())
-        .addColumn("minDepth", "double precision", (col) => col.notNull())
-        .addColumn("maxDepth", "double precision", (col) => col.notNull())
-        .addColumn("mapInfo", "json")
-        .addColumn("images", "json")
-        .execute();
-
-    await db.schema
-        .createTable("mapError")
-        .ifNotExists()
-        .addColumn("fileName", "varchar", (col) => col.primaryKey())
-        .execute();
 
     await db.schema
         .createTable("gameVersion")
