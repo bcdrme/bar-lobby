@@ -28,11 +28,11 @@ export default defineConfig({
             targets: [
                 {
                     src: "node_modules/7zip-bin/win/x64/7za.exe",
-                    dest: "./win/x64/7za.exe",
+                    dest: "./win/x64/",
                 },
                 {
                     src: "node_modules/7zip-bin/linux/x64/7za",
-                    dest: "./linux/x64/7za",
+                    dest: "./linux/x64/",
                 },
             ],
         }),
