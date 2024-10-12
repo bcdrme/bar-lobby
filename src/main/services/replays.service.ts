@@ -1,11 +1,10 @@
 import { ipcMain } from "electron";
 
-import { cacheDb } from "@main/cache/cache-db";
 import fs from "fs";
 import path from "path";
 import { delay } from "$/jaz-ts-utils/delay";
 import { isFileInUse } from "@main/utils/file";
-import { Replay } from "@main/cache/model/replay";
+import { Replay } from "@main/content/replays/replay";
 import { CONTENT_PATH } from "@main/config/app";
 import { Signal } from "$/jaz-ts-utils/signal";
 import { DemoParser } from "$/sdfz-demo-parser";
@@ -14,20 +13,18 @@ const replayCacheQueue: Set<string> = new Set();
 export const replaysDir = path.join(CONTENT_PATH, "demos");
 
 export const onReplayCached: Signal<Replay> = new Signal();
+
+// TODO similar implemetation than maps with chokidar folder watching
 async function init() {
     await fs.promises.mkdir(replaysDir, { recursive: true });
     refreshCache();
     startCacheReplaysRoutine();
 }
 
+//TODO transform this into a sync function, check the map-content.ts file for reference
 async function refreshCache() {
     let replayFiles = await fs.promises.readdir(replaysDir);
     replayFiles = replayFiles.filter((replayFile) => replayFile.endsWith("sdfz"));
-    // const cachedReplayFiles = await cacheDb.selectFrom("replay").select(["fileName"]).execute();
-    // const cachedReplayFileNames = cachedReplayFiles.map((file) => file.fileName);
-    // const erroredReplayFiles = await cacheDb.selectFrom("replayError").select(["fileName"]).execute();
-    // const erroredReplayFileNames = erroredReplayFiles.map((file) => file.fileName);
-    // const replaysFilesToCache = replayFiles.filter((file) => !cachedReplayFileNames.includes(file) && !erroredReplayFileNames.includes(file));
     for (const replayFileToCache of replayFiles) {
         replayCacheQueue.add(path.join(replaysDir, replayFileToCache));
     }
@@ -99,81 +96,40 @@ async function cacheReplay(replayFilePath: string) {
         if (replayData.gameId === "00000000000000000000000000000000") {
             throw new Error(`invalid gameId for replay: ${replayFileName}`);
         }
-        const conflictingReplay = await getReplayByGameId(replayData.gameId);
-        if (conflictingReplay) {
-            // when leaving a game and rejoining it, 2 demo files are created with the same gameId. below we delete the shortest replay
-            if (conflictingReplay.gameDurationMs > replayData.gameDurationMs) {
-                await fs.promises.rm(replayFilePath);
-            } else {
-                await fs.promises.rm(conflictingReplay.filePath);
-                // await cacheDb
-                //     .insertInto("replay")
-                //     .values(replayData)
-                //     .onConflict((oc) => oc.doUpdateSet(replayData))
-                //     .execute();
-            }
-        } else {
-            // await cacheDb.insertInto("replay").values(replayData).execute();
-        }
+        //TODO handle this case
+        // const conflictingReplay = await getReplayByGameId(replayData.gameId);
+        // if (conflictingReplay) {
+        //     // when leaving a game and rejoining it, 2 demo files are created with the same gameId. below we delete the shortest replay
+        //     if (conflictingReplay.gameDurationMs > replayData.gameDurationMs) {
+        //         await fs.promises.rm(replayFilePath);
+        //     } else {
+        //         await fs.promises.rm(conflictingReplay.filePath);
+        //         // await cacheDb
+        //         //     .insertInto("replay")
+        //         //     .values(replayData)
+        //         //     .onConflict((oc) => oc.doUpdateSet(replayData))
+        //         //     .execute();
+        //     }
+        // } else {
+        //     // await cacheDb.insertInto("replay").values(replayData).execute();
+        // }
         console.debug(`Cached replay: ${replayFileName}`);
         onReplayCached.dispatch(replayData);
     } catch (err) {
         console.error(`Error caching replay: ${replayFileName}`, err);
-        // await cacheDb
-        //     .insertInto("replayError")
-        //     .onConflict((oc) => oc.doNothing())
-        //     .values({ fileName: replayFileName })
-        //     .execute();
     }
 }
 
-export interface ReplayQueryOptions {
-    offset?: number;
-    limit?: number;
-    endedNormally?: boolean | null;
-    sortField?: keyof Replay | null;
-    sortOrder?: "asc" | "desc";
-}
-async function getReplays({ offset = 0, limit = -1, endedNormally = true, sortField = null, sortOrder = "asc" }: ReplayQueryOptions) {
-    let query = cacheDb.selectFrom("replay").selectAll();
-    if (endedNormally !== null) {
-        query = query.where("gameEndedNormally", "=", endedNormally);
-    }
-    if (sortField !== null) {
-        query = query.orderBy(sortField, sortOrder);
-    }
-    return await query.offset(offset).limit(limit).execute();
-}
-
-async function getReplayById(replayId: number) {
-    return cacheDb.selectFrom("replay").selectAll().where("replayId", "=", replayId).executeTakeFirst();
-}
-
-async function getReplayByGameId(gameId: string) {
-    return cacheDb.selectFrom("replay").selectAll().where("gameId", "=", gameId).executeTakeFirst();
-}
-
-async function getTotalReplayCount() {
-    const { num_replays } = await cacheDb.selectFrom("replay").select(cacheDb.fn.count<number>("replayId").as("num_replays")).executeTakeFirstOrThrow();
-    return num_replays;
-}
-
-async function deleteReplay(replayId: number) {
+async function deleteReplay(filename: string) {
     try {
-        const { filePath } = await cacheDb.deleteFrom("replay").where("replayId", "=", replayId).returning("filePath").executeTakeFirstOrThrow();
-        await fs.promises.rm(filePath);
+        await fs.promises.rm(path.join(replaysDir, filename));
     } catch (err) {
         console.error("Error deleting replay", err);
     }
 }
 
 function registerIpcHandlers(mainWindow: Electron.BrowserWindow) {
-    ipcMain.handle("replays:getReplays", (_, args: ReplayQueryOptions) => getReplays(args));
-    ipcMain.handle("replays:refreshCache", () => refreshCache());
-    ipcMain.handle("replays:delete", (_, replayId: number) => deleteReplay(replayId));
-    ipcMain.handle("replays:getReplayById", (_, replayId: number) => getReplayById(replayId));
-    ipcMain.handle("replays:getReplayByGameId", (_, gameId: string) => getReplayByGameId(gameId));
-    ipcMain.handle("replays:getTotalReplayCount", () => getTotalReplayCount());
+    ipcMain.handle("replays:delete", (_, fileName: string) => deleteReplay(fileName));
 
     // Events
     onReplayCached.add((replay) => {
@@ -184,5 +140,4 @@ function registerIpcHandlers(mainWindow: Electron.BrowserWindow) {
 export const replaysService = {
     init,
     registerIpcHandlers,
-    refreshCache,
 };

@@ -15,7 +15,6 @@ export default defineConfig({
     },
     build: {
         rollupOptions: {
-            external: ["better-sqlite3"],
             input: {
                 index: path.resolve(__dirname, "src/main/index.ts"),
                 "parse-map-worker": path.resolve(__dirname, "src/main/content/maps/parse-map-worker.ts"),

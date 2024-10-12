@@ -1,6 +1,6 @@
 import { notificationsApi } from "./notifications";
 import { EngineVersion } from "@main/content/engine/engine-version";
-import { GameVersion } from "@main/cache/model/game-version";
+import { GameVersion } from "@main/content/game/game-version";
 import { MapData } from "@main/content/maps/map-data";
 import { Account } from "@main/services/account.service";
 import { Message } from "@renderer/model/messages";

@@ -1,6 +1,4 @@
-import { Selectable } from "kysely";
-
-export interface GameVersionTable {
+export type GameVersion = {
     id: string;
     md5: string;
     lastLaunched: Date;
@@ -10,9 +8,7 @@ export interface GameVersionTable {
 export interface GameAI {
     name: string;
     description: string;
-};
-
-export type GameVersion = Selectable<GameVersionTable>;
+}
 
 export type CustomGameVersion = {
     id: string;

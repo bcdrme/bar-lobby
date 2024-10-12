@@ -1,7 +1,7 @@
 import { EngineVersion } from "@main/content/engine/engine-version";
-import { GameVersion } from "@main/cache/model/game-version";
+import { GameVersion } from "@main/content/game/game-version";
 import { MapData } from "@main/content/maps/map-data";
-import { Replay } from "@main/cache/model/replay";
+import { Replay } from "@main/content/replays/replay";
 import Dexie, { EntityTable } from "dexie";
 
 export const db = new Dexie("BarLobby") as Dexie & {

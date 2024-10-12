@@ -4,12 +4,11 @@ import * as fs from "fs";
 import { Signal } from "$/jaz-ts-utils/signal";
 import * as path from "path";
 
-import { cacheDb } from "@main/cache/cache-db";
 import { engineContentAPI } from "@main/content/engine/engine-content";
 import { mapContentAPI } from "@main/content/maps/map-content";
-import { replaysDir, replaysService } from "@main/services/replays.service";
+import { replaysService } from "@main/services/replays.service";
 
-import { isReplay, Replay } from "@main/cache/model/replay";
+import { Replay } from "@main/content/replays/replay";
 import { startScriptConverter } from "@main/utils/start-script-converter";
 import { defaultEngineVersion } from "@main/config/default-versions";
 import { logger } from "@main/utils/logger";
@@ -67,9 +66,10 @@ export class GameAPI {
             if (script) {
                 const scriptPath = (launchArg = path.join(CONTENT_PATH, this.scriptName));
                 await fs.promises.writeFile(scriptPath, script);
-            } else if (isReplay(arg)) {
-                launchArg = arg.filePath ? arg.filePath : path.join(replaysDir, arg.fileName);
             }
+            // else if (isReplay(arg)) {
+            //     launchArg = arg.filePath ? arg.filePath : path.join(replaysDir, arg.fileName);
+            // }
 
             const args = ["--write-dir", CONTENT_PATH, "--isolation", launchArg];
 
@@ -95,7 +95,7 @@ export class GameAPI {
 
             this.gameProcess.addListener("spawn", () => {
                 this.onGameLaunched.dispatch();
-                this.updateLastLaunched(engineVersion, gameVersion, mapName);
+                // this.updateLastLaunched(engineVersion, gameVersion, mapName);
             });
 
             this.gameProcess.addListener("close", (exitCode) => {
@@ -125,44 +125,6 @@ export class GameAPI {
             return Promise.all([engineContentAPI.downloadEngine(engineVersion), gameContentAPI.downloadGame(gameVersion), mapContentAPI.downloadMap(mapScriptName)]);
         }
         return;
-    }
-
-    protected async updateLastLaunched(engineVersion: string, gameVersion: string, mapScriptName: string) {
-        try {
-            await cacheDb
-                .updateTable("engineVersion")
-                .set({
-                    lastLaunched: new Date(),
-                })
-                .where("id", "=", engineVersion)
-                .execute();
-        } catch (err) {
-            log.error(`Error updating lastLaunched field for engine: ${engineVersion}`, err);
-        }
-
-        try {
-            await cacheDb
-                .updateTable("gameVersion")
-                .set({
-                    lastLaunched: new Date(),
-                })
-                .where("id", "=", gameVersion)
-                .execute();
-        } catch (err) {
-            log.error(`Error updating lastLaunched field for game: ${gameVersion}`, err);
-        }
-
-        try {
-            await cacheDb
-                .updateTable("map")
-                .set({
-                    lastLaunched: new Date(),
-                })
-                .where("scriptName", "=", mapScriptName)
-                .execute();
-        } catch (err) {
-            log.error(`Error updating lastLaunched field for map: ${mapScriptName}`, err);
-        }
     }
 }
 

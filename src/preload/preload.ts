@@ -1,11 +1,11 @@
 import { contextBridge, ipcRenderer } from "electron";
 
-import { Replay } from "@main/cache/model/replay";
+import { Replay } from "@main/content/replays/replay";
 import { Settings } from "@main/services/settings.service";
 import { Account } from "@main/services/account.service";
 import { ReplayQueryOptions } from "@main/services/replays.service";
 import { EngineVersion } from "@main/content/engine/engine-version";
-import { GameVersion } from "@main/cache/model/game-version";
+import { GameVersion } from "@main/content/game/game-version";
 import { MapData } from "@main/content/maps/map-data";
 import { LuaOptionSection } from "@main/content/game/lua-options";
 import { Scenario } from "@main/content/game/scenario";
@@ -39,12 +39,7 @@ export type ShellApi = typeof shellApi;
 contextBridge.exposeInMainWorld("shell", shellApi);
 
 const replaysApi = {
-    getReplays: (args: ReplayQueryOptions): Promise<Replay[]> => ipcRenderer.invoke("replays:getReplays", args),
-    refreshCache: (): Promise<void> => ipcRenderer.invoke("replays:refreshCache"),
-    getTotalReplayCount: (): Promise<number> => ipcRenderer.invoke("replays:getTotalReplayCount"),
-    deleteReplay: (replayId: number): Promise<void> => ipcRenderer.invoke("replays:delete", replayId),
-    getReplayById: (replayId: number): Promise<number> => ipcRenderer.invoke("replays:getReplayById", replayId),
-    getReplayByGameId: (gameId: string): Promise<string> => ipcRenderer.invoke("replays:getReplayByGameId", gameId),
+    deleteReplay: (fileName: number): Promise<void> => ipcRenderer.invoke("replays:delete", fileName),
 
     // Events
     onReplayCached: (callback: (replay: Replay) => void) => ipcRenderer.on("replays:replayCached", (_event, replay) => callback(replay as Replay)),

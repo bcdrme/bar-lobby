@@ -8,7 +8,6 @@ import { accountService } from "./services/account.service";
 import engineService from "./services/engine.service";
 import mapsService from "./services/maps.service";
 import gameService from "./services/game.service";
-import { initCacheDb } from "./cache/cache-db";
 import { logger } from "./utils/logger";
 import { APP_NAME, CONTENT_PATH } from "./config/app";
 import url from "url";
@@ -96,50 +95,45 @@ app.enableSandbox();
 
 app.whenReady().then(() => {
     registerBarFileProtocol();
-    initCacheDb()
-        .then(() => {
-            if (process.env.NODE_ENV !== "production") {
-                try {
-                    // await installExtension(VUEJS_DEVTOOLS);
-                } catch (err) {
-                    log.error("Vue Devtools failed to install:", err?.toString());
-                }
-            } else if (app.isPackaged && process.env.NODE_ENV === "production") {
-                // autoUpdater.checkForUpdatesAndNotify();
-            }
 
-            // Define CSP for all webContents
-            session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
-                callback({
-                    responseHeaders: {
-                        ...details.responseHeaders,
-                        "Content-Security-Policy": ["default-src 'self' 'unsafe-inline' data: blob:"], // data: and blob: are required for PIXI.js
-                    },
-                });
-            });
+    if (process.env.NODE_ENV !== "production") {
+        try {
+            // await installExtension(VUEJS_DEVTOOLS);
+        } catch (err) {
+            log.error("Vue Devtools failed to install:", err?.toString());
+        }
+    } else if (app.isPackaged && process.env.NODE_ENV === "production") {
+        // autoUpdater.checkForUpdatesAndNotify();
+    }
 
-            setupHandlers();
-            settingsService.init();
-            accountService.init();
-            replaysService.init();
-            engineService.init();
-            gameService.init();
-            mapsService.init();
-
-            const mainWindow = createWindow();
-
-            // Handlers may need the mainWindow to send events
-            infoService.registerIpcHandlers();
-            settingsService.registerIpcHandlers();
-            accountService.registerIpcHandlers();
-            replaysService.registerIpcHandlers(mainWindow);
-            engineService.registerIpcHandlers();
-            gameService.registerIpcHandlers(mainWindow);
-            mapsService.registerIpcHandlers(mainWindow);
-            shellService.registerIpcHandlers();
-            downloadsService.registerIpcHandlers(mainWindow);
-        })
-        .catch((err) => {
-            log.error("Failed to initialize cache db", err);
+    // Define CSP for all webContents
+    session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+        callback({
+            responseHeaders: {
+                ...details.responseHeaders,
+                "Content-Security-Policy": ["default-src 'self' 'unsafe-inline' data: blob:"], // data: and blob: are required for PIXI.js
+            },
         });
+    });
+
+    setupHandlers();
+    settingsService.init();
+    accountService.init();
+    replaysService.init();
+    engineService.init();
+    gameService.init();
+    mapsService.init();
+
+    const mainWindow = createWindow();
+
+    // Handlers may need the mainWindow to send events
+    infoService.registerIpcHandlers();
+    settingsService.registerIpcHandlers();
+    accountService.registerIpcHandlers();
+    replaysService.registerIpcHandlers(mainWindow);
+    engineService.registerIpcHandlers();
+    gameService.registerIpcHandlers(mainWindow);
+    mapsService.registerIpcHandlers(mainWindow);
+    shellService.registerIpcHandlers();
+    downloadsService.registerIpcHandlers(mainWindow);
 });

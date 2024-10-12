@@ -47,7 +47,7 @@ import AddBotModal from "@renderer/components/battle/AddBotModal.vue";
 import TeamComponent from "@renderer/components/battle/TeamComponent.vue";
 import { CurrentUser, User } from "@main/model/user";
 import { EngineAI } from "@main/content/engine/engine-version";
-import { GameAI } from "@main/cache/model/game-version";
+import { GameAI } from "@main/content/game/game-version";
 import { Bot, Faction } from "@main/game/battle/battle-types";
 import { Battle } from "@renderer/game/abstract-battle";
 

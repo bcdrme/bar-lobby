@@ -65,7 +65,7 @@ import { computed, ComputedRef } from "vue";
 
 import BattlePreviewParticipant from "@renderer/components/battle/BattlePreviewParticipant.vue";
 import MapOverviewCard from "@renderer/components/maps/MapOverviewCard.vue";
-import { isReplay, Replay } from "@main/cache/model/replay";
+import { isReplay, Replay } from "@main/content/replays/replay";
 import { StartBox, StartPosType } from "@main/game/battle/battle-types";
 import { Battle, isBattle } from "@renderer/game/abstract-battle";
 import { db } from "@renderer/store/db";

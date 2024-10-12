@@ -5,11 +5,10 @@ import { removeFromArray } from "$/jaz-ts-utils/object";
 import * as path from "path";
 import util from "util";
 import zlib from "zlib";
-import { CustomGameVersion, GameAI, GameVersion } from "@main/cache/model/game-version";
+import { CustomGameVersion, GameAI, GameVersion } from "@main/content/game/game-version";
 import { parseLuaTable } from "@main/utils/parse-lua-table";
 import { parseLuaOptions } from "@main/utils/parse-lua-options";
 import { BufferStream } from "@main/utils/buffer-stream";
-import { cacheDb } from "@main/cache/cache-db";
 import { logger } from "@main/utils/logger";
 import assert from "assert";
 import { contentSources } from "@main/config/content-sources";
@@ -26,19 +25,12 @@ const gunzip = util.promisify(zlib.gunzip);
 
 export class GameContentAPI extends PrDownloaderAPI<GameVersion | CustomGameVersion> {
     public override async init() {
-        const gameVersions = await cacheDb.selectFrom("gameVersion").selectAll().execute();
-        if (gameVersions.length === 0) {
-            log.warn("No game versions found, please download a game version");
-        }
-        for (const version of gameVersions) {
-            log.info("Installed game versions: ", version.id);
-            this.installedVersions.push(version);
-        }
-        // load custom .sdd games
         const gamesDir = path.join(CONTENT_PATH, "games");
         if (fs.existsSync(gamesDir)) {
             const dirs = await fs.promises.readdir(gamesDir);
+            log.info(`Found ${dirs.length} game versions`);
             for (const dir of dirs) {
+                log.info(`-- Version ${dir}`);
                 try {
                     const modInfoLua = await fs.promises.readFile(path.join(gamesDir, dir, "modinfo.lua"));
                     const modInfo = parseLuaTable(modInfoLua);
@@ -122,7 +114,6 @@ export class GameContentAPI extends PrDownloaderAPI<GameVersion | CustomGameVers
 
     public async uninstallVersion(version: GameVersion) {
         // TODO: Uninstall game version through prd when prd supports it
-        await this.uncacheVersion(version);
         removeFromArray(this.installedVersions, version);
     }
 
@@ -174,10 +165,6 @@ export class GameContentAPI extends PrDownloaderAPI<GameVersion | CustomGameVers
             }
         }
         return sdpFiles;
-    }
-
-    protected async uncacheVersion(version: GameVersion) {
-        await cacheDb.deleteFrom("gameVersion").where("id", "=", version.id).execute();
     }
 
     protected async parseSdpFile(sdpFilePath: string, filePattern?: string): Promise<SdpFileMeta[]> {
@@ -250,8 +237,7 @@ export class GameContentAPI extends PrDownloaderAPI<GameVersion | CustomGameVers
         const md5 = await this.getMd5(id);
         const luaAiFile = (await this.getGameFiles({ md5 }, "luaai.lua", true))[0];
         const ais = await this.parseAis(luaAiFile.data);
-        const gameVersion = await cacheDb.insertInto("gameVersion").values({ id, md5, ais, lastLaunched: new Date() }).returningAll().executeTakeFirstOrThrow();
-        this.installedVersions.push(gameVersion);
+        this.installedVersions.push({ id, md5, ais, lastLaunched: new Date() });
         if (sort) {
             this.sortVersions();
         }
@@ -269,16 +255,16 @@ export class GameContentAPI extends PrDownloaderAPI<GameVersion | CustomGameVers
         return ais;
     }
 
-    protected async cleanupOldVersions() {
-        const maxDays = 90;
-        const oldestDate = new Date();
-        oldestDate.setDate(oldestDate.getDate() - maxDays);
-        const versionsToRemove = await cacheDb.selectFrom("gameVersion").where("lastLaunched", "<", oldestDate).select("id").execute();
-        for (const version of versionsToRemove) {
-            // TODO: needs https://github.com/beyond-all-reason/pr-downloader/issues/21
-            // await this.uninstallVersion(version.id);
-        }
-    }
+    // protected async cleanupOldVersions() {
+    //     const maxDays = 90;
+    //     const oldestDate = new Date();
+    //     oldestDate.setDate(oldestDate.getDate() - maxDays);
+    //     const versionsToRemove = await cacheDb.selectFrom("gameVersion").where("lastLaunched", "<", oldestDate).select("id").execute();
+    //     for (const version of versionsToRemove) {
+    //         // TODO: needs https://github.com/beyond-all-reason/pr-downloader/issues/21
+    //         // await this.uninstallVersion(version.id);
+    //     }
+    // }
 }
 
 export const gameContentAPI = new GameContentAPI();

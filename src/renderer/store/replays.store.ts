@@ -1,4 +1,4 @@
-import { Replay } from "@main/cache/model/replay";
+import { Replay } from "@main/content/replays/replay";
 import { db } from "@renderer/store/db";
 import { reactive } from "vue";
 
