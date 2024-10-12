@@ -18,3 +18,6 @@ db.version(1).stores({
     gameVersions: "id, md5, lastLaunched, ais",
     engineVersions: "id, lastLaunched, ais",
 });
+
+// for debugging
+window.db = db;

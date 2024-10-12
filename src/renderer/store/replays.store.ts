@@ -13,8 +13,6 @@ export async function initReplaysStore() {
         console.debug("Received replay cached event", replay);
         db.replays.add(replay);
     });
-    await window.replays.refreshCache();
+    // await window.replays.refreshCache();
     replaysStore.isInitialized = true;
 }
-
-window.db = db;
