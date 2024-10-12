@@ -51,7 +51,7 @@ import MapPreview from "@renderer/components/maps/MapPreview.vue";
 import { CurrentUser } from "@main/model/user";
 import { getBoxes, StartBoxOrientation } from "@renderer/utils/start-boxes";
 import { StartBox, StartPosType } from "@main/game/battle/battle-types";
-import { MapData } from "@main/cache/model/map-data";
+import { MapData } from "@main/content/maps/map-data";
 
 const modal: Ref<null | InstanceType<typeof Modal>> = ref(null);
 

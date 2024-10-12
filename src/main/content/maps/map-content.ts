@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
 
-import { MapData } from "@main/cache/model/map-data";
+import { MapData } from "@main/content/maps/map-data";
 import { logger } from "@main/utils/logger";
 import { Signal } from "$/jaz-ts-utils/signal";
 import { delay } from "$/jaz-ts-utils/delay";

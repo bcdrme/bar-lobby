@@ -26,7 +26,7 @@
  * - Paginated
  */
 
-import { MapData } from "@main/cache/model/map-data";
+import { MapData } from "@main/content/maps/map-data";
 import Panel from "@renderer/components/common/Panel.vue";
 import MapListComponent from "@renderer/components/maps/MapListComponent.vue";
 import { useRouter } from "vue-router";

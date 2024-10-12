@@ -53,7 +53,7 @@ import { computed, ref, watch } from "vue";
 
 import Button from "@renderer/components/controls/Button.vue";
 import MapPreview from "@renderer/components/maps/MapPreview.vue";
-import { MapData } from "@main/cache/model/map-data";
+import { MapData } from "@main/content/maps/map-data";
 import Panel from "@renderer/components/common/Panel.vue";
 import { db } from "@renderer/store/db";
 

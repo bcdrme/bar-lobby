@@ -3,7 +3,7 @@ import { MapParser } from "@main/content/maps/spring-map-parser";
 import { logger } from "@main/utils/logger";
 import path from "path";
 import fs from "fs";
-import { MapData } from "@main/cache/model/map-data";
+import { MapData } from "@main/content/maps/map-data";
 import { Worker } from "worker_threads";
 import { MIPMAP_SIZE } from "@main/config/map-parsing";
 

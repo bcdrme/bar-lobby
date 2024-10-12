@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts" setup>
-import { MapData } from "@main/cache/model/map-data";
+import { MapData } from "@main/content/maps/map-data";
 
 const props = defineProps<{
     map: MapData;

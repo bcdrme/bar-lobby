@@ -1,11 +1,10 @@
 import { LuaOptionSection } from "@main/content/game/lua-options";
-import { Insertable, JSONColumnType, Selectable } from "kysely";
 
-export interface EngineVersionTable {
+export type EngineVersion = {
     id: string;
     lastLaunched: Date;
-    ais: JSONColumnType<EngineAI[]>;
-}
+    ais: EngineAI[];
+};
 
 export interface EngineAI {
     name: string;
@@ -14,5 +13,3 @@ export interface EngineAI {
     description: string;
     options: LuaOptionSection[];
 }
-
-export type EngineVersion = Selectable<EngineVersionTable>;

@@ -37,7 +37,7 @@ import { Ref, ref } from "vue";
 import SearchBox from "@renderer/components/controls/SearchBox.vue";
 import Select from "@renderer/components/controls/Select.vue";
 import MapOverviewCard from "@renderer/components/maps/MapOverviewCard.vue";
-import { MapData } from "@main/cache/model/map-data";
+import { MapData } from "@main/content/maps/map-data";
 import { db } from "@renderer/store/db";
 import { useDexieLiveQueryWithDeps } from "@renderer/composables/useDexieLiveQuery";
 

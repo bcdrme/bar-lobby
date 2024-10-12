@@ -4,7 +4,6 @@ import path from "path";
 
 import { ReplayTable } from "./model/replay";
 import { GameVersionTable } from "./model/game-version";
-import { EngineVersionTable } from "./model/engine-version";
 import { logger } from "@main/utils/logger";
 import { SerializePlugin } from "kysely-plugin-serialize";
 import fs from "fs";
@@ -16,7 +15,6 @@ interface CacheDatabase {
     replay: ReplayTable;
     replayError: { fileName: string };
     gameVersion: GameVersionTable;
-    engineVersion: EngineVersionTable;
 }
 
 const dbPath = path.join(CONTENT_PATH, "cache.db");
@@ -68,13 +66,8 @@ function migrations(): Record<string, Migration> {
         "2023-04-15": {
             async up(db) {
                 await db.schema.dropTable("game_versions").ifExists().execute();
-                await db.deleteFrom("engineVersion").execute();
                 await db.deleteFrom("gameVersion").execute();
 
-                await db.schema
-                    .alterTable("engineVersion")
-                    .addColumn("ais", "json", (col) => col.notNull())
-                    .execute();
                 await db.schema
                     .alterTable("gameVersion")
                     .addColumn("ais", "json", (col) => col.notNull())
@@ -100,13 +93,6 @@ async function init() {
         .ifNotExists()
         .addColumn("id", "varchar", (col) => col.primaryKey())
         .addColumn("md5", "varchar")
-        .addColumn("lastLaunched", "datetime", (col) => col.notNull())
-        .execute();
-
-    await db.schema
-        .createTable("engineVersion")
-        .ifNotExists()
-        .addColumn("id", "varchar", (col) => col.primaryKey())
         .addColumn("lastLaunched", "datetime", (col) => col.notNull())
         .execute();
 

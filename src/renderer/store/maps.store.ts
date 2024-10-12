@@ -1,5 +1,5 @@
 import { reactive } from "vue";
-import { MapData } from "@main/cache/model/map-data";
+import { MapData } from "@main/content/maps/map-data";
 import { db } from "@renderer/store/db";
 
 export const mapsStore = reactive({

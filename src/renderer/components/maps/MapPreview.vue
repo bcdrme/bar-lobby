@@ -7,7 +7,7 @@ import { useElementSize } from "@vueuse/core";
 import { Application, Assets, Graphics, Sprite, Texture, Color } from "pixi.js";
 import { onMounted, onUnmounted, ref, toRaw, useTemplateRef, watch } from "vue";
 import { CurrentUser } from "@main/model/user";
-import { MapData } from "@main/cache/model/map-data";
+import { MapData } from "@main/content/maps/map-data";
 import { StartBox, StartPosType } from "@main/game/battle/battle-types";
 import { MIPMAP_SIZE } from "@main/config/map-parsing";
 

@@ -4,11 +4,10 @@ import * as glob from "glob-promise";
 import { removeFromArray } from "$/jaz-ts-utils/object";
 import { Octokit } from "@octokit/rest";
 import * as path from "path";
-import { EngineAI, EngineVersion } from "@main/cache/model/engine-version";
+import { EngineAI, EngineVersion } from "@main/content/engine/engine-version";
 import { DownloadInfo } from "../downloads";
 import { parseLuaTable } from "@main/utils/parse-lua-table";
 import { parseLuaOptions } from "@main/utils/parse-lua-options";
-import { cacheDb } from "@main/cache/cache-db";
 import { logger } from "@main/utils/logger";
 import { extract7z } from "@main/utils/extract-7z";
 import { contentSources } from "@main/config/content-sources";
@@ -28,21 +27,14 @@ export class EngineContentAPI extends AbstractContentAPI<EngineVersion> {
         try {
             log.info("Initializing engine content API");
             await fs.promises.mkdir(this.engineDirs, { recursive: true });
-            const engineVersions = await cacheDb.selectFrom("engineVersion").selectAll().execute();
-            log.info(`Found ${engineVersions.length} installed engine versions`);
-            for (const version of engineVersions) {
-                log.info(`Engine version ${version.id}`);
-                this.installedVersions.push(version);
-            }
             const files = await fs.promises.readdir(this.engineDirs, { withFileTypes: true });
             const dirs = files.filter((file) => file.isDirectory()).map((dir) => dir.name);
+            log.info(`Found ${dirs.length} installed engine versions`);
             for (const dir of dirs) {
-                if (!this.isVersionInstalled(dir)) {
-                    await this.addEngine(dir, false);
-                }
+                log.info(`-- Engine ${dir}`);
+                const ais = await this.parseAis(dir);
+                this.installedVersions.push({ id: dir, lastLaunched: new Date(), ais });
             }
-            await this.cleanupOldVersions();
-            this.sortVersions();
         } catch (err) {
             log.error(err);
         }
@@ -117,13 +109,8 @@ export class EngineContentAPI extends AbstractContentAPI<EngineVersion> {
         }
         const engineDir = path.join(this.engineDirs, version);
         await fs.promises.rm(engineDir, { force: true, recursive: true });
-        await this.uncacheVersion(version);
         const index = this.installedVersions.findIndex((installedVersion) => installedVersion.id === version);
         this.installedVersions.splice(index, 1);
-    }
-
-    protected async uncacheVersion(id: string) {
-        await cacheDb.deleteFrom("engineVersion").where("id", "=", id).execute();
     }
 
     protected sortVersions() {
@@ -167,28 +154,9 @@ export class EngineContentAPI extends AbstractContentAPI<EngineVersion> {
     }
 
     protected override async downloadComplete(downloadInfo: DownloadInfo) {
-        await this.addEngine(downloadInfo.name, true);
+        log.debug(`Download complete: ${downloadInfo.name}`);
+        this.installedVersions.push({ id: downloadInfo.name, lastLaunched: new Date(), ais: [] });
         super.downloadComplete(downloadInfo);
-    }
-
-    protected async addEngine(id: string, sort = true) {
-        if (this.isVersionInstalled(id)) {
-            return;
-        }
-        const ais = await this.parseAis(id);
-        const engineVersion = await cacheDb
-            .insertInto("engineVersion")
-            .values({
-                id,
-                ais,
-                lastLaunched: new Date(),
-            })
-            .returningAll()
-            .executeTakeFirstOrThrow();
-        this.installedVersions.push(engineVersion);
-        if (sort) {
-            this.sortVersions();
-        }
     }
 
     protected async parseAis(engineVersion: string): Promise<EngineAI[]> {
@@ -234,16 +202,17 @@ export class EngineContentAPI extends AbstractContentAPI<EngineVersion> {
         };
     }
 
-    protected async cleanupOldVersions() {
-        log.info("Cleaning up old engine versions");
-        const maxDays = 90;
-        const oldestDate = new Date();
-        oldestDate.setDate(oldestDate.getDate() - maxDays);
-        const versionsToRemove = await cacheDb.selectFrom("engineVersion").where("lastLaunched", "<", oldestDate).select("id").execute();
-        for (const version of versionsToRemove) {
-            await this.uninstallVersion(version.id);
-        }
-    }
+    //TODO move this check to front
+    // protected async cleanupOldVersions() {
+    //     log.info("Cleaning up old engine versions");
+    //     const maxDays = 90;
+    //     const oldestDate = new Date();
+    //     oldestDate.setDate(oldestDate.getDate() - maxDays);
+    //     const versionsToRemove = await cacheDb.selectFrom("engineVersion").where("lastLaunched", "<", oldestDate).select("id").execute();
+    //     for (const version of versionsToRemove) {
+    //         await this.uninstallVersion(version.id);
+    //     }
+    // }
 }
 
 export const engineContentAPI = new EngineContentAPI();

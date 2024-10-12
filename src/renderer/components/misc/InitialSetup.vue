@@ -10,6 +10,7 @@
 import { defaultMaps } from "@main/config/default-maps";
 import { defaultEngineVersion, defaultGameVersion } from "@main/config/default-versions";
 import { DownloadInfo } from "@main/content/downloads";
+import { db } from "@renderer/store/db";
 import { downloadsStore } from "@renderer/store/downloads.store";
 import { computed, onMounted, ref, watch } from "vue";
 
@@ -36,8 +37,8 @@ onMounted(async () => {
         await window.game.downloadGame(defaultGameVersion);
         text.value = "Installing game";
     }
-    const installedMaps = await window.maps.getInstalledVersions();
-    if (Object.keys(installedMaps).length === 0) {
+    const installedMaps = await db.maps.count();
+    if (installedMaps === 0) {
         state.value = "maps";
         text.value = "Downloading maps";
         await window.maps.downloadMaps(defaultMaps);

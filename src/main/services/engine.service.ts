@@ -1,4 +1,4 @@
-import { EngineVersion } from "@main/cache/model/engine-version";
+import { EngineVersion } from "@main/content/engine/engine-version";
 import { engineContentAPI } from "@main/content/engine/engine-content";
 import { ipcMain } from "electron";
 
