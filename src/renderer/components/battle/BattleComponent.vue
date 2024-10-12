@@ -1,8 +1,8 @@
 <template>
-    <div :class="['battle-container', { singleplayer: isOfflineBattle(battle) }]">
+    <div :class="['battle-container', { singleplayer: true }]">
         <div class="header flex-col gap-md">
             <BattleTitleComponent :battle="battle" :me="me"></BattleTitleComponent>
-            <div v-if="isSpadsBattle(battle)" class="subtitle flex-row gap-md flex-wrap">
+            <!-- <div v-if="isSpadsBattle(battle)" class="subtitle flex-row gap-md flex-wrap">
                 <div class="flex-row gap-sm">
                     Hosted by
                     <div class="founder flex-row gap-sm">
@@ -11,16 +11,17 @@
                     </div>
                 </div>
                 <div class="flex-right">{{ battle.friendlyRuntime.value }}</div>
-            </div>
+            </div> -->
         </div>
         <div class="players flex-col gap-md">
             <Playerlist :battle="battle" :me="me" />
         </div>
-        <div v-if="isSpadsBattle(battle)" class="chat flex-col gap-md">
+        <!-- <div v-if="isSpadsBattle(battle)" class="chat flex-col gap-md">
             <BattleChat />
-        </div>
+        </div> -->
         <div class="settings flex-col gap-md">
             <MapPreview
+                v-if="map"
                 :map="map"
                 :startPosType="props.battle.battleOptions.startPosType"
                 :startBoxes="props.battle.battleOptions.startBoxes"
@@ -30,7 +31,7 @@
             <div class="flex-row gap-md">
                 <Select
                     :modelValue="battle.battleOptions.map"
-                    :options="installedMaps"
+                    :options="mapsStore.installedMaps"
                     label="Map"
                     optionLabel="scriptName"
                     optionValue="scriptName"
@@ -40,10 +41,10 @@
                     @update:model-value="onMapSelected"
                 />
                 <Button v-tooltip.left="'Open map selector'" @click="openMapList">
-                    <Icon :icon="listIcon" height="23" />
+                    <Icon :icon="'listIcon'" height="23" />
                 </Button>
                 <Button v-tooltip.left="'Configure map options'" @click="openMapOptions">
-                    <Icon :icon="cogIcon" height="23" />
+                    <Icon :icon="'cogIcon'" height="23" />
                 </Button>
                 <MapListModal v-model="mapListOpen" title="Maps" @map-selected="onMapSelected" />
                 <MapOptionsModal
@@ -67,7 +68,6 @@
                     label="Game"
                     :filter="true"
                     :placeholder="battle.battleOptions.gameVersion"
-                    :disabled="isSpadsBattle(battle)"
                     @update:model-value="onGameSelected"
                 />
                 <Button v-tooltip.left="'Configure game options'" @click="openGameOptions">
@@ -91,12 +91,11 @@
                 label="Engine"
                 :filter="true"
                 :placeholder="battle.battleOptions.engineVersion"
-                :disabled="isSpadsBattle(battle)"
                 class="fullwidth"
                 @update:model-value="onEngineSelected"
             />
 
-            <template v-if="isSpadsBattle(battle)">
+            <!-- <template v-if="isSpadsBattle(battle)">
                 <div class="flex-row gap-md">
                     <Checkbox label="Locked" :modelValue="battle.battleOptions.locked" showButtons @update:model-value="onLockedChanged" />
 
@@ -149,12 +148,12 @@
                         @update:model-value="onNbTeamsSelected"
                     />
                 </div>
-            </template>
+            </template> -->
 
             <div class="flex-row flex-bottom gap-md">
                 <Button class="red fullwidth" @click="leave"> Leave </Button>
 
-                <template v-if="isSpadsBattle(battle)">
+                <!-- <template v-if="isSpadsBattle(battle)">
                     <template v-if="me.battleStatus.isSpectator">
                         <Button v-if="battle.myQueuePosition.value" class="fullwidth red" @click="leaveQueue"
                             >Leave Queue ({{ battle.myQueuePosition.value }})</Button
@@ -186,45 +185,29 @@
                         >
                         <Button v-else class="fullwidth green" :disabled="gameStore.isGameRunning" @click="start">Start</Button>
                     </template>
-                </template>
-                <template v-else-if="isOfflineBattle(battle)">
+                </template> -->
+                <template>
                     <Button class="fullwidth green" :disabled="gameStore.isGameRunning" @click="start">Start</Button>
                 </template>
             </div>
         </div>
     </div>
-    <Transition name="slide-up">
+    <!-- <Transition name="slide-up">
         <VotingPanel v-if="isSpadsBattle(battle) && battle.currentVote.value" :vote="battle.currentVote.value" :battle="battle" />
-    </Transition>
+    </Transition> -->
 </template>
 
 <script lang="ts" setup>
 // TODO: boss, ring, forcespec, kick, ban, preset, votes, rename battle, custom boxes,
 // show non-default mod/map options, tweakunits, stop, rejoin, balance mode
-
-import { Icon } from "@iconify/vue";
-import cogIcon from "@iconify-icons/mdi/cog";
-import listIcon from "@iconify-icons/mdi/format-list-bulleted";
 import { computed, Ref, ref } from "vue";
-
-import BattleChat from "@renderer/components/battle/BattleChat.vue";
-import BattleTitleComponent from "@renderer/components/battle/BattleTitleComponent.vue";
-import LuaOptionsModal from "@renderer/components/battle/LuaOptionsModal.vue";
-import MapListModal from "@renderer/components/battle/MapListModal.vue";
-import MapOptionsModal from "@renderer/components/battle/MapOptionsModal.vue";
-import Playerlist from "@renderer/components/battle/Playerlist.vue";
-import VotingPanel from "@renderer/components/battle/VotePanel.vue";
-import Button from "@renderer/components/controls/Button.vue";
-import Checkbox from "@renderer/components/controls/Checkbox.vue";
-import Select from "@renderer/components/controls/Select.vue";
-import MapPreview from "@renderer/components/maps/MapPreview.vue";
-import Flag from "@renderer/components/misc/Flag.vue";
 import { CurrentUser } from "@main/model/user";
 import { StartBoxOrientation } from "@renderer/utils/start-boxes";
 import { LuaOptionSection } from "@main/content/game/lua-options";
 import { asyncComputed } from "@vueuse/core";
 import { StartPosType } from "@main/game/battle/battle-types";
 import { gameStore } from "@renderer/store/game.store";
+import { mapsStore } from "@renderer/store/maps.store";
 import { getMapByScriptName } from "@renderer/store/maps.store";
 import { Battle } from "@renderer/game/abstract-battle";
 
@@ -234,14 +217,8 @@ const props = defineProps<{
 }>();
 
 const installedEngines = computed(() => api.content.engine.installedVersions);
-const installedMaps = asyncComputed(async () => {
-    const maps = await window.maps.getInstalledVersions();
-    return maps.sort((a, b) => {
-        return a.friendlyName.localeCompare(b.friendlyName);
-    });
-});
-const map = getMapByScriptName(props.battle.battleOptions.map);
-const installedGames = computed(() => Array.from(api.content.game.installedVersions));
+// const map = getMapByScriptName(props.battle.battleOptions.map);
+const map = ref();
 const mapListOpen = ref(false);
 const mapOptionsOpen = ref(false);
 const gameOptionsOpen = ref(false);
@@ -255,11 +232,11 @@ function openMapOptions() {
 }
 
 function onEngineSelected(engineVersion: string) {
-    props.battle.setEngine(engineVersion);
+    // props.battle.setEngine(engineVersion);
 }
 
 function onGameSelected(gameVersion: string) {
-    props.battle.setGame(gameVersion);
+    // props.battle.setGame(gameVersion);
 }
 
 async function openGameOptions() {
@@ -270,17 +247,17 @@ async function openGameOptions() {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function setGameOptions(options: Record<string, any>) {
-    props.battle.setGameOptions(options);
+    // props.battle.setGameOptions(options);
 }
 
 function setMapOptions(startPosType: StartPosType, orientation: StartBoxOrientation, size: number) {
-    props.battle.setStartBoxes(orientation, size);
-    props.battle.setStartPosType(startPosType);
+    // props.battle.setStartBoxes(orientation, size);
+    // props.battle.setStartPosType(startPosType);
 }
 
 function onMapSelected(mapScriptName: string) {
     mapListOpen.value = false;
-    props.battle.setMap(mapScriptName);
+    // props.battle.setMap(mapScriptName);
 }
 
 function onPresetSelected(preset: string) {
@@ -340,10 +317,10 @@ function leaveQueue() {
 }
 
 function leave() {
-    props.battle.leave();
+    // props.battle.leave();
 }
 async function start() {
-    props.battle.start();
+    // props.battle.start();
 }
 </script>
 
