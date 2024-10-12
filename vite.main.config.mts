@@ -1,4 +1,5 @@
 import { defineConfig } from "vite";
+import { viteStaticCopy } from "vite-plugin-static-copy";
 
 import path from "path";
 
@@ -22,4 +23,18 @@ export default defineConfig({
         },
         sourcemap: true,
     },
+    plugins: [
+        viteStaticCopy({
+            targets: [
+                {
+                    src: "node_modules/7zip-bin/win/x64/7za.exe",
+                    dest: "./win/x64/7za.exe",
+                },
+                {
+                    src: "node_modules/7zip-bin/linux/x64/7za",
+                    dest: "./linux/x64/7za",
+                },
+            ],
+        }),
+    ],
 });
