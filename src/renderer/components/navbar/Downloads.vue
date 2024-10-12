@@ -3,7 +3,7 @@
         <Transition name="fade" mode="out-in">
             <div v-if="downloadsStore.mapDownloads.length" class="downloads">
                 <TransitionGroup tag="div" name="downloads-list">
-                    <div v-for="(download, i) in downloadsStore.mapDownloads" :key="i" class="downloads__download">
+                    <div v-for="(download, i) in limitedList" :key="i" class="downloads__download">
                         <div class="downloads__info">
                             <div class="downloads__name">
                                 {{ download.name }}
@@ -20,6 +20,11 @@
                         />
                     </div>
                 </TransitionGroup>
+                <Transition tag="div" name="fade" mode="out-in">
+                    <div class="flex-row flex-grow flex-center" v-if="downloadsStore.mapDownloads.length > limitedList.length">
+                        {{ `and ${downloadsStore.mapDownloads.length - limitedList.length} more...` }}
+                    </div>
+                </Transition>
             </div>
             <div v-else class="flex-row flex-grow flex-center">No downloads active</div>
         </Transition>
@@ -27,7 +32,7 @@
 </template>
 
 <script lang="ts" setup>
-import { inject, Ref } from "vue";
+import { computed, inject, Ref } from "vue";
 
 import Progress from "@renderer/components/common/Progress.vue";
 import PopOutPanel from "@renderer/components/navbar/PopOutPanel.vue";
@@ -45,6 +50,8 @@ const emits = defineEmits<{
 const toggleMessages = inject<Ref<(open?: boolean, userId?: number) => void>>("toggleMessages")!;
 const toggleFriends = inject<Ref<(open?: boolean) => void>>("toggleFriends")!;
 const toggleDownloads = inject<Ref<(open?: boolean) => void>>("toggleDownloads")!;
+
+const limitedList = computed(() => downloadsStore.mapDownloads.slice(0, 5));
 
 toggleDownloads.value = async (open?: boolean) => {
     if (open) {
