@@ -193,8 +193,6 @@ function drawStartPositions() {
         startPositionsGfx.ellipse(x - radius * 0.5, y - radius * 0.5, radius, radius);
     }
 }
-
-await new Promise((resolve) => setTimeout(resolve, 1000));
 </script>
 
 <style lang="scss" scoped>
