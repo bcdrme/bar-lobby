@@ -8,6 +8,7 @@ import Tooltip from "primevue/tooltip";
 import type { TransitionProps } from "vue";
 import { createApp } from "vue";
 import { createI18n } from "vue-i18n";
+import { localeFilePaths } from "@renderer/assets/assetFiles";
 
 import App from "@renderer/App.vue";
 import { clickAwayDirective } from "@renderer/utils/click-away-directive";
@@ -84,10 +85,9 @@ async function replayOpenedHandlers() {
 async function setupI18n() {
     const myLocale = Intl.DateTimeFormat().resolvedOptions().locale.split("-")[0];
     const messages: Record<string, Record<string, string>> = {};
-    const localeFilePaths = import.meta.glob<Record<string, string>>("$/language/*.json", { import: "default" });
     for (const filePath in localeFilePaths) {
         const localeCode = filePath.match(/([a-z]{2})\.json$/)![1];
-        messages[localeCode] = await localeFilePaths[filePath]();
+        messages[localeCode] = localeFilePaths[filePath];
     }
     return createI18n({
         locale: myLocale,
