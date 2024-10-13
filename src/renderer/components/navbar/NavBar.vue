@@ -183,7 +183,7 @@ const serverOffline = api.session.offlineMode;
         content: "";
         z-index: -1;
         opacity: 0.2;
-        background-image: url("./src/renderer/assets/images/squares.png");
+        background-image: url("/src/renderer/assets/images/squares.png");
     }
 }
 .logo {

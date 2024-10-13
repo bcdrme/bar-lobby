@@ -10,25 +10,24 @@ import { computed, onMounted, ref } from "vue";
 
 import Progress from "@renderer/components/common/Progress.vue";
 import { audioApi } from "@renderer/audio/audio";
+import { backgroundImages, fontFiles } from "@renderer/assets/assetFiles";
 
 const emit = defineEmits(["complete"]);
 
-const totalFiles = ref(0);
+const totalFiles = Object.values(fontFiles).length;
 const loadedFiles = ref(0);
-const loadedPercent = computed(() => loadedFiles.value / totalFiles.value);
+const loadedPercent = computed(() => loadedFiles.value / totalFiles);
 
-const backgroundImages = import.meta.glob("/src/renderer/assets/images/backgrounds/**/*", { as: "url" });
-const randomBackgroundImage = randomFromArray(Object.keys(backgroundImages));
+console.debug(`Loading ${totalFiles} font files...`);
+console.debug(`Loading ${Object.values(backgroundImages).length} background images...`);
+const randomBackgroundImage = randomFromArray(Object.values(backgroundImages));
+console.debug("Setting background image:", randomBackgroundImage);
 document.documentElement.style.setProperty("--background", `url(${randomBackgroundImage})`);
-
-const fontFiles = import.meta.glob("@renderer/assets/fonts/*", { as: "url" });
-
-totalFiles.value = Object.keys(fontFiles).length;
 
 onMounted(async () => {
     try {
-        for (const fontFile in fontFiles) {
-            await loadFont(fontFile);
+        for (const fontFile of Object.values(fontFiles)) {
+            await loadFont(fontFile as string);
             loadedFiles.value++;
         }
     } catch (error) {

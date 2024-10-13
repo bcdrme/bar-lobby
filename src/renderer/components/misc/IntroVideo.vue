@@ -8,15 +8,16 @@
 
 <script lang="ts" setup>
 import { randomFromArray } from "$/jaz-ts-utils/object";
+import { introVideos } from "@renderer/assets/assetFiles";
 import { onMounted, Ref, ref } from "vue";
 
 const videoEl: Ref<HTMLVideoElement | null> = ref(null);
 
 const emit = defineEmits(["complete"]);
 
-const introVideos = import.meta.glob("/src/renderer/assets/videos/intros/**/*", { as: "url" });
-console.debug("Loading intro videos...", introVideos);
-const randomIntroVideo = randomFromArray(Object.keys(introVideos));
+console.debug(`Loading ${Object.values(introVideos).length} intro videos...`);
+const randomIntroVideo = randomFromArray(Object.values(introVideos));
+console.debug("Setting intro video:", randomIntroVideo);
 
 onMounted(async () => {
     if (videoEl.value) {

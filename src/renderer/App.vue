@@ -67,8 +67,6 @@ import Notifications from "@renderer/components/notifications/Notifications.vue"
 import PromptContainer from "@renderer/components/prompts/PromptContainer.vue";
 
 import { playRandomMusic } from "@renderer/utils/play-random-music";
-import { defaultEngineVersion, defaultGameVersion } from "@main/config/default-versions";
-import { defaultMaps } from "@main/config/default-maps";
 import { settingsStore } from "./store/settings.store";
 import { infosStore } from "@renderer/store/infos.store";
 import { Suspense } from "vue";

@@ -5,7 +5,6 @@ import VueRouter from "unplugin-vue-router/vite";
 
 // https://vitejs.dev/config
 export default defineConfig({
-    publicDir: "assets",
     resolve: {
         alias: {
             "@main": path.join(__dirname, "src/main"),
@@ -15,8 +14,8 @@ export default defineConfig({
         },
     },
     build: {
-        assetsDir: "./src/renderer/assets",
         sourcemap: true,
+        rollupOptions: {},
     },
     optimizeDeps: {
         esbuildOptions: {

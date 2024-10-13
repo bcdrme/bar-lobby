@@ -1,4 +1,5 @@
 import { Settings } from "@main/services/settings.service";
+import { musicFiles, sfxFiles } from "@renderer/assets/assetFiles";
 import { gameStore } from "@renderer/store/game.store";
 import { settingsStore } from "@renderer/store/settings.store";
 import type { HowlOptions } from "howler";
@@ -26,22 +27,30 @@ class AudioAPI {
             return this;
         }
         this.settings = await window.settings.getSettings();
-        const audioFiles = import.meta.glob("@renderer/assets/audio/**/*", { as: "url" });
-        console.log("Loading audio files...");
-        console.log(audioFiles);
-        for (const filePath in audioFiles) {
-            const isMusic = filePath.includes("music");
+        console.debug("Loading music files...");
+        for (const filePath in musicFiles) {
             const name = filePath.split("/").pop().split(".")[0];
-            const src = filePath;
-            const volume = isMusic ? this.settings.musicVolume / 100 : this.settings.sfxVolume / 100;
-            const sound = new Sound(name, isMusic, { src, volume, preload: false, html5: true });
+            console.debug(name);
+            const src = musicFiles[filePath] as string;
+            const volume = this.settings.musicVolume / 100;
+            const sound = new Sound(name, true, { src, volume, preload: false, html5: true });
             sound.on("play", () => {
                 this.sounds.forEach((_sound) => {
-                    if (sound !== _sound && isMusic) {
+                    if (sound !== _sound) {
                         _sound.stop();
                     }
                 });
             });
+            this.sounds.set(name, sound);
+        }
+
+        console.debug("Loading sfx files...");
+        for (const filePath in sfxFiles) {
+            const name = filePath.split("/").pop().split(".")[0];
+            console.debug(name);
+            const src = sfxFiles[filePath] as string;
+            const volume = this.settings.sfxVolume / 100;
+            const sound = new Sound(name, false, { src, volume, preload: false, html5: true });
             this.sounds.set(name, sound);
         }
 
