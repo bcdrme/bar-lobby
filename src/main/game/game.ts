@@ -120,16 +120,17 @@ export class GameAPI {
         return this.gameProcess !== null;
     }
 
+    //TODO not handling maps, not sure if needed if we always come from the lobby's UI
     protected async fetchMissingContent(engineVersion: string, gameVersion: string, mapScriptName: string) {
         const isEngineInstalled = engineContentAPI.isVersionInstalled(engineVersion);
         const isGameInstalled = gameContentAPI.isVersionInstalled(gameVersion);
-        const isMapInstalled = mapContentAPI.isVersionInstalled(mapScriptName);
-        if (!isEngineInstalled || !isGameInstalled || !isMapInstalled) {
+        if (!isEngineInstalled || !isGameInstalled) {
+            //|| !isMapInstalled) {
             //TODO replace with an event
             // api.notifications.alert({
             //     text: "Downloading missing content - the game will auto-launch when downloads complete",
             // });
-            return Promise.all([engineContentAPI.downloadEngine(engineVersion), gameContentAPI.downloadGame(gameVersion), mapContentAPI.downloadMap(mapScriptName)]);
+            return Promise.all([engineContentAPI.downloadEngine(engineVersion), gameContentAPI.downloadGame(gameVersion)]);
         }
         return;
     }
