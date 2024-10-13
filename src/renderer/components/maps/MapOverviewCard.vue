@@ -23,10 +23,6 @@ const props = defineProps<{
 const mapSize = ref(props.map ? props.map.width + "x" + props.map.height : "Unknown");
 const imageUrl = ref(props.map?.images.texture || defaultMiniMap);
 
-watchEffect(() => {
-    console.debug(`friendlyName: ${props.friendlyName}`);
-});
-
 watch(
     () => props.map,
     () => {
@@ -34,10 +30,6 @@ watch(
         imageUrl.value = props.map ? props.map.images.texture : defaultMiniMap;
     }
 );
-
-watchEffect(() => {
-    console.debug(`imageUrl: ${imageUrl.value}`);
-});
 </script>
 
 <style lang="scss" scoped>
