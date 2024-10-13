@@ -27,7 +27,7 @@ document.documentElement.style.setProperty("--background", `url(${randomBackgrou
 onMounted(async () => {
     try {
         for (const fontFile of Object.values(fontFiles)) {
-            await loadFont(fontFile as string);
+            await loadFont(fontFile);
             loadedFiles.value++;
         }
     } catch (error) {

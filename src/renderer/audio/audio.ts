@@ -31,7 +31,7 @@ class AudioAPI {
         for (const filePath in musicFiles) {
             const name = filePath.split("/").pop().split(".")[0];
             console.debug(name);
-            const src = musicFiles[filePath] as string;
+            const src = musicFiles[filePath];
             const volume = this.settings.musicVolume / 100;
             const sound = new Sound(name, true, { src, volume, preload: false, html5: true });
             sound.on("play", () => {
@@ -48,7 +48,7 @@ class AudioAPI {
         for (const filePath in sfxFiles) {
             const name = filePath.split("/").pop().split(".")[0];
             console.debug(name);
-            const src = sfxFiles[filePath] as string;
+            const src = sfxFiles[filePath];
             const volume = this.settings.sfxVolume / 100;
             const sound = new Sound(name, false, { src, volume, preload: false, html5: true });
             this.sounds.set(name, sound);
