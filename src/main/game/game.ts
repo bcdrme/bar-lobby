@@ -12,8 +12,8 @@ import { startScriptConverter } from "@main/utils/start-script-converter";
 import { defaultEngineVersion } from "@main/config/default-versions";
 import { logger } from "@main/utils/logger";
 import { gameContentAPI } from "@main/content/game/game-content";
-import { CONTENT_PATH } from "@main/config/app";
-import { Battle, isBattle } from "@renderer/game/abstract-battle";
+import { CONTENT_PATH, REPLAYS_PATH } from "@main/config/app";
+import { Battle } from "@renderer/game/abstract-battle";
 
 const log = logger("main/game/game.ts");
 
@@ -24,56 +24,65 @@ export class GameAPI {
 
     protected gameProcess: ChildProcess | null = null;
 
-    public async launch(battle: Battle): Promise<void>;
-    public async launch(replay: Replay): Promise<void>;
-    public async launch(script: string): Promise<void>;
-    public async launch(arg: Battle | Replay | string): Promise<void> {
+    public async launchBattle(battle: Battle): Promise<void> {
+        const script = startScriptConverter.generateScriptStr(battle);
+        const scriptPath = path.join(CONTENT_PATH, this.scriptName);
+        await fs.promises.writeFile(scriptPath, script);
+        await this.launch({
+            engineVersion: battle.battleOptions.engineVersion,
+            gameVersion: battle.battleOptions.gameVersion,
+            mapScriptName: battle.battleOptions.map,
+            launchArg: scriptPath,
+        });
+    }
+
+    public async launchReplay(replay: Replay): Promise<void> {
+        await this.launch({
+            engineVersion: replay.engineVersion,
+            gameVersion: replay.gameVersion,
+            mapScriptName: replay.mapScriptName,
+            launchArg: replay.filePath ? replay.filePath : path.join(REPLAYS_PATH, replay.fileName),
+        });
+    }
+
+    public async launchScript(script: string): Promise<void> {
+        const gameVersion = script.match(/gametype\s*=\s*(.*);/)?.[1]!;
+        if (!gameVersion) {
+            throw new Error("Could not parse game version from script");
+        }
+        const mapScriptName = script.match(/mapname\s*=\s*(.*);/)?.[1]!;
+        if (!mapScriptName) {
+            throw new Error("Could not parse map name from script");
+        }
+        const scriptPath = path.join(CONTENT_PATH, this.scriptName);
+        await fs.promises.writeFile(scriptPath, script);
+        await this.launch({
+            engineVersion: defaultEngineVersion,
+            gameVersion,
+            mapScriptName,
+            launchArg: scriptPath,
+        });
+    }
+
+    public async launch({
+        engineVersion = defaultEngineVersion,
+        gameVersion,
+        mapScriptName,
+        launchArg,
+    }: {
+        engineVersion: string;
+        gameVersion: string;
+        mapScriptName: string;
+        launchArg: string;
+    }): Promise<void> {
         try {
-            let engineVersion: string;
-            let gameVersion: string;
-            let mapName: string;
-            let script: string | undefined;
-
-            if (isBattle(arg)) {
-                engineVersion = arg.battleOptions.engineVersion;
-                gameVersion = arg.battleOptions.gameVersion;
-                mapName = arg.battleOptions.map;
-                script = startScriptConverter.generateScriptStr(arg);
-            } else if (typeof arg === "string") {
-                engineVersion = defaultEngineVersion;
-                gameVersion = arg.match(/gametype\s*=\s*(.*);/)?.[1]!;
-                mapName = arg.match(/mapname\s*=\s*(.*);/)?.[1]!;
-                if (!gameVersion) {
-                    throw new Error("Could not parse game version from script");
-                }
-                if (!mapName) {
-                    throw new Error("Could not map name from script");
-                }
-                script = arg;
-            } else {
-                engineVersion = arg.engineVersion;
-                gameVersion = arg.gameVersion;
-                mapName = arg.mapScriptName;
-            }
-
-            log.info(`Launching game with engine: ${engineVersion}, game: ${gameVersion}, map: ${mapName}`);
-            await this.fetchMissingContent(engineVersion, gameVersion, mapName);
-
+            log.info(`Launching game with engine: ${engineVersion}, game: ${gameVersion}, map: ${mapScriptName}`);
+            await this.fetchMissingContent(engineVersion, gameVersion, mapScriptName);
             const enginePath = path.join(CONTENT_PATH, "engine", engineVersion).replaceAll("\\", "/");
-
-            let launchArg = "";
-            if (script) {
-                const scriptPath = (launchArg = path.join(CONTENT_PATH, this.scriptName));
-                await fs.promises.writeFile(scriptPath, script);
-            }
-            // else if (isReplay(arg)) {
-            //     launchArg = arg.filePath ? arg.filePath : path.join(REPLAYS_PATH, arg.fileName);
-            // }
-
             const args = ["--write-dir", CONTENT_PATH, "--isolation", launchArg];
-
             const binaryName = process.platform === "win32" ? "spring.exe" : "./spring";
             log.debug(`Running binary: ${path.join(enginePath, binaryName)}, args: ${args}`);
+
             this.gameProcess = spawn(binaryName, args, {
                 cwd: enginePath,
                 stdio: "ignore",

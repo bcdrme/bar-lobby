@@ -3,7 +3,6 @@ import { contextBridge, ipcRenderer } from "electron";
 import { Replay } from "@main/content/replays/replay";
 import { Settings } from "@main/services/settings.service";
 import { Account } from "@main/services/account.service";
-import { ReplayQueryOptions } from "@main/services/replays.service";
 import { EngineVersion } from "@main/content/engine/engine-version";
 import { GameVersion } from "@main/content/game/game-version";
 import { MapData } from "@main/content/maps/map-data";
@@ -11,7 +10,7 @@ import { LuaOptionSection } from "@main/content/game/lua-options";
 import { Scenario } from "@main/content/game/scenario";
 import { DownloadInfo } from "@main/content/downloads";
 import { Info } from "@main/services/info.service";
-import { sync } from "glob-promise";
+import { Battle } from "@renderer/game/abstract-battle";
 
 console.log("preload.ts loaded");
 
@@ -41,7 +40,7 @@ export type ShellApi = typeof shellApi;
 contextBridge.exposeInMainWorld("shell", shellApi);
 
 const replaysApi = {
-    sync: (replays: ReplayQueryOptions): Promise<void> => ipcRenderer.invoke("replays:sync", replays),
+    sync: (replays: string[]): Promise<void> => ipcRenderer.invoke("replays:sync", replays),
     delete: (fileName: number): Promise<void> => ipcRenderer.invoke("replays:delete", fileName),
 
     // Events
@@ -86,8 +85,9 @@ const gameApi = {
     uninstallVersion: (version: GameVersion): Promise<void> => ipcRenderer.invoke("game:uninstallVersion", version),
 
     // Game
-    launchGame: (script: string): Promise<void> => ipcRenderer.invoke("game:launchGame", script),
+    launchScript: (script: string): Promise<void> => ipcRenderer.invoke("game:launchScript", script),
     launchReplay: (replay: Replay): Promise<void> => ipcRenderer.invoke("game:launchReplay", replay),
+    launchBattle: (battle: Battle): Promise<void> => ipcRenderer.invoke("game:launchBattle", battle),
 
     // Events
     onGameLaunched: (callback: () => void) => ipcRenderer.on("game:launched", callback),

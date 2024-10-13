@@ -13,7 +13,7 @@
 <script lang="ts" setup>
 import { MapData } from "@main/content/maps/map-data";
 import defaultMiniMap from "/src/renderer/assets/images/default-minimap.png?url";
-import { ref, watch, watchEffect } from "vue";
+import { ref, watch } from "vue";
 
 const props = defineProps<{
     map?: MapData;

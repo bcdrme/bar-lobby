@@ -3,6 +3,7 @@ import { gameContentAPI } from "@main/content/game/game-content";
 import { gameAPI } from "@main/game/game";
 import { ipcMain } from "electron";
 import { Replay } from "@main/content/replays/replay";
+import { Battle } from "@renderer/game/abstract-battle";
 
 function init() {
     gameContentAPI.init();
@@ -18,8 +19,9 @@ function registerIpcHandlers(mainWindow: Electron.BrowserWindow) {
     ipcMain.handle("game:uninstallVersion", (_, version: GameVersion) => gameContentAPI.uninstallVersion(version));
 
     // Game
-    ipcMain.handle("game:launchGame", (_, script: string) => gameAPI.launch(script));
-    ipcMain.handle("game:launchReplay", (_, replay: Replay) => gameAPI.launch(replay));
+    ipcMain.handle("game:launchScript", (_, script: string) => gameAPI.launchScript(script));
+    ipcMain.handle("game:launchReplay", (_, replay: Replay) => gameAPI.launchReplay(replay));
+    ipcMain.handle("game:launchBattle", (_, battle: Battle) => gameAPI.launchBattle(battle));
 
     // Events
     gameAPI.onGameLaunched.add(() => {
