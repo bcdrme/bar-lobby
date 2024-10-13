@@ -37,6 +37,7 @@
                                 @page="onPage"
                                 @sort="onSort"
                             >
+                                <template #empty>No replays found</template>
                                 <Column header="Name">
                                     <template #body="{ data }">
                                         <!-- <template v-if="isBattle(data)">{{ data.battleOptions.title }}</template> -->

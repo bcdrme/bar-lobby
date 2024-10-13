@@ -87,13 +87,13 @@ export class ReplayContentAPI {
         try {
             await fs.promises.rm(path.join(REPLAYS_PATH, fileName));
         } catch (err) {
-            console.error("Error deleting replay", err);
+            log.error("Error deleting replay", err);
         }
     }
 
     protected async startCacheReplayConsumer() {
         if (this.cachingReplays) {
-            console.warn("Don't call cacheReplays more than once");
+            log.warn("Don't call cacheReplays more than once");
             return;
         }
         this.cachingReplays = true;
@@ -104,7 +104,7 @@ export class ReplayContentAPI {
                 const replayFilePath = path.join(REPLAYS_PATH, replayToCache);
                 const fileInUse = await isFileInUse(replayFilePath);
                 if (fileInUse) {
-                    console.debug(`Cannot parse replay yet because it is still being written: ${replayToCache}`);
+                    log.debug(`Cannot parse replay yet because it is still being written: ${replayToCache}`);
                     this.replayCacheQueue.delete(replayToCache);
                 } else {
                     await this.cacheReplay(replayFilePath);
@@ -117,7 +117,7 @@ export class ReplayContentAPI {
 
     protected async cacheReplay(replayFilePath: string) {
         const replayFileName = path.parse(replayFilePath).base;
-        console.debug(`Caching: ${replayFileName}`);
+        log.debug(`Caching: ${replayFileName}`);
         try {
             const replayData = await asyncParseReplay(replayFilePath);
             if (replayData.gameId === "00000000000000000000000000000000") {
@@ -134,11 +134,11 @@ export class ReplayContentAPI {
             //         await fs.promises.rm(filePath);
             //     }
             // }
-            console.debug(`Cached replay: ${replayFileName}`);
+            log.debug(`Cached replay: ${replayFileName}`);
             this.onReplayCached.dispatch(replayData);
         } catch (err) {
-            console.error(`Error caching replay: ${replayFileName}`, err);
-            console.error(err);
+            log.error(`Error caching replay: ${replayFileName}`, err);
+            log.error(err);
             //TODO emit error signal
         }
         this.replayCacheQueue.delete(replayFileName);
