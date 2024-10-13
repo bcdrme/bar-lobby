@@ -1,13 +1,9 @@
 import { StartPos } from "@main/content/maps/map-model";
-import { MapParser } from "@main/content/maps/spring-map-parser";
-import { logger } from "@main/utils/logger";
+import { MapParser } from "$/map-parser/spring-map-parser";
 import path from "path";
-import fs from "fs";
 import { MapData } from "@main/content/maps/map-data";
 import { Worker } from "worker_threads";
 import { MIPMAP_SIZE } from "@main/config/map-parsing";
-
-const log = logger("parse-map.ts");
 
 const mapParser = new MapParser({
     mipmapSize: MIPMAP_SIZE,
