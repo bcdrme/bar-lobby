@@ -9,6 +9,7 @@ function registerIpcHandlers() {
     ipcMain.handle("shell:openSettingsFile", () => shell.openPath(path.join(CONFIG_PATH, "settings.json")));
     ipcMain.handle("shell:openStartScript", () => shell.openPath(path.join(CONTENT_PATH, "script.txt")));
     ipcMain.handle("shell:openReplaysDir", () => shell.openPath(REPLAYS_PATH));
+    ipcMain.handle("shell:showReplayInFolder", (_event, fileName: string) => shell.showItemInFolder(path.join(REPLAYS_PATH, fileName)));
 }
 
 export const shellService = {

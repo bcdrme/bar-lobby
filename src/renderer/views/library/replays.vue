@@ -31,7 +31,7 @@
                                 :rows="limit"
                                 :totalRecords="totalReplays"
                                 selectionMode="single"
-                                dataKey="replayId"
+                                dataKey="fileName"
                                 :sortOrder="sortOrder === 'asc' ? 1 : -1"
                                 :sortField="sortField"
                                 @page="onPage"
@@ -40,8 +40,6 @@
                                 <template #empty>No replays found</template>
                                 <Column header="Name">
                                     <template #body="{ data }">
-                                        <!-- <template v-if="isBattle(data)">{{ data.battleOptions.title }}</template> -->
-                                        <!-- <template v-else-if="isReplay(data)"> -->
                                         <template v-if="data.preset === 'duel'">
                                             {{ data.contenders?.[0]?.name ?? "Nobody" }} vs
                                             {{ data.contenders?.[1]?.name ?? "Nobody" }}
@@ -51,7 +49,6 @@
                                         </template>
                                         <template v-if="data.preset === 'ffa'"> {{ data.contenders.length }} Way FFA </template>
                                         <template v-if="data.preset === 'teamffa'"> {{ data.teams[0].playerCount }} Way Team FFA </template>
-                                        <!-- </template> -->
                                     </template>
                                 </Column>
                                 <Column header="Date" :sortable="true" sortField="startTime">
@@ -70,12 +67,14 @@
                     </div>
                 </div>
                 <div class="right">
-                    <BattlePreview v-if="selectedReplay" :battle="selectedReplay" :showSpoilers="showSpoilers">
-                        <template #actions="{ battle }">
-                            <Button class="green flex-grow" @click="watchReplay(battle)">Watch</Button>
-                            <Button @click="showReplayFile(battle)">Show File</Button>
+                    <ReplayPreview v-if="selectedReplay" :replay="selectedReplay" :showSpoilers="showSpoilers">
+                        <template #actions="{ replay }">
+                            <Button v-if="hasMap" class="green flex-grow" @click="watchReplay(replay)">Watch</Button>
+                            <Button v-else-if="downloading" class="green flex-grow" disabled>Downloading map ...</Button>
+                            <Button v-else class="red flex-grow" @click="downloadMap(replay)">Download map</Button>
+                            <Button @click="showReplayFile(replay)">Show File</Button>
                         </template>
-                    </BattlePreview>
+                    </ReplayPreview>
                 </div>
             </div>
         </Panel>
@@ -98,7 +97,7 @@
 
 import { format } from "date-fns";
 import Column from "primevue/column";
-import { Ref, ref, shallowRef } from "vue";
+import { computed, Ref, ref, shallowRef } from "vue";
 
 import Button from "@renderer/components/controls/Button.vue";
 import Checkbox from "@renderer/components/controls/Checkbox.vue";
@@ -108,9 +107,10 @@ import { Replay } from "@main/content/replays/replay";
 import DataTable, { DataTablePageEvent, DataTableStateEvent } from "primevue/datatable";
 import Panel from "@renderer/components/common/Panel.vue";
 import { db } from "@renderer/store/db";
-import BattlePreview from "@renderer/components/battle/BattlePreview.vue";
 import { useDexieLiveQueryWithDeps } from "@renderer/composables/useDexieLiveQuery";
-import Loader from "@renderer/components/common/Loader.vue";
+import ReplayPreview from "@renderer/components/battle/ReplayPreview.vue";
+import { downloadsStore } from "@renderer/store/downloads.store";
+import { mapFileNameToFriendlyName } from "@main/content/maps/map-data";
 
 const endedNormally: Ref<boolean | null> = ref(true);
 const showSpoilers = ref(true);
@@ -138,6 +138,12 @@ const replays = useDexieLiveQueryWithDeps([endedNormally, offset, limit, sortFie
     return query.reverse().sortBy(sortField.value);
 });
 
+const hasMap = useDexieLiveQueryWithDeps([selectedReplay], () => db.maps.get(selectedReplay.value?.mapScriptName));
+//TODO inefficient and potentially buggy because of the mapFileNameToFriendlyName
+const downloading = computed(() =>
+    downloadsStore.mapDownloads.some((d) => d.name === mapFileNameToFriendlyName(selectedReplay.value?.mapScriptName))
+);
+
 function onPage(event: DataTablePageEvent) {
     offset.value = event.first;
 }
@@ -152,17 +158,15 @@ function openReplaysFolder() {
 }
 
 function watchReplay(replay: Replay) {
-    //TODO implement this for replay watching, window.game or window.replays?
-    // window.game.launchGame(replay);
+    window.game.launchReplay(replay);
+}
+
+function downloadMap(replay: Replay) {
+    window.maps.downloadMap(replay.mapScriptName);
 }
 
 function showReplayFile(replay: Replay) {
-    //TODO implement this
-    // if (replay.filePath) {
-    //     shell.showItemInFolder(replay.filePath);
-    //     return;
-    // }
-    // shell.showItemInFolder(path.join(window.replays.replaysDir, replay.fileName));
+    window.shell.showReplayInFolder(replay.fileName);
 }
 </script>
 

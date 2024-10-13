@@ -30,3 +30,14 @@ export type MapData = {
         type: string;
     };
 };
+
+export function mapFileNameToFriendlyName(fileName: string) {
+    let friendlyName = fileName
+        .replace(/\.sd7$/, "")
+        .replaceAll("_", " ")
+        .toLowerCase()
+        .split(" ")
+        .map((word) => word.charAt(0).toUpperCase() + word.substring(1))
+        .join(" ");
+    return friendlyName;
+}

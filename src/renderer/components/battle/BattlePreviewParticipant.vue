@@ -10,17 +10,13 @@
 import { Icon } from "@iconify/vue";
 import robot from "@iconify-icons/mdi/robot";
 import { computed } from "vue";
-
 import Flag from "@renderer/components/misc/Flag.vue";
-import { User } from "@main/model/user";
-import { DemoModel } from "$/sdfz-demo-parser/demo-model";
-import { Bot } from "@main/game/battle/battle-types";
 
 const props = defineProps<{
-    contender: DemoModel.Info.Player | DemoModel.Info.AI | DemoModel.Info.Spectator | User | Bot;
+    contender: { name: string; rgbColor?: { r: number; g: number; b: number }; countryCode?: string; aiId?: number };
 }>();
 
-const name = computed(() => (isUser(props.contender) ? props.contender.username : props.contender.name));
+const name = computed(() => props.contender.name);
 
 const color = computed(() => {
     if ("rgbColor" in props.contender) {

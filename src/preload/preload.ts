@@ -35,6 +35,7 @@ const shellApi = {
     openSettingsFile: (): Promise<void> => ipcRenderer.invoke("shell:openSettingsFile"),
     openStartScript: (): Promise<void> => ipcRenderer.invoke("shell:openStartScript"),
     openReplaysDir: (): Promise<void> => ipcRenderer.invoke("shell:openReplaysDir"),
+    showReplayInFolder: (fileName: string): Promise<void> => ipcRenderer.invoke("shell:showReplayInFolder", fileName),
 };
 export type ShellApi = typeof shellApi;
 contextBridge.exposeInMainWorld("shell", shellApi);
@@ -86,6 +87,7 @@ const gameApi = {
 
     // Game
     launchGame: (script: string): Promise<void> => ipcRenderer.invoke("game:launchGame", script),
+    launchReplay: (replay: Replay): Promise<void> => ipcRenderer.invoke("game:launchReplay", replay),
 
     // Events
     onGameLaunched: (callback: () => void) => ipcRenderer.on("game:launched", callback),

@@ -1,5 +1,5 @@
 export type DownloadInfo = {
-    type: "engine" | "game" | "map";
+    type: "engine" | "game" | "map" | "replay";
     name: string;
     currentBytes: number;
     totalBytes: number;

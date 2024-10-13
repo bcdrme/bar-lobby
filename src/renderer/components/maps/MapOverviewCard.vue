@@ -2,7 +2,7 @@
     <div class="map">
         <div class="background" :style="`background-image: url('${imageUrl}')`"></div>
         <div class="name">
-            {{ map.friendlyName ?? friendlyName }}
+            {{ friendlyName }}
         </div>
         <div class="attributes">
             <div>{{ mapSize }}</div>
@@ -12,14 +12,32 @@
 
 <script lang="ts" setup>
 import { MapData } from "@main/content/maps/map-data";
+import defaultMiniMap from "/src/renderer/assets/images/default-minimap.png?url";
+import { ref, watch, watchEffect } from "vue";
 
 const props = defineProps<{
-    map: MapData;
+    map?: MapData;
     friendlyName: string;
 }>();
 
-const mapSize = props.map.width + "x" + props.map.height;
-const imageUrl = props.map.images.texture;
+const mapSize = ref(props.map ? props.map.width + "x" + props.map.height : "Unknown");
+const imageUrl = ref(props.map?.images.texture || defaultMiniMap);
+
+watchEffect(() => {
+    console.debug(`friendlyName: ${props.friendlyName}`);
+});
+
+watch(
+    () => props.map,
+    () => {
+        mapSize.value = props.map ? props.map.width + "x" + props.map.height : "Unknown";
+        imageUrl.value = props.map ? props.map.images.texture : defaultMiniMap;
+    }
+);
+
+watchEffect(() => {
+    console.debug(`imageUrl: ${imageUrl.value}`);
+});
 </script>
 
 <style lang="scss" scoped>
@@ -74,6 +92,7 @@ const imageUrl = props.map.images.texture;
         background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0));
         transition: 0.1s opacity;
     }
+    transition: background-image 0.1s ease-in-out;
 }
 .name {
     @extend .fullsize;
