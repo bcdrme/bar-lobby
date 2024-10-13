@@ -18,6 +18,7 @@ export default defineConfig({
             input: {
                 index: path.resolve(__dirname, "src/main/index.ts"),
                 "parse-map-worker": path.resolve(__dirname, "src/main/content/maps/parse-map-worker.ts"),
+                "parse-replay-worker": path.resolve(__dirname, "src/main/content/replays/parse-replay-worker.ts"),
             },
         },
         sourcemap: true,

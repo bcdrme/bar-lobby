@@ -13,6 +13,16 @@ export async function initReplaysStore() {
         console.debug("Received replay cached event", replay);
         db.replays.add(replay);
     });
-    // await window.replays.refreshCache();
+    window.replays.onReplayDeleted((filename: string) => {
+        console.debug("Received replay deleted event", filename);
+        db.replays.where("fileName").equals(filename).delete();
+    });
+    await syncReplays();
     replaysStore.isInitialized = true;
+}
+
+async function syncReplays() {
+    console.debug("Syncing replays");
+    const allReplays = await db.replays.toArray();
+    window.replays.sync(allReplays.map((replay) => replay.fileName));
 }

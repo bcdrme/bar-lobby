@@ -6,7 +6,6 @@ import * as path from "path";
 
 import { engineContentAPI } from "@main/content/engine/engine-content";
 import { mapContentAPI } from "@main/content/maps/map-content";
-import { replaysService } from "@main/services/replays.service";
 
 import { Replay } from "@main/content/replays/replay";
 import { startScriptConverter } from "@main/utils/start-script-converter";
@@ -68,7 +67,7 @@ export class GameAPI {
                 await fs.promises.writeFile(scriptPath, script);
             }
             // else if (isReplay(arg)) {
-            //     launchArg = arg.filePath ? arg.filePath : path.join(replaysDir, arg.fileName);
+            //     launchArg = arg.filePath ? arg.filePath : path.join(REPLAYS_PATH, arg.fileName);
             // }
 
             const args = ["--write-dir", CONTENT_PATH, "--isolation", launchArg];
@@ -101,7 +100,6 @@ export class GameAPI {
             this.gameProcess.addListener("close", (exitCode) => {
                 this.gameProcess = null;
                 this.onGameClosed.dispatch(exitCode);
-                replaysService.refreshCache();
             });
             log.debug(`Game process PID: ${this.gameProcess.pid}`);
         } catch (err) {

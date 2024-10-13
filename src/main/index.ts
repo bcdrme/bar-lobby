@@ -1,7 +1,6 @@
 import { app, ipcMain, net, protocol, safeStorage, session } from "electron";
 
 import { createWindow } from "@main/main-window";
-import { replaysService } from "@main/services/replays.service";
 import { settingsService } from "./services/settings.service";
 import { infoService } from "./services/info.service";
 import { accountService } from "./services/account.service";
@@ -13,6 +12,7 @@ import { APP_NAME, CONTENT_PATH } from "./config/app";
 import url from "url";
 import { shellService } from "@main/services/shell.service";
 import downloadsService from "@main/services/downloads.service";
+import replaysService from "@main/services/replays.service";
 
 const log = logger("main/index.ts");
 log.info("Starting Electron main process");

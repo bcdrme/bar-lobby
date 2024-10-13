@@ -11,6 +11,7 @@ import { LuaOptionSection } from "@main/content/game/lua-options";
 import { Scenario } from "@main/content/game/scenario";
 import { DownloadInfo } from "@main/content/downloads";
 import { Info } from "@main/services/info.service";
+import { sync } from "glob-promise";
 
 console.log("preload.ts loaded");
 
@@ -39,10 +40,13 @@ export type ShellApi = typeof shellApi;
 contextBridge.exposeInMainWorld("shell", shellApi);
 
 const replaysApi = {
-    deleteReplay: (fileName: number): Promise<void> => ipcRenderer.invoke("replays:delete", fileName),
+    sync: (replays: ReplayQueryOptions): Promise<void> => ipcRenderer.invoke("replays:sync", replays),
+    delete: (fileName: number): Promise<void> => ipcRenderer.invoke("replays:delete", fileName),
 
     // Events
+    onReplayCachingStarted: (callback: (filename: string) => void) => ipcRenderer.on("replays:replayCachingStarted", (_event, filename) => callback(filename as string)),
     onReplayCached: (callback: (replay: Replay) => void) => ipcRenderer.on("replays:replayCached", (_event, replay) => callback(replay as Replay)),
+    onReplayDeleted: (callback: (filename: string) => void) => ipcRenderer.on("replays:replayDeleted", (_event, filename) => callback(filename as string)),
 };
 export type ReplaysApi = typeof replaysApi;
 contextBridge.exposeInMainWorld("replays", replaysApi);
