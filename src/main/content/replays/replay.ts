@@ -9,9 +9,9 @@ export type Replay = {
     mapScriptName: string;
     startTime: Date;
     gameDurationMs: number;
-    gameEndedNormally: boolean;
+    gameEndedNormally: 0 | 1;
     chatlog: DemoModel.ChatMessage[] | null;
-    hasBots: boolean;
+    hasBots: 0 | 1;
     preset: "duel" | "team" | "ffa" | "teamffa";
     winningTeamId: number;
     teams: DemoModel.Info.AllyTeam[];

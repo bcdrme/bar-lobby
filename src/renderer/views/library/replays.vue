@@ -13,10 +13,9 @@
                 <h1>Online Replays</h1> -->
                     </div>
                     <div class="flex-row gap-md">
-                        <TriStateCheckbox v-model="endedNormally" label="Ended Normally" @update:model-value="fetchReplays" />
+                        <TriStateCheckbox v-model="endedNormally" label="Ended Normally" />
                         <Checkbox v-model="showSpoilers" label="Show Spoilers" />
                         <div class="flex-right flex-row gap-md" style="padding-right: 5px">
-                            <Button @click="refresh">Refresh</Button>
                             <Button @click="openReplaysFolder">Open Replays Folder</Button>
                         </div>
                     </div>
@@ -104,11 +103,13 @@ import Button from "@renderer/components/controls/Button.vue";
 import Checkbox from "@renderer/components/controls/Checkbox.vue";
 import TriStateCheckbox from "@renderer/components/controls/TriStateCheckbox.vue";
 import { getFriendlyDuration } from "@renderer/utils/misc";
-import { isReplay, Replay } from "@main/content/replays/replay";
+import { Replay } from "@main/content/replays/replay";
 import DataTable, { DataTablePageEvent, DataTableStateEvent } from "primevue/datatable";
 import Panel from "@renderer/components/common/Panel.vue";
 import { db } from "@renderer/store/db";
 import BattlePreview from "@renderer/components/battle/BattlePreview.vue";
+import { useDexieLiveQueryWithDeps } from "@renderer/composables/useDexieLiveQuery";
+import Loader from "@renderer/components/common/Loader.vue";
 
 const endedNormally: Ref<boolean | null> = ref(true);
 const showSpoilers = ref(true);
@@ -117,51 +118,32 @@ const offset = ref(0);
 const limit = ref(15);
 const sortField: Ref<keyof Replay> = ref("startTime");
 const sortOrder: Ref<"asc" | "desc"> = ref("desc");
-const replays: Ref<Replay[]> = shallowRef([]);
 const selectedReplay: Ref<Replay | null> = shallowRef(null);
 
-async function fetchReplays() {
-    totalReplays.value = await db.replays.count();
-    // replays.value = await window.replays.getReplays({
-    //     offset: offset.value,
-    //     limit: limit.value,
-    //     endedNormally: endedNormally.value,
-    //     sortField: sortField.value,
-    //     sortOrder: sortOrder.value,
-    // });
-
-    // paginate replays with dixie.js
-    replays.value = await db.replays
-        // .where({ gameEndedNormally: endedNormally.value })
-        // .offset(offset.value)
-        // .limit(limit.value)
-        .toArray();
-
-    if (selectedReplay.value === null) {
-        selectedReplay.value = replays.value[0];
+const replays = useDexieLiveQueryWithDeps([endedNormally, offset, limit, sortField, sortOrder], () => {
+    let query;
+    if (endedNormally.value !== null) {
+        query = db.replays
+            .where("gameEndedNormally")
+            .equals(endedNormally.value ? 1 : 0)
+            .offset(offset.value)
+            .limit(limit.value);
+    } else {
+        query = db.replays.offset(offset.value).limit(limit.value);
     }
-}
-
-window.replays.onReplayCached((newReplay) => {
-    console.log("Received event - Replay cached", newReplay);
-    fetchReplays();
+    if (sortOrder.value === "asc") {
+        return query.sortBy(sortField.value);
+    }
+    return query.reverse().sortBy(sortField.value);
 });
-
-fetchReplays();
 
 function onPage(event: DataTablePageEvent) {
     offset.value = event.first;
-    fetchReplays();
 }
 
 function onSort(event: DataTableStateEvent) {
     sortField.value = event.sortField as keyof Replay;
     sortOrder.value = event.sortOrder === 1 ? "asc" : "desc";
-    fetchReplays();
-}
-
-function refresh() {
-    window.replays.refreshCache();
 }
 
 function openReplaysFolder() {
