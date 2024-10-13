@@ -1,9 +1,10 @@
 {
     "name": "bar-lobby",
-    "version": "0.14.0",
+    "version": "0.15.0-alpha.1",
     "private": true,
     "description": "Lobby client for the RTS game Beyond All Reason",
     "author": "Jazcash <jaspercashmore@gmail.com>",
+    "license": "MIT",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/beyond-all-reason/bar-lobby.git"
@@ -46,7 +47,7 @@
         "pino": "^9.4.0",
         "pino-pretty": "^11.2.2",
         "pixi.js": "^8.5.0",
-        "primeicons": "^7.0.0",
+        "primeicons": "^6.0.0",
         "primevue": "3.23.0",
         "remove": "^0.1.5",
         "tga": "^1.0.7",
@@ -59,7 +60,9 @@
     "devDependencies": {
         "@electron-forge/cli": "^7.5.0",
         "@electron-forge/maker-deb": "^7.5.0",
+        "@electron-forge/maker-flatpak": "^7.5.0",
         "@electron-forge/maker-rpm": "^7.5.0",
+        "@electron-forge/maker-snap": "^7.5.0",
         "@electron-forge/maker-squirrel": "^7.5.0",
         "@electron-forge/maker-zip": "^7.5.0",
         "@electron-forge/plugin-auto-unpack-natives": "^7.5.0",
