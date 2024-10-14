@@ -1,6 +1,6 @@
 export const contentSources = {
     rapid: {
-        host: "https://repos-cdn.beyondallreason.dev",
+        host: "repos-cdn.beyondallreason.dev",
         game: "byar",
     },
     gameGithub: {

@@ -27,7 +27,7 @@ const engineVersion = computed(() => {
 });
 
 const gameVersion = computed(() => {
-    return api.content.game.installedVersions.find((version) => version.id === props.gameVersion);
+    return api.content.game.installedVersions.find((version) => version.gameVersion === props.gameVersion);
 });
 
 const ais = computed(() => {

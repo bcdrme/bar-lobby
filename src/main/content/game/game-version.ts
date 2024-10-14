@@ -1,17 +1,9 @@
 export type GameVersion = {
-    id: string;
-    md5: string;
-    lastLaunched: Date;
-    ais: GameAI[];
+    gameVersion: string;
+    packageMd5: string;
 };
 
 export interface GameAI {
     name: string;
     description: string;
 }
-
-export type CustomGameVersion = {
-    id: string;
-    dir: string;
-    ais: GameAI[];
-};

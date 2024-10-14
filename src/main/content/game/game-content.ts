@@ -5,7 +5,7 @@ import { removeFromArray } from "$/jaz-ts-utils/object";
 import * as path from "path";
 import util from "util";
 import zlib from "zlib";
-import { CustomGameVersion, GameAI, GameVersion } from "@main/content/game/game-version";
+import { GameAI, GameVersion } from "@main/content/game/game-version";
 import { parseLuaTable } from "@main/utils/parse-lua-table";
 import { parseLuaOptions } from "@main/utils/parse-lua-options";
 import { BufferStream } from "@main/utils/buffer-stream";
@@ -18,40 +18,74 @@ import { LuaOptionSection } from "@main/content/game/lua-options";
 import { Scenario } from "@main/content/game/scenario";
 import { SdpFileMeta, SdpFile } from "@main/content/game/sdp";
 import { PrDownloaderAPI } from "@main/content/pr-downloader";
-import { CONTENT_PATH } from "@main/config/app";
+import { CONTENT_PATH, GAME_VERSIONS_GZ_PATH } from "@main/config/app";
 
 const log = logger("game-content.ts");
 const gunzip = util.promisify(zlib.gunzip);
 
-export class GameContentAPI extends PrDownloaderAPI<GameVersion | CustomGameVersion> {
+export class GameContentAPI extends PrDownloaderAPI<GameVersion> {
+    public packageGameVersionLookupMap: { [md5: string]: string } = {};
+    public gameVersionPackageLookupMap: { [gameVersion: string]: string } = {};
+
     public override async init() {
-        const gamesDir = path.join(CONTENT_PATH, "games");
-        if (fs.existsSync(gamesDir)) {
-            const dirs = await fs.promises.readdir(gamesDir);
-            log.info(`Found ${dirs.length} game versions`);
-            for (const dir of dirs) {
-                log.info(`-- Version ${dir}`);
-                try {
-                    const modInfoLua = await fs.promises.readFile(path.join(gamesDir, dir, "modinfo.lua"));
-                    const modInfo = parseLuaTable(modInfoLua);
-                    const aiInfoLua = await fs.promises.readFile(path.join(gamesDir, dir, "luaai.lua"));
-                    const ais = await this.parseAis(aiInfoLua);
-                    this.installedVersions.push({
-                        id: `${modInfo.game} ${modInfo.version}`,
-                        dir,
-                        ais,
-                    });
-                } catch (err) {
-                    console.error(err);
+        await this.initLookupMaps();
+        const packagesDir = path.join(CONTENT_PATH, "packages");
+        if (fs.existsSync(packagesDir)) {
+            const packages = await fs.promises.readdir(packagesDir);
+            log.info(`Found ${packages.length} packages`);
+            for (const packageFile of packages) {
+                const packageMd5 = packageFile.replace(".sdp", "");
+                const gameVersion = this.packageGameVersionLookupMap[packageMd5];
+                if (gameVersion) {
+                    this.installedVersions.push({ gameVersion, packageMd5 });
                 }
             }
         }
         this.sortVersions();
+        log.info(`Found ${this.installedVersions.length} installed game versions`);
+        this.installedVersions.forEach((version) => {
+            log.info(`-- ${version.gameVersion}`);
+        });
+
+        // TODO handle custom game files .sdd, maybe in another service
+        // const gamesDir = path.join(CONTENT_PATH, "games");
+        // if (fs.existsSync(gamesDir)) {
+        //     const dirs = await fs.promises.readdir(gamesDir);
+        //     log.info(`Found ${dirs.length} game versions`);
+        //     for (const dir of dirs) {
+        //         log.info(`-- Version ${dir}`);
+        //         try {
+        //             const modInfoLua = await fs.promises.readFile(path.join(gamesDir, dir, "modinfo.lua"));
+        //             const modInfo = parseLuaTable(modInfoLua);
+        //             const aiInfoLua = await fs.promises.readFile(path.join(gamesDir, dir, "luaai.lua"));
+        //             const ais = await this.parseAis(aiInfoLua);
+        //             this.installedVersions.push({
+        //                 id: `${modInfo.game} ${modInfo.version}`,
+        //                 dir,
+        //                 ais,
+        //             });
+        //         } catch (err) {
+        //             console.error(err);
+        //         }
+        //     }
+        // }
+
         return this;
     }
 
+    protected async initLookupMaps() {
+        const versionsGz = await fs.promises.readFile(GAME_VERSIONS_GZ_PATH);
+        const versionsStr = zlib.gunzipSync(versionsGz).toString().trim();
+        const versionsParts = versionsStr.split("\n");
+        for (const versionLine of versionsParts) {
+            const [, packageMd5, , version] = versionLine.split(",");
+            this.packageGameVersionLookupMap[packageMd5] = version;
+            this.gameVersionPackageLookupMap[version] = packageMd5;
+        }
+    }
+
     public override isVersionInstalled(version: string) {
-        return this.installedVersions.some((installedVersion) => installedVersion.id === version);
+        return this.installedVersions.some((installedVersion) => installedVersion.gameVersion === version);
     }
 
     /**
@@ -74,18 +108,19 @@ export class GameContentAPI extends PrDownloaderAPI<GameVersion | CustomGameVers
     }
 
     public async getGameOptions(version: string): Promise<LuaOptionSection[]> {
-        const gameVersion = this.installedVersions.find((version) => version.id === defaultGameVersion);
+        const gameVersion = this.installedVersions.find((installedVersion) => installedVersion.gameVersion === version);
         // TODO: cache per session
-        const gameFiles = await this.getGameFiles(gameVersion, "modoptions.lua", true);
+        const gameFiles = await this.getGameFiles(gameVersion.packageMd5, "modoptions.lua", true);
         const gameOptionsLua = gameFiles[0].data;
+        // TODO maybe send ais as well
         return parseLuaOptions(gameOptionsLua);
     }
 
     public async getScenarios(): Promise<Scenario[]> {
-        const gameVersion = this.installedVersions.find((version) => version.id === defaultGameVersion);
+        const { gameVersion, packageMd5 } = this.installedVersions.find((installedVersion) => installedVersion.gameVersion === defaultGameVersion);
         assert(gameVersion, "No default game version found");
-        const scenarioImages = await this.getGameFiles(gameVersion, "singleplayer/scenarios/**/*.{jpg,png}", false);
-        const scenarioDefinitions = await this.getGameFiles(gameVersion, "singleplayer/scenarios/**/*.lua", true);
+        const scenarioImages = await this.getGameFiles(packageMd5, "singleplayer/scenarios/**/*.{jpg,png}", false);
+        const scenarioDefinitions = await this.getGameFiles(packageMd5, "singleplayer/scenarios/**/*.lua", true);
         const cacheDir = path.join(CONTENT_PATH, "scenario-images");
         await fs.promises.mkdir(cacheDir, { recursive: true });
         for (const scenarioImage of scenarioImages) {
@@ -122,33 +157,32 @@ export class GameContentAPI extends PrDownloaderAPI<GameVersion | CustomGameVers
      * @example getGameFiles("Beyond All Reason test-16289-b154c3d", ["units/CorAircraft/T2/*.lua"])
      * @todo make this work for custom .sdd versions
      */
-    protected async getGameFiles(version: { md5: string } | { dir: string }, filePattern: string, parseData?: false): Promise<SdpFileMeta[]>;
-    protected async getGameFiles(version: { md5: string } | { dir: string }, filePattern: string, parseData?: true): Promise<SdpFile[]>;
-    protected async getGameFiles(version: { md5: string } | { dir: string }, filePattern: string, parseData = false): Promise<SdpFileMeta[] | SdpFile[]> {
-        if ("dir" in version) {
-            const sdpFiles: Array<SdpFileMeta & { data?: Buffer }> = [];
-            const customGameDir = path.join(CONTENT_PATH, "games", version.dir);
-            const files = await glob.promise(path.join(customGameDir, filePattern), { windowsPathsNoEscape: true });
-            for (const file of files) {
-                const sdpData = {
-                    archivePath: file,
-                    fileName: path.parse(file).base,
-                    crc32: "",
-                    md5: "",
-                    filesizeBytes: 0,
-                };
-                if (parseData) {
-                    const data = await fs.promises.readFile(file);
-                    sdpFiles.push({ ...sdpData, data });
-                } else {
-                    sdpFiles.push(sdpData);
-                }
-            }
-            return sdpFiles;
-        }
-
-        const md5 = version.md5;
-        const sdpFileName = `${md5}.sdp`;
+    protected async getGameFiles(packageMd5: string, filePattern: string, parseData?: false): Promise<SdpFileMeta[]>;
+    protected async getGameFiles(packageMd5: string, filePattern: string, parseData?: true): Promise<SdpFile[]>;
+    protected async getGameFiles(packageMd5: string, filePattern: string, parseData = false): Promise<SdpFileMeta[] | SdpFile[]> {
+        // TODO this is for custom games
+        // if ("dir" in version) {
+        //     const sdpFiles: Array<SdpFileMeta & { data?: Buffer }> = [];
+        //     const customGameDir = path.join(CONTENT_PATH, "games", version.dir);
+        //     const files = await glob.promise(path.join(customGameDir, filePattern), { windowsPathsNoEscape: true });
+        //     for (const file of files) {
+        //         const sdpData = {
+        //             archivePath: file,
+        //             fileName: path.parse(file).base,
+        //             crc32: "",
+        //             md5: "",
+        //             filesizeBytes: 0,
+        //         };
+        //         if (parseData) {
+        //             const data = await fs.promises.readFile(file);
+        //             sdpFiles.push({ ...sdpData, data });
+        //         } else {
+        //             sdpFiles.push(sdpData);
+        //         }
+        //     }
+        //     return sdpFiles;
+        // }
+        const sdpFileName = `${packageMd5}.sdp`;
         const filePath = path.join(CONTENT_PATH, "packages", sdpFileName);
         const sdpEntries = await this.parseSdpFile(filePath, filePattern);
         const sdpFiles: Array<SdpFileMeta & { data?: Buffer }> = [];
@@ -192,32 +226,11 @@ export class GameContentAPI extends PrDownloaderAPI<GameVersion | CustomGameVers
         return fileData;
     }
 
-    // TODO: make this check from local file system
-    protected async getMd5(targetVersion: string): Promise<string> {
-        const response = await axios({
-            url: `${contentSources.rapid.host}/${contentSources.rapid.game}/versions.gz`,
-            method: "GET",
-            responseType: "arraybuffer",
-            headers: {
-                "Content-Type": "application/gzip",
-            },
-        });
-        const versionsStr = zlib.gunzipSync(response.data).toString().trim();
-        const versionsParts = versionsStr.split("\n");
-        for (const versionLine of versionsParts) {
-            const [, md5, , version] = versionLine.split(",");
-            if (version === targetVersion) {
-                return md5;
-            }
-        }
-        throw new Error(`Couldn't parse md5 for game version : ${targetVersion}`);
-    }
-
     protected sortVersions() {
         this.installedVersions.sort((a, b) => {
             try {
-                const aRev = parseInt(a.id.split("-")[1]);
-                const bRev = parseInt(b.id.split("-")[1]);
+                const aRev = parseInt(a.gameVersion.split("-")[1]);
+                const bRev = parseInt(b.gameVersion.split("-")[1]);
                 return aRev - bRev;
             } catch (err) {
                 return 1;
@@ -230,14 +243,15 @@ export class GameContentAPI extends PrDownloaderAPI<GameVersion | CustomGameVers
         super.downloadComplete(downloadInfo);
     }
 
-    protected async addGame(id: string, sort = true) {
-        if (this.isVersionInstalled(id) || id === "byar:test") {
+    protected async addGame(gameVersion: string, sort = true) {
+        if (this.isVersionInstalled(gameVersion) || gameVersion === "byar:test") {
             return;
         }
-        const md5 = await this.getMd5(id);
-        const luaAiFile = (await this.getGameFiles({ md5 }, "luaai.lua", true))[0];
-        const ais = await this.parseAis(luaAiFile.data);
-        this.installedVersions.push({ id, md5, ais, lastLaunched: new Date() });
+        const packageMd5 = this.gameVersionPackageLookupMap[gameVersion];
+        //TODO reimplement ais lookup now that its no longer in the GameVersion object
+        // const luaAiFile = (await this.getGameFiles({ md5: packageMd5 }, "luaai.lua", true))[0];
+        // const ais = await this.parseAis(luaAiFile.data);
+        this.installedVersions.push({ gameVersion: gameVersion, packageMd5: packageMd5 });
         if (sort) {
             this.sortVersions();
         }

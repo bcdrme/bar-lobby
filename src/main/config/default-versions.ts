@@ -8,4 +8,4 @@
 
 export const defaultEngineVersion = "105.1.1-2590-gb9462a0 BAR105";
 
-export const defaultGameVersion = "Beyond All Reason test-22425-e6c0e37";
+export const defaultGameVersion = "byar:test";
