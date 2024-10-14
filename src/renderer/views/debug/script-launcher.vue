@@ -37,6 +37,6 @@ const script = ref(`[game] {
 }`);
 
 function launch() {
-    window.game.launchGame(script.value);
+    window.game.launchScript(script.value);
 }
 </script>

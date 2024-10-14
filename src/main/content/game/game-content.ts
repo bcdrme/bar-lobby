@@ -32,7 +32,6 @@ export class GameContentAPI extends PrDownloaderAPI<GameVersion> {
         const packagesDir = path.join(CONTENT_PATH, "packages");
         if (fs.existsSync(packagesDir)) {
             const packages = await fs.promises.readdir(packagesDir);
-            log.info(`Found ${packages.length} packages`);
             for (const packageFile of packages) {
                 const packageMd5 = packageFile.replace(".sdp", "");
                 const gameVersion = this.packageGameVersionLookupMap[packageMd5];
@@ -85,6 +84,9 @@ export class GameContentAPI extends PrDownloaderAPI<GameVersion> {
     }
 
     public override isVersionInstalled(version: string) {
+        if (version === "byar:test") {
+            return true;
+        }
         return this.installedVersions.some((installedVersion) => installedVersion.gameVersion === version);
     }
 
@@ -117,10 +119,10 @@ export class GameContentAPI extends PrDownloaderAPI<GameVersion> {
     }
 
     public async getScenarios(): Promise<Scenario[]> {
-        const { gameVersion, packageMd5 } = this.installedVersions.find((installedVersion) => installedVersion.gameVersion === defaultGameVersion);
-        assert(gameVersion, "No default game version found");
-        const scenarioImages = await this.getGameFiles(packageMd5, "singleplayer/scenarios/**/*.{jpg,png}", false);
-        const scenarioDefinitions = await this.getGameFiles(packageMd5, "singleplayer/scenarios/**/*.lua", true);
+        const currentGameVersion = this.installedVersions.at(-1);
+        assert(currentGameVersion, "No current game version found");
+        const scenarioImages = await this.getGameFiles(currentGameVersion.packageMd5, "singleplayer/scenarios/**/*.{jpg,png}", false);
+        const scenarioDefinitions = await this.getGameFiles(currentGameVersion.packageMd5, "singleplayer/scenarios/**/*.lua", true);
         const cacheDir = path.join(CONTENT_PATH, "scenario-images");
         await fs.promises.mkdir(cacheDir, { recursive: true });
         for (const scenarioImage of scenarioImages) {
@@ -133,7 +135,12 @@ export class GameContentAPI extends PrDownloaderAPI<GameVersion> {
         for (const scenarioDefinition of scenarioDefinitions) {
             try {
                 const scenario = parseLuaTable(scenarioDefinition.data) as Scenario;
-                scenario.imagepath = path.join(cacheDir, scenario.imagepath).replaceAll("\\", "/");
+                if (scenario.imagepath) {
+                    log.debug(`Imagepath: ${scenario.imagepath}`);
+                    scenario.imagepath = path.join(cacheDir, scenario.imagepath).replaceAll("\\", "/");
+                } else {
+                    log.warn(`No imagepath for scenario: ${scenario.title}`);
+                }
                 scenario.summary = scenario.summary.replace(/\[|\]/g, "");
                 scenario.briefing = scenario.briefing.replace(/\[|\]/g, "");
                 scenario.allowedsides = Array.isArray(scenario.allowedsides) && scenario.allowedsides[0] !== "" ? scenario.allowedsides : ["Armada", "Cortext", "Random"];

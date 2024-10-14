@@ -77,7 +77,7 @@ async function downloadMap() {
 async function play() {
     // const battle = defaultBattle(props.id);
     // battle.start();
-    // await window.game.launchGame();
+    // await window.game.launchBattle();
 }
 </script>
 

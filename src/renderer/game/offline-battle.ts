@@ -5,7 +5,7 @@ import { Bot, StartPosType } from "../../main/game/battle/battle-types";
 // TODO replace with Battle
 // export class OfflineBattle extends AbstractBattle {
 //     public start() {
-//         // window.game.launchGame();
+//         // window.game.launchBattle();
 //     }
 
 //     public setEngine(engineVersion: string) {

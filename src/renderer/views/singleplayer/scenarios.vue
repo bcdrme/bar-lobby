@@ -13,8 +13,8 @@
                             <div class="scenarios">
                                 <TransitionGroup name="fade">
                                     <ScenarioTile
-                                        v-for="(scenario, i) in scenarios"
-                                        :key="i"
+                                        v-for="scenario in scenarios"
+                                        :key="scenario.title"
                                         :scenario="scenario"
                                         :class="{ selected: selectedScenario.scenarioid === scenario.scenarioid }"
                                         @click="selectedScenario = scenario"
@@ -37,7 +37,9 @@
                             </div>
                             <Select v-model="selectedFaction" label="Faction" :options="factions" />
                             <Select v-model="selectedDifficulty" label="Difficulty" :options="difficulties" optionLabel="name" />
-                            <Button class="green" @click="launch">Launch</Button>
+                            <Button v-if="hasMap" class="green" @click="launch">Launch</Button>
+                            <Button v-else-if="downloading" class="green" disabled>Downloading map ...</Button>
+                            <Button v-else class="red" @click="downloadMap">Download Map</Button>
                         </div>
                     </div>
                 </div>
@@ -57,11 +59,22 @@ import { useRouter } from "vue-router";
 import { Scenario } from "@main/content/game/scenario";
 import { defaultGameVersion } from "@main/config/default-versions";
 import Panel from "@renderer/components/common/Panel.vue";
+import { db } from "@renderer/store/db";
+import { useDexieLiveQueryWithDeps } from "@renderer/composables/useDexieLiveQuery";
+import { downloadsStore } from "@renderer/store/downloads.store";
+import { mapFileNameToFriendlyName } from "@main/content/maps/map-data";
 
 const router = useRouter();
 const route = router.currentRoute.value;
+//TODO move that to our db
 const scenarios = await window.game.getScenarios();
 const selectedScenario = ref<Scenario>(scenarios[0]);
+
+const hasMap = useDexieLiveQueryWithDeps([selectedScenario], () => db.maps.get(selectedScenario.value?.mapfilename));
+// Hacky solution with mapFileNameToFriendlyName
+const downloading = computed(() =>
+    downloadsStore.mapDownloads.some((d) => d.name === mapFileNameToFriendlyName(selectedScenario.value?.mapfilename))
+);
 
 const difficulties = computed(() => selectedScenario.value.difficulties);
 const selectedDifficulty = ref(difficulties.value.find((dif) => dif.name === selectedScenario.value.defaultdifficulty));
@@ -73,6 +86,10 @@ watch(selectedScenario, (newScenario) => {
     selectedDifficulty.value = difficulties.value.find((dif) => dif.name === newScenario.defaultdifficulty);
     selectedFaction.value = factions.value[0] ?? "Armada";
 });
+
+async function downloadMap() {
+    await window.maps.downloadMap(selectedScenario.value.mapfilename);
+}
 
 async function launch() {
     const scenarioOptions = {
@@ -100,7 +117,7 @@ async function launch() {
         .replaceAll("__RESTRICTEDUNITS__", restrictionsStr)
         .replaceAll("__NUMRESTRICTIONS__", restrictionCount.toString());
 
-    await window.game.launchGame(script);
+    await window.game.launchScript(script);
 }
 
 await new Promise((resolve) => setTimeout(resolve, 1000));
