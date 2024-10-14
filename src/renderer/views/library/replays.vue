@@ -91,6 +91,8 @@
  * - Sortable
  * - Filterable
  * - Paginated
+ * - Watched
+ * - Favorite
  */
 
 // https://primefaces.org/primevue/datatable/lazy
