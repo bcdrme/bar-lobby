@@ -39,7 +39,7 @@
                             <Select v-model="selectedDifficulty" label="Difficulty" :options="difficulties" optionLabel="name" />
                             <Button v-if="hasMap" class="green" @click="launch">Launch</Button>
                             <Button v-else-if="downloading" class="green" disabled>Downloading map ...</Button>
-                            <Button v-else class="red" @click="downloadMap">Download Map</Button>
+                            <Button v-else class="red" @click="downloadMap">Download map</Button>
                         </div>
                     </div>
                 </div>
