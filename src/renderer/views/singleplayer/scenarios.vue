@@ -35,8 +35,12 @@
                                 <div>Lose condition</div>
                                 <div>{{ selectedScenario.losscondition }}</div>
                             </div>
-                            <Select v-model="selectedFaction" label="Faction" :options="factions" />
-                            <Select v-model="selectedDifficulty" label="Difficulty" :options="difficulties" optionLabel="name" />
+                            <div>
+                                <Select v-model="selectedFaction" label="Faction" :options="factions" />
+                            </div>
+                            <div>
+                                <Select v-model="selectedDifficulty" label="Difficulty" :options="difficulties" optionLabel="name" />
+                            </div>
                             <Button v-if="hasMap" class="green" @click="launch">Launch</Button>
                             <Button v-else-if="downloading" class="green" disabled>Downloading map ...</Button>
                             <Button v-else class="red" @click="downloadMap">Download map</Button>
@@ -108,7 +112,8 @@ async function launch() {
 
     const script = selectedScenario.value.startscript
         .replaceAll("__SCENARIOOPTIONS__", scenarioOptionsStr)
-        .replaceAll("__PLAYERNAME__", api.session.onlineUser.username)
+        //TODO replace with online name when implemented
+        .replaceAll("__PLAYERNAME__", "Player")
         .replaceAll("__BARVERSION__", defaultGameVersion)
         .replaceAll("__MAPNAME__", selectedScenario.value.mapfilename)
         .replaceAll("__PLAYERSIDE__", selectedFaction.value)
@@ -120,7 +125,7 @@ async function launch() {
     await window.game.launchScript(script);
 }
 
-await new Promise((resolve) => setTimeout(resolve, 1000));
+// await new Promise((resolve) => setTimeout(resolve, 1000));
 </script>
 
 <style lang="scss" scoped>

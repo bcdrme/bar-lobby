@@ -46,6 +46,7 @@ export class GameAPI {
     }
 
     public async launchScript(script: string): Promise<void> {
+        log.debug(`Launching game with script: ${script}`);
         const gameVersion = script.match(/gametype\s*=\s*(.*);/)?.[1]!;
         if (!gameVersion) {
             throw new Error("Could not parse game version from script");
