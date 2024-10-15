@@ -12,10 +12,15 @@ const mapParser = new MapParser({
 export const parseMap = async (mapPath: string) => {
     const map = await mapParser.parseMap(mapPath);
 
-    const texture = await map.textureMap!.getBase64("image/jpeg", { quality: 80 });
-    const metal = await map.metalMap!.getBase64("image/jpeg", { quality: 80 });
-    const height = await map.heightMap.getBase64("image/jpeg", { quality: 80 });
-    const type = await map.typeMap.getBase64("image/jpeg", { quality: 80 });
+    const texture = await map
+        .textureMap!.scaleToFit({
+            h: 1024,
+            w: 1024,
+        })
+        .getBase64("image/jpeg", { quality: 70 });
+    const metal = await map.metalMap!.getBase64("image/jpeg", { quality: 70 });
+    const height = await map.heightMap.getBase64("image/jpeg", { quality: 70 });
+    const type = await map.typeMap.getBase64("image/jpeg", { quality: 70 });
 
     return {
         fileName: path.parse(mapPath).base,

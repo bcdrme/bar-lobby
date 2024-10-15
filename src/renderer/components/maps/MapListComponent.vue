@@ -6,11 +6,11 @@
         </div>
 
         <div class="flex-col flex-grow fullheight">
-            <div class="scroll-container">
+            <div class="scroll-container" style="overflow-y: scroll">
                 <div class="maps">
                     <TransitionGroup name="maps-list">
                         <MapOverviewCard
-                            v-for="(map, i) in maps"
+                            v-for="map in maps"
                             :key="map.scriptName"
                             :map="map"
                             :friendlyName="map.friendlyName"
@@ -54,7 +54,9 @@ const emit = defineEmits<{
 }>();
 
 const maps = useDexieLiveQueryWithDeps([searchVal, sortMethod], () =>
-    db.maps.where("friendlyName").startsWithAnyOfIgnoreCase(searchVal.value).sortBy(sortMethod.value.dbKey)
+    db.maps
+        .filter((map) => map.friendlyName.toLocaleLowerCase().includes(searchVal.value.toLocaleLowerCase()))
+        .sortBy(sortMethod.value.dbKey)
 );
 
 function mapSelected(map: MapData) {
@@ -67,7 +69,6 @@ function mapSelected(map: MapData) {
     display: grid;
     grid-gap: 15px;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    overflow: hidden;
 }
 
 // Transition
@@ -79,7 +80,7 @@ function mapSelected(map: MapData) {
 .maps-list-enter-from,
 .maps-list-leave-to {
     opacity: 0;
-    transform: translateX(0, 30px);
+    // transform: translateX(0, 30px);
 }
 .maps-list-leave-active {
     position: absolute;

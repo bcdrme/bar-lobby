@@ -10,6 +10,8 @@ import { CurrentUser } from "@main/model/user";
 import { MapData } from "@main/content/maps/map-data";
 import { StartBox, StartPosType } from "@main/game/battle/battle-types";
 import { MIPMAP_SIZE } from "@main/config/map-parsing";
+import { use } from "marked";
+import { useImageBlobUrlCache } from "@renderer/composables/useImageBlobUrlCache";
 
 const props = defineProps<{
     map?: MapData;
@@ -32,6 +34,8 @@ let app: Application;
 let mapSprite: Sprite;
 const boxesGfx = new Graphics();
 const startPositionsGfx = new Graphics();
+
+const cache = useImageBlobUrlCache();
 
 onMounted(async () => {
     console.debug("Map preview mounted");
