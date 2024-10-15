@@ -89,7 +89,6 @@ export function createWindow() {
     }
 
     function setDisplay(display: Electron.Display) {
-        log.debug(`Display ${display}`);
         const { x, y, width, height } = display.bounds;
         mainWindow.setPosition(x, y);
         mainWindow.setSize(width, height);

@@ -8,7 +8,7 @@ import { AbstractContentAPI } from "./abstract-content";
 import { engineContentAPI } from "./engine/engine-content";
 import { logger } from "@main/utils/logger";
 import { CONTENT_PATH } from "@main/config/app";
-import { defaultEngineVersion } from "@main/config/default-versions";
+import { DEFAULT_ENGINE_VERSION } from "@main/config/default-versions";
 import { mapFileNameToFriendlyName } from "@main/content/maps/map-data";
 
 const log = logger("pr-downloader.ts");
@@ -38,7 +38,7 @@ export abstract class PrDownloaderAPI<T> extends AbstractContentAPI<T> {
     protected downloadContent(type: "game" | "map", name: string) {
         return new Promise<DownloadInfo>((resolve) => {
             log.debug(`Downloading ${name}...`);
-            const latestEngine = lastInArray(engineContentAPI.installedVersions)?.id || defaultEngineVersion;
+            const latestEngine = lastInArray(engineContentAPI.installedVersions)?.id || DEFAULT_ENGINE_VERSION;
             const binaryName = process.platform === "win32" ? "pr-downloader.exe" : "pr-downloader";
             const prBinaryPath = path.join(CONTENT_PATH, "engine", latestEngine, binaryName);
             const downloadArg = type === "game" ? "--download-game" : "--download-map";

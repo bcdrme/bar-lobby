@@ -42,6 +42,7 @@
                                 <Select v-model="selectedDifficulty" label="Difficulty" :options="difficulties" optionLabel="name" />
                             </div>
                             <Button v-if="hasMap" class="green" @click="launch">Launch</Button>
+                            <!-- could also add a download game update state -->
                             <Button v-else-if="downloading" class="green" disabled>Downloading map ...</Button>
                             <Button v-else class="red" @click="downloadMap">Download map</Button>
                         </div>
@@ -61,7 +62,7 @@ import Select from "@renderer/components/controls/Select.vue";
 import ScenarioTile from "@renderer/components/misc/ScenarioTile.vue";
 import { useRouter } from "vue-router";
 import { Scenario } from "@main/content/game/scenario";
-import { defaultGameVersion } from "@main/config/default-versions";
+import { LATEST_GAME_VERSION } from "@main/config/default-versions";
 import Panel from "@renderer/components/common/Panel.vue";
 import { db } from "@renderer/store/db";
 import { useDexieLiveQueryWithDeps } from "@renderer/composables/useDexieLiveQuery";
@@ -114,7 +115,7 @@ async function launch() {
         .replaceAll("__SCENARIOOPTIONS__", scenarioOptionsStr)
         //TODO replace with online name when implemented
         .replaceAll("__PLAYERNAME__", "Player")
-        .replaceAll("__BARVERSION__", defaultGameVersion)
+        .replaceAll("__BARVERSION__", LATEST_GAME_VERSION)
         .replaceAll("__MAPNAME__", selectedScenario.value.mapfilename)
         .replaceAll("__PLAYERSIDE__", selectedFaction.value)
         .replaceAll("__ENEMYHANDICAP__", selectedDifficulty.value?.enemyhandicap?.toString() ?? "0")

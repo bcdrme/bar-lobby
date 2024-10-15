@@ -12,7 +12,7 @@ import { BufferStream } from "@main/utils/buffer-stream";
 import { logger } from "@main/utils/logger";
 import assert from "assert";
 import { contentSources } from "@main/config/content-sources";
-import { defaultGameVersion } from "@main/config/default-versions";
+import { LATEST_GAME_VERSION } from "@main/config/default-versions";
 import { DownloadInfo } from "@main/content/downloads";
 import { LuaOptionSection } from "@main/content/game/lua-options";
 import { Scenario } from "@main/content/game/scenario";
@@ -28,6 +28,7 @@ export class GameContentAPI extends PrDownloaderAPI<GameVersion> {
     public gameVersionPackageLookupMap: { [gameVersion: string]: string } = {};
 
     public override async init() {
+        await this.downloadGame(LATEST_GAME_VERSION);
         await this.initLookupMaps();
         const packagesDir = path.join(CONTENT_PATH, "packages");
         if (fs.existsSync(packagesDir)) {
@@ -85,7 +86,7 @@ export class GameContentAPI extends PrDownloaderAPI<GameVersion> {
 
     public override isVersionInstalled(version: string) {
         if (version === "byar:test") {
-            return true;
+            return false;
         }
         return this.installedVersions.some((installedVersion) => installedVersion.gameVersion === version);
     }

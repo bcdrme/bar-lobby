@@ -1,6 +1,6 @@
 import { randomFromArray } from "$/jaz-ts-utils/object";
 import { defaultMaps } from "@main/config/default-maps";
-import { defaultEngineVersion, defaultGameVersion } from "@main/config/default-versions";
+import { DEFAULT_ENGINE_VERSION, DEFAULT_GAME_VERSION } from "@main/config/default-versions";
 import { BattleContenderConfig, BattleOptions, Bot, StartPosType } from "@main/game/battle/battle-types";
 import { User } from "@main/model/user";
 import { defaultMapBoxes } from "@renderer/utils/start-boxes";
@@ -34,14 +34,14 @@ function defaultBattle(mapScriptName?: string) {
     me.battleStatus.teamId = 0;
     me.battleStatus.isSpectator = false;
 
-    const engine = api.content.engine.installedVersions.find((version) => version.id === defaultEngineVersion);
+    const engine = api.content.engine.installedVersions.find((version) => version.id === DEFAULT_ENGINE_VERSION);
     const barb = engine?.ais.find((ai) => ai.shortName === "BARb");
 
     return {
         battleOptions: {
             title: "Offline Custom Battle",
-            engineVersion: defaultEngineVersion,
-            gameVersion: defaultGameVersion,
+            engineVersion: DEFAULT_ENGINE_VERSION,
+            gameVersion: DEFAULT_GAME_VERSION,
             map: map,
             startPosType: StartPosType.Boxes,
             startBoxes: defaultMapBoxes(),

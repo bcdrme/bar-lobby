@@ -1,3 +1,4 @@
+import { db } from "@renderer/store/db";
 import { reactive } from "vue";
 
 export const gameStore = reactive({
@@ -14,5 +15,10 @@ export async function initGameStore() {
         console.debug("Game closed");
         gameStore.isGameRunning = false;
     });
+
+    db.gameVersions.clear();
+    const installedVersions = await window.game.getInstalledVersions();
+    db.gameVersions.bulkAdd(installedVersions);
+
     gameStore.isInitialized = true;
 }

@@ -6,6 +6,8 @@
  * In the future these values should probably be set and fetched from the master server, so we don't need to deploy a new lobby release every time.
  */
 
-export const defaultEngineVersion = "105.1.1-2590-gb9462a0 BAR105";
+export const DEFAULT_ENGINE_VERSION = "105.1.1-2590-gb9462a0 BAR105";
 
-export const defaultGameVersion = "byar:test";
+export const DEFAULT_GAME_VERSION = "byar:test";
+
+export const LATEST_GAME_VERSION = "byar:test";

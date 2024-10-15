@@ -8,7 +8,7 @@
 
 <script lang="ts" setup>
 import { defaultMaps } from "@main/config/default-maps";
-import { defaultEngineVersion, defaultGameVersion } from "@main/config/default-versions";
+import { DEFAULT_ENGINE_VERSION, DEFAULT_GAME_VERSION } from "@main/config/default-versions";
 import { DownloadInfo } from "@main/content/downloads";
 import { db } from "@renderer/store/db";
 import { downloadsStore } from "@renderer/store/downloads.store";
@@ -27,14 +27,14 @@ onMounted(async () => {
     if (installedEngineVersions.length === 0) {
         state.value = "engine";
         text.value = "Downloading engine";
-        await window.engine.downloadEngine(defaultEngineVersion);
+        await window.engine.downloadEngine(DEFAULT_ENGINE_VERSION);
         text.value = "Installing engine";
     }
     const installedGameVersions = await window.game.getInstalledVersions();
     if (installedGameVersions.length === 0) {
         state.value = "game";
         text.value = "Downloading game";
-        await window.game.downloadGame(defaultGameVersion);
+        await window.game.downloadGame(DEFAULT_GAME_VERSION);
         text.value = "Installing game";
     }
     const installedMaps = await db.maps.count();

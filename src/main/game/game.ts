@@ -9,7 +9,7 @@ import { mapContentAPI } from "@main/content/maps/map-content";
 
 import { Replay } from "@main/content/replays/replay";
 import { startScriptConverter } from "@main/utils/start-script-converter";
-import { defaultEngineVersion } from "@main/config/default-versions";
+import { DEFAULT_ENGINE_VERSION } from "@main/config/default-versions";
 import { logger } from "@main/utils/logger";
 import { gameContentAPI } from "@main/content/game/game-content";
 import { CONTENT_PATH, REPLAYS_PATH } from "@main/config/app";
@@ -58,7 +58,7 @@ export class GameAPI {
         const scriptPath = path.join(CONTENT_PATH, this.scriptName);
         await fs.promises.writeFile(scriptPath, script);
         await this.launch({
-            engineVersion: defaultEngineVersion,
+            engineVersion: DEFAULT_ENGINE_VERSION,
             gameVersion,
             mapScriptName,
             launchArg: scriptPath,
@@ -66,7 +66,7 @@ export class GameAPI {
     }
 
     public async launch({
-        engineVersion = defaultEngineVersion,
+        engineVersion = DEFAULT_ENGINE_VERSION,
         gameVersion,
         mapScriptName,
         launchArg,
