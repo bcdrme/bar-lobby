@@ -9,6 +9,7 @@ import { PrDownloaderAPI } from "@main/content/pr-downloader";
 import { CONTENT_PATH } from "@main/config/app";
 import { asyncParseMap } from "@main/content/maps/parse-map";
 import chokidar from "chokidar";
+import { UltraSimpleMapParser } from "$/map-parser/ultrasimple-map-parser";
 
 const log = logger("map-content.ts");
 
@@ -16,6 +17,9 @@ const log = logger("map-content.ts");
  * @todo replace queue method with syncMapCache function once prd returns map file name
  */
 export class MapContentAPI extends PrDownloaderAPI<MapData> {
+    public mapNameFileNameLookup: { [scriptName: string]: string } = {};
+    public fileNameMapNameLookup: { [fileName: string]: string } = {};
+
     public readonly onMapCachingStarted: Signal<string> = new Signal();
     public readonly onMapCached: Signal<MapData> = new Signal();
     public readonly onMapDeleted: Signal<string> = new Signal();
@@ -26,9 +30,29 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
 
     public override async init() {
         await fs.promises.mkdir(this.mapsDir, { recursive: true });
+        this.initLookupMaps();
         this.startCacheMapConsumer();
         this.startWatchingMapFolder();
         return super.init();
+    }
+
+    protected async initLookupMaps() {
+        const filePaths = await fs.promises.readdir(this.mapsDir);
+        const sd7filePaths = filePaths.filter((path) => path.endsWith(".sd7"));
+        log.debug(`Found ${sd7filePaths.length} maps`);
+        for (const filePath of sd7filePaths) {
+            const mapName = await this.getMapNameFromFile(filePath);
+            const fileName = path.basename(filePath);
+            this.mapNameFileNameLookup[mapName] = fileName;
+            this.fileNameMapNameLookup[fileName] = mapName;
+        }
+        log.info(`Found ${Object.keys(this.mapNameFileNameLookup).length} maps`);
+    }
+
+    protected async getMapNameFromFile(file: string) {
+        const ultraSimpleMapParser = new UltraSimpleMapParser();
+        const parsedMap = await ultraSimpleMapParser.parseMap(path.join(this.mapsDir, file));
+        return parsedMap.scriptName;
     }
 
     protected startWatchingMapFolder() {
