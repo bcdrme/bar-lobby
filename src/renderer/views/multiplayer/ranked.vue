@@ -27,7 +27,7 @@ Ranked differences:
 
 <script lang="ts" setup>
 import { useRouter } from "vue-router";
-import Markdown from "vue3-markdown-it";
+import Markdown from "@renderer/components/misc/Markdown.vue";
 
 const router = useRouter();
 const route = router.currentRoute.value;

@@ -55,7 +55,6 @@
 
 <script lang="ts" setup>
 import { computed, ref, TransitionGroup, watch } from "vue";
-import Markdown from "vue3-markdown-it";
 
 import Button from "@renderer/components/controls/Button.vue";
 import Select from "@renderer/components/controls/Select.vue";
@@ -68,6 +67,7 @@ import { db } from "@renderer/store/db";
 import { useDexieLiveQueryWithDeps } from "@renderer/composables/useDexieLiveQuery";
 import { downloadsStore } from "@renderer/store/downloads.store";
 import { mapFileNameToFriendlyName } from "@main/content/maps/map-data";
+import Markdown from "@renderer/components/misc/Markdown.vue";
 
 const router = useRouter();
 const route = router.currentRoute.value;
