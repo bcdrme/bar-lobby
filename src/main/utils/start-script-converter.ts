@@ -2,7 +2,7 @@
 import { assign } from "$/jaz-ts-utils/object";
 import { StartPosType } from "@main/game/battle/battle-types";
 import { StartScriptTypes } from "@main/model/start-script";
-import { Battle } from "@renderer/game/abstract-battle";
+import { Battle } from "@renderer/game/battle";
 
 /**
  * https://springrts.com/wiki/Script.txt

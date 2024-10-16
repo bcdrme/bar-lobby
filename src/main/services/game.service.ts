@@ -3,7 +3,7 @@ import { gameContentAPI } from "@main/content/game/game-content";
 import { gameAPI } from "@main/game/game";
 import { ipcMain } from "electron";
 import { Replay } from "@main/content/replays/replay";
-import { Battle } from "@renderer/game/abstract-battle";
+import { Battle } from "@renderer/game/battle";
 
 function init() {
     gameContentAPI.init();

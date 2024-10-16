@@ -18,7 +18,7 @@ import ContextMenu from "@renderer/components/common/ContextMenu.vue";
 import Flag from "@renderer/components/misc/Flag.vue";
 import { User } from "@main/model/user";
 import { useRouter } from "vue-router";
-import { Battle } from "@renderer/game/abstract-battle";
+import { Battle } from "@renderer/game/battle";
 
 const router = useRouter();
 

@@ -67,7 +67,7 @@ import BattlePreviewParticipant from "@renderer/components/battle/BattlePreviewP
 import MapOverviewCard from "@renderer/components/maps/MapOverviewCard.vue";
 import { Replay } from "@main/content/replays/replay";
 import { StartBox, StartPosType } from "@main/game/battle/battle-types";
-import { Battle, isBattle } from "@renderer/game/abstract-battle";
+import { Battle } from "@renderer/game/battle";
 import { db } from "@renderer/store/db";
 import { computedAsync } from "@vueuse/core";
 

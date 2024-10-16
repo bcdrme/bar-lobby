@@ -117,7 +117,7 @@ import Checkbox from "@renderer/components/controls/Checkbox.vue";
 import SearchBox from "@renderer/components/controls/SearchBox.vue";
 import { attemptJoinBattle } from "@renderer/utils/attempt-join-battle";
 import { getFriendlyDuration } from "@renderer/utils/misc";
-import { Battle } from "@renderer/game/abstract-battle";
+import { Battle } from "@renderer/game/battle";
 
 const loading = ref(false);
 const intervalId = ref(0);

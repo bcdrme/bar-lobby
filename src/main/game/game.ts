@@ -13,7 +13,7 @@ import { DEFAULT_ENGINE_VERSION } from "@main/config/default-versions";
 import { logger } from "@main/utils/logger";
 import { gameContentAPI } from "@main/content/game/game-content";
 import { CONTENT_PATH, REPLAYS_PATH } from "@main/config/app";
-import { Battle } from "@renderer/game/abstract-battle";
+import { Battle } from "@renderer/game/battle";
 
 const log = logger("main/game/game.ts");
 

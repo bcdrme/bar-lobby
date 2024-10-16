@@ -38,7 +38,7 @@ import SpectatorParticipant from "@renderer/components/battle/SpectatorParticipa
 import Button from "@renderer/components/controls/Button.vue";
 import { CurrentUser, User } from "@main/model/user";
 import { Bot } from "@main/game/battle/battle-types";
-import { Battle } from "@renderer/game/abstract-battle";
+import { Battle } from "@renderer/game/battle";
 
 const props = defineProps<{
     battle: Battle;
@@ -53,7 +53,7 @@ const title = computed(() => {
 });
 const members = computed(() => {
     const battle = props.battle;
-    return iAmSpectator.value ? battle.spectators.value : battle.teams.value.get(props.teamId);
+    return iAmSpectator.value ? battle.spectators : battle.teams.get(props.teamId);
 });
 const showJoin = computed(() => {
     const playerIsSpectator = props.me.battleStatus.isSpectator;
@@ -63,7 +63,7 @@ const showJoin = computed(() => {
     return playerTeam !== listTeam || (listIsSpectator && !playerIsSpectator);
 });
 const memberCount = computed(() => {
-    return iAmSpectator.value ? props.battle.spectators.value.length : (props.battle.teams.value.get(props.teamId)?.length ?? 0);
+    return iAmSpectator.value ? props.battle.spectators.length : (props.battle.teams.get(props.teamId)?.length ?? 0);
 });
 const emit = defineEmits(["addBotClicked", "onJoinClicked", "onDragStart", "onDragEnd", "onDragEnter", "onDrop"]);
 function addBotClicked(teamId: number) {

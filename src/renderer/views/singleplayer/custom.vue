@@ -3,9 +3,13 @@
 </route>
 
 <template>
-    <div class="flex-col flex-grow">
-        <BattleComponent v-if="battle" :battle="battle" :me="me" />
-        <div v-else>Error: no offline battle set</div>
+    <div class="view">
+        <Panel class="flex-grow">
+            <div class="flex-col flex-grow">
+                <BattleComponent v-if="battle" :battle="battle" :me="me" />
+                <div v-else>Error: no offline battle set</div>
+            </div>
+        </Panel>
     </div>
 </template>
 
@@ -13,12 +17,15 @@
 import { onUnmounted } from "vue";
 
 import BattleComponent from "@renderer/components/battle/BattleComponent.vue";
+import { Battle } from "@renderer/game/battle";
+import Panel from "@renderer/components/common/Panel.vue";
 
-const battle = api.session.offlineBattle;
+const battle = new Battle();
 const me = api.session.offlineUser;
 
 onUnmounted(() => {
-    api.session.offlineBattle.value = null;
+    //TODO
+    // battle store reset
 });
 </script>
 

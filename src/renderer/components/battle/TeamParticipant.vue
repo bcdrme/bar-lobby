@@ -6,7 +6,7 @@
 
 <script lang="ts" setup>
 import { audioApi } from "@renderer/audio/audio";
-import { Battle } from "@renderer/game/abstract-battle";
+import { Battle } from "@renderer/game/battle";
 
 const props = defineProps<{
     battle: Battle;

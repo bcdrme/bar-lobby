@@ -62,7 +62,7 @@
             <div class="flex-row gap-md">
                 <Select
                     :modelValue="battle.battleOptions.gameVersion"
-                    :options="installedGames"
+                    :options="['byar:test']"
                     optionLabel="id"
                     optionValue="id"
                     label="Game"
@@ -71,7 +71,7 @@
                     @update:model-value="onGameSelected"
                 />
                 <Button v-tooltip.left="'Configure game options'" @click="openGameOptions">
-                    <Icon :icon="cogIcon" height="23" />
+                    <Icon :icon="'cogIcon'" height="23" />
                 </Button>
                 <LuaOptionsModal
                     id="game-options"
@@ -85,7 +85,7 @@
 
             <Select
                 :modelValue="battle.battleOptions.engineVersion"
-                :options="installedEngines"
+                :options="[DEFAULT_ENGINE_VERSION]"
                 optionLabel="id"
                 optionValue="id"
                 label="Engine"
@@ -206,17 +206,29 @@ import { StartBoxOrientation } from "@renderer/utils/start-boxes";
 import { LuaOptionSection } from "@main/content/game/lua-options";
 import { StartPosType } from "@main/game/battle/battle-types";
 import { gameStore } from "@renderer/store/game.store";
-import { mapsStore } from "@renderer/store/maps.store";
-import { Battle } from "@renderer/game/abstract-battle";
+
+import BattleTitleComponent from "@renderer/components/battle/BattleTitleComponent.vue";
+import { Battle } from "@renderer/game/battle";
+import def from "ajv/dist/vocabularies/discriminator";
+import { DEFAULT_ENGINE_VERSION } from "@main/config/default-versions";
+import Playerlist from "@renderer/components/battle/Playerlist.vue";
+import MapPreview from "@renderer/components/maps/MapPreview.vue";
+import Select from "@renderer/components/controls/Select.vue";
+import { Icon } from "@iconify/vue";
+import MapListModal from "@renderer/components/battle/MapListModal.vue";
+import MapOptionsModal from "@renderer/components/battle/MapOptionsModal.vue";
+import LuaOptionsModal from "@renderer/components/battle/LuaOptionsModal.vue";
+import { useDexieLiveQueryWithDeps } from "@renderer/composables/useDexieLiveQuery";
+import { db } from "@renderer/store/db";
 
 const props = defineProps<{
     battle: Battle;
     me: CurrentUser;
 }>();
 
-const installedEngines = computed(() => api.content.engine.installedVersions);
 // const map = getMapByScriptName(props.battle.battleOptions.map);
-const map = ref();
+const map = useDexieLiveQueryWithDeps([props.battle.battleOptions.map], () => db.maps.get(props.battle.battleOptions.map));
+
 const mapListOpen = ref(false);
 const mapOptionsOpen = ref(false);
 const gameOptionsOpen = ref(false);
@@ -259,59 +271,59 @@ function onMapSelected(mapScriptName: string) {
 }
 
 function onPresetSelected(preset: string) {
-    api.comms.request("c.lobby.message", {
-        message: `!cv preset ${preset}`,
-    });
+    // api.comms.request("c.lobby.message", {
+    //     message: `!cv preset ${preset}`,
+    // });
 }
 
 function onBalanceModeSelected(balanceMode: string) {
-    api.comms.request("c.lobby.message", {
-        message: `!cv balanceMode ${balanceMode}`,
-    });
+    // api.comms.request("c.lobby.message", {
+    //     message: `!cv balanceMode ${balanceMode}`,
+    // });
 }
 
 function onAutoBalanceSelected(autoBalance: string) {
-    api.comms.request("c.lobby.message", {
-        message: `!cv autoBalance ${autoBalance}`,
-    });
+    // api.comms.request("c.lobby.message", {
+    //     message: `!cv autoBalance ${autoBalance}`,
+    // });
 }
 
 function onNbTeamsSelected(nbTeams: number) {
-    api.comms.request("c.lobby.message", {
-        message: `!cv nbTeams ${nbTeams}`,
-    });
+    // api.comms.request("c.lobby.message", {
+    //     message: `!cv nbTeams ${nbTeams}`,
+    // });
 }
 
 function onTeamSizeSelected(teamSize: number) {
-    api.comms.request("c.lobby.message", {
-        message: `!cv teamSize ${teamSize}`,
-    });
+    // api.comms.request("c.lobby.message", {
+    //     message: `!cv teamSize ${teamSize}`,
+    // });
 }
 
 function onLockedChanged(locked: boolean) {
-    api.comms.request("c.lobby.message", {
-        message: `!${locked ? "lock" : "unlock"}`,
-    });
+    // api.comms.request("c.lobby.message", {
+    //     message: `!${locked ? "lock" : "unlock"}`,
+    // });
 }
 
 function toggleReady() {
-    api.comms.request("c.lobby.update_status", {
-        client: {
-            ready: !props.me.battleStatus.ready,
-        },
-    });
+    // api.comms.request("c.lobby.update_status", {
+    //     client: {
+    //         ready: !props.me.battleStatus.ready,
+    //     },
+    // });
 }
 
 function joinQueue() {
-    api.comms.request("c.lobby.message", {
-        message: "$joinq",
-    });
+    // api.comms.request("c.lobby.message", {
+    //     message: "$joinq",
+    // });
 }
 
 function leaveQueue() {
-    api.comms.request("c.lobby.message", {
-        message: "$leaveq",
-    });
+    // api.comms.request("c.lobby.message", {
+    //     message: "$leaveq",
+    // });
 }
 
 function leave() {

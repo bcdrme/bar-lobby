@@ -6,9 +6,9 @@
             :value="battle.battleOptions.title"
             :readonly="!editing"
             :style="{ width: titleLength + 'ch' }"
-            @keyup.enter="(event) => handleEnter(event)"
+            @keyup.enter="handleEnter"
         />
-        <div v-if="isSpadsBattle(battle) && !editing" class="flex-col flex-center edit-title" @click="setEditiong">
+        <div v-if="!editing" class="flex-col flex-center edit-title" @click="setEditing">
             <Icon :icon="squareEditOutline" height="23" />
         </div>
     </div>
@@ -22,7 +22,7 @@ import { ref } from "vue";
 
 import Textbox from "@renderer/components/controls/Textbox.vue";
 import { CurrentUser } from "@main/model/user";
-import { Battle } from "@renderer/game/abstract-battle";
+import { Battle } from "@renderer/game/battle";
 
 const props = defineProps<{
     battle: Battle;
@@ -32,16 +32,15 @@ const titleLength = computed(() => props.battle.battleOptions.title.length);
 
 const editing = ref(false);
 
-function setEditiong() {
+function setEditing() {
     editing.value = true;
 }
 
-function handleEnter(event) {
-    api.comms.request("c.lobby.message", {
-        message: `$rename ${event.target.value}`,
-    });
+function handleEnter() {
+    // api.comms.request("c.lobby.message", {
+    //     message: `$rename ${event.target.value}`,
+    // });
     editing.value = false;
-    event.stopPropagation();
 }
 </script>
 

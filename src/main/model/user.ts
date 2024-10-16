@@ -7,6 +7,7 @@ export type User = {
     countryCode: string;
     isOnline: boolean;
     battleStatus: BattleStatus;
+    teamId?: number;
 };
 
 export function isUser(user: any): user is User {

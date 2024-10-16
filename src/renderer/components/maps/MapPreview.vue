@@ -38,7 +38,6 @@ const startPositionsGfx = new Graphics();
 const cache = useImageBlobUrlCache();
 
 onMounted(async () => {
-    console.debug("Map preview mounted");
     app = new Application();
     await app.init({
         background: "#000",
@@ -59,7 +58,6 @@ onUnmounted(() => {
 });
 
 watch([parentSize.width, parentSize.height], ([width, height]) => {
-    console.debug("Parent size changed", width, height);
     if (width && height) {
         onResize();
     }
@@ -94,7 +92,6 @@ function onResize() {
 }
 
 async function setMapImage() {
-    console.debug("Setting map image");
     if (!props.map) {
         return;
     }

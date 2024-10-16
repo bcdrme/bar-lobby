@@ -78,6 +78,7 @@ export type Bot = {
     name: string;
     aiOptions: Record<string, unknown>;
     faction?: Faction;
+    teamId?: number;
 };
 
 export function isBot(bot: any): bot is Bot {

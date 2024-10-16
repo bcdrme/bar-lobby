@@ -49,7 +49,7 @@ import { CurrentUser, User } from "@main/model/user";
 import { EngineAI } from "@main/content/engine/engine-version";
 import { GameAI } from "@main/content/game/game-version";
 import { Bot, Faction } from "@main/game/battle/battle-types";
-import { Battle } from "@renderer/game/abstract-battle";
+import { Battle } from "@renderer/game/battle";
 
 const props = defineProps<{
     battle: Battle;
@@ -58,11 +58,13 @@ const props = defineProps<{
 const botListOpen = ref(false);
 const botModalTeamId = ref(0);
 
-const sortedTeams = computed(() => {
-    const teams = new Map(props.battle.teams.value);
-    teams.set(teams.size, []); // Empty team
-    return teams;
-});
+const sortedTeams = props.battle.getTeams();
+
+// computed(() => {
+//     const teams = new Map(props.battle.getTeams());
+//     teams.set(teams.size, []); // Empty team
+//     return teams;
+// });
 
 //const spectators = props.battle.spectators.value;
 

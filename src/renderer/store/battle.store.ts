@@ -26,7 +26,7 @@ export const battleStateStore = readonly(
     }
 );
 
-function defaultBattle(mapScriptName?: string) {
+export function defaultBattle(mapScriptName?: string) {
     const me = api.session.offlineUser;
     const map = mapScriptName ?? randomFromArray(defaultMaps)!;
 

@@ -1,5 +1,5 @@
 import Password from "@renderer/components/prompts/Password.vue";
-import { Battle } from "@renderer/game/abstract-battle";
+import { Battle } from "@renderer/game/battle";
 
 export async function attemptJoinBattle(battle: Battle) {
     if (battle.battleOptions.passworded) {

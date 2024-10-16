@@ -10,7 +10,7 @@ import { LuaOptionSection } from "@main/content/game/lua-options";
 import { Scenario } from "@main/content/game/scenario";
 import { DownloadInfo } from "@main/content/downloads";
 import { Info } from "@main/services/info.service";
-import { Battle } from "@renderer/game/abstract-battle";
+import { Battle } from "@renderer/game/battle";
 
 console.log("preload.ts loaded");
 

@@ -5,7 +5,7 @@ import { computed, ComputedRef, nextTick, reactive, Ref, ref, shallowReactive, s
 
 import { Message } from "@renderer/model/messages";
 import { CurrentUser, User } from "@main/model/user";
-import { Battle } from "@renderer/game/abstract-battle";
+import { Battle } from "@renderer/game/battle";
 
 export class SessionAPI {
     public readonly offlineMode: Ref<boolean> = ref(false);

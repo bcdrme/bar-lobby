@@ -27,7 +27,7 @@ import TeamParticipant from "@renderer/components/battle/TeamParticipant.vue";
 import ContextMenu from "@renderer/components/common/ContextMenu.vue";
 import { LuaOptionSection } from "@main/content/game/lua-options";
 import { Bot } from "@main/game/battle/battle-types";
-import { Battle } from "@renderer/game/abstract-battle";
+import { Battle } from "@renderer/game/battle";
 
 const props = defineProps<{
     battle: Battle;

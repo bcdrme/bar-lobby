@@ -1,5 +1,6 @@
 import { User } from "@main/model/user";
 import { BattleOptions, Bot, StartPosType } from "@main/game/battle/battle-types";
+import { defaultBattle } from "@renderer/store/battle.store";
 
 export interface BattleConfig<T extends BattleOptions = BattleOptions> {
     battleOptions: T;
@@ -7,14 +8,41 @@ export interface BattleConfig<T extends BattleOptions = BattleOptions> {
     users: User[];
 }
 
-export interface Battle {
-    battleOptions: BattleOptions;
-    bots: Bot[];
-    users: User[];
+// export interface Battle {
+//     battleOptions: BattleOptions;
+//     bots: Bot[];
+//     users: User[];
+// }
 
-    // just for compilation
-    contenders: Array<User | Bot>;
-    spectators: User[];
+interface Contender {
+    teamId: number;
+    faction: string;
+}
+
+type UserContender = User & Contender;
+type BotContender = Bot & Contender;
+
+export class Battle {
+    public readonly battleOptions: BattleOptions;
+    public readonly users: UserContender[] = [];
+    public readonly bots: BotContender[] = [];
+    public readonly spectators: UserContender[] = [];
+
+    constructor() {
+        this.battleOptions = defaultBattle("Aurelia v4.1").battleOptions;
+    }
+
+    public getContenders(): Array<Contender> {
+        return [...this.users, ...this.bots];
+    }
+
+    public getTeamParticipants(teamId: number): Array<Contender> {
+        return this.getContenders().filter((contender) => contender.teamId === teamId);
+    }
+
+    public getTeams() {
+        return new Map<number, Array<Contender>>([...new Set(this.getContenders().map((contender) => contender.teamId))].map((teamId) => [teamId, this.getTeamParticipants(teamId)]));
+    }
 }
 
 // export abstract class AbstractBattle<T extends BattleOptions = BattleOptions> {
@@ -104,13 +132,4 @@ export interface Battle {
 //     public abstract playerToSpectator(player: User): void;
 //     public abstract spectatorToPlayer(spectator: User, teamId: number): void;
 //     public abstract setContenderTeam(contender: User | Bot, teamId: number): void;
-// }
-
-export function isBattle(battle: any): battle is Battle {
-    return true;
-    // return battle instanceof Battle;
-}
-
-// export function isOfflineBattle(battle: any): battle is OfflineBattle {
-//     return battle instanceof OfflineBattle;
 // }
