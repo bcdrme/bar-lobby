@@ -1,4 +1,5 @@
 import { extract, FeedData, FeedEntry } from "@extractus/feed-extractor";
+import { logger } from "@main/utils/logger";
 import { ipcMain } from "electron";
 
 export interface NewsFeedData extends FeedData {
@@ -9,6 +10,8 @@ export interface NewsFeedEntry extends FeedEntry {
     thumbnail?: string;
     thumbnailUrl?: string;
 }
+
+const log = logger("news.service.ts");
 
 const RSS_URL = "https://www.beyondallreason.info/news/rss.xml";
 const MAX_NEWS_TO_LOAD = 7;
@@ -27,12 +30,12 @@ async function fetchImageToBase64(url: string) {
         const contentType = response.headers.get("content-type");
         return `data:${contentType};base64,${base64Image}`;
     } catch (error) {
-        console.error("Error fetching image:", error);
+        log.error("Error fetching image:", error);
     }
 }
 
-function registerIpcHandlers() {
-    ipcMain.handle("misc:getNewsRssFeed", async () => {
+async function fetchNewsRssFeed() {
+    try {
         if (newsFeed) {
             return newsFeed;
         }
@@ -51,7 +54,6 @@ function registerIpcHandlers() {
             },
             {}
         )) as NewsFeedData;
-
         newsFeed.entries = await Promise.all(
             newsFeed.entries.slice(0, MAX_NEWS_TO_LOAD).map(async (entry) => {
                 if (entry.thumbnailUrl) {
@@ -60,10 +62,14 @@ function registerIpcHandlers() {
                 return entry;
             })
         );
-
-        console.debug(newsFeed);
         return newsFeed;
-    });
+    } catch (error) {
+        log.error("Error fetching news feed:", error);
+    }
+}
+
+function registerIpcHandlers() {
+    ipcMain.handle("misc:getNewsRssFeed", fetchNewsRssFeed);
 }
 
 export const miscService = {
