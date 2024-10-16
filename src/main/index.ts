@@ -14,6 +14,7 @@ import { shellService } from "@main/services/shell.service";
 import downloadsService from "@main/services/downloads.service";
 import replaysService from "@main/services/replays.service";
 import { miscService } from "@main/services/news.service";
+import { replayContentAPI } from "@main/content/replays/replay-content";
 
 const log = logger("main/index.ts");
 log.info("Starting Electron main process");
@@ -60,6 +61,12 @@ function registerBarFileProtocol() {
             log.error(err);
         }
     });
+}
+
+function replayFileOpenedWithTheApp() {
+    if (process.argv.length == 0 || process.argv[process.argv.length - 1].endsWith(".sdfz")) {
+        return process.argv[process.argv.length - 1];
+    }
 }
 
 app.setName(APP_NAME);
@@ -138,4 +145,10 @@ app.whenReady().then(() => {
     shellService.registerIpcHandlers();
     downloadsService.registerIpcHandlers(mainWindow);
     miscService.registerIpcHandlers();
+
+    const file = replayFileOpenedWithTheApp();
+    if (file) {
+        log.info(`Opening replay file: ${file}`);
+        replayContentAPI.copyParseAndLaunchReplay(file);
+    }
 });

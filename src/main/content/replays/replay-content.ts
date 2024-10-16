@@ -1,6 +1,7 @@
 import { delay } from "$/jaz-ts-utils/delay";
 import { Signal } from "$/jaz-ts-utils/signal";
-import { CONTENT_PATH, REPLAYS_PATH } from "@main/config/app";
+import { REPLAYS_PATH } from "@main/config/app";
+import { mapContentAPI } from "@main/content/maps/map-content";
 import { asyncParseReplay } from "@main/content/replays/parse-replay";
 import { Replay } from "@main/content/replays/replay";
 import { gameAPI } from "@main/game/game";
@@ -53,9 +54,15 @@ export class ReplayContentAPI {
             });
     }
 
-    public async parseAndLaunchReplay(replayPath: string) {
+    public async copyParseAndLaunchReplay(filePath: string) {
+        let replayPath = filePath;
+        if (!replayPath.startsWith(REPLAYS_PATH)) {
+            replayPath = path.join(REPLAYS_PATH, path.basename(replayPath));
+            await fs.promises.copyFile(filePath, replayPath);
+        }
         const replay = await asyncParseReplay(replayPath);
-        gameAPI.launch((await replay) as Replay);
+        await mapContentAPI.downloadMap(replay.mapScriptName);
+        gameAPI.launchReplay((await replay) as Replay);
     }
 
     public async sync(replayFileNames: string[]) {
