@@ -15,7 +15,12 @@ export default defineConfig({
     },
     build: {
         sourcemap: true,
-        rollupOptions: {},
+        rollupOptions: {
+            output: {
+                manualChunks: () => "everything.js",
+                sourcemap: false,
+            },
+        },
     },
     optimizeDeps: {
         esbuildOptions: {

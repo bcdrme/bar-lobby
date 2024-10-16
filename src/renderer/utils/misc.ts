@@ -2,7 +2,6 @@ import { intervalToDuration } from "date-fns";
 
 export function getFriendlyDuration(durationMs: number, withSeconds = true) {
     const durationValues = intervalToDuration({ start: 0, end: durationMs });
-    console.debug(`getFriendlyDuration durationValues: ${JSON.stringify(durationValues)} for durationMs: ${durationMs}`);
     let durationStr = "";
     if (durationValues.years) {
         durationStr += `${durationValues.years}y `;

@@ -11,6 +11,8 @@ import { Scenario } from "@main/content/game/scenario";
 import { DownloadInfo } from "@main/content/downloads";
 import { Info } from "@main/services/info.service";
 import { Battle } from "@renderer/game/battle";
+import { FeedData, FeedEntry } from "@extractus/feed-extractor";
+import { NewsFeedData } from "@main/services/news.service";
 
 console.log("preload.ts loaded");
 
@@ -35,6 +37,7 @@ const shellApi = {
     openStartScript: (): Promise<void> => ipcRenderer.invoke("shell:openStartScript"),
     openReplaysDir: (): Promise<void> => ipcRenderer.invoke("shell:openReplaysDir"),
     showReplayInFolder: (fileName: string): Promise<void> => ipcRenderer.invoke("shell:showReplayInFolder", fileName),
+    openExternal: (url: string): Promise<void> => ipcRenderer.invoke("shell:openExternal", url),
 };
 export type ShellApi = typeof shellApi;
 contextBridge.exposeInMainWorld("shell", shellApi);
@@ -133,3 +136,9 @@ const downloadsApi = {
 };
 export type DownloadsApi = typeof downloadsApi;
 contextBridge.exposeInMainWorld("downloads", downloadsApi);
+
+const miscApi = {
+    getNewsRssFeed: (): Promise<NewsFeedData> => ipcRenderer.invoke("misc:getNewsRssFeed"),
+};
+export type MiscApi = typeof miscApi;
+contextBridge.exposeInMainWorld("misc", miscApi);

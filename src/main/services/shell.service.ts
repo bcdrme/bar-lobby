@@ -10,6 +10,7 @@ function registerIpcHandlers() {
     ipcMain.handle("shell:openStartScript", () => shell.openPath(path.join(CONTENT_PATH, "script.txt")));
     ipcMain.handle("shell:openReplaysDir", () => shell.openPath(REPLAYS_PATH));
     ipcMain.handle("shell:showReplayInFolder", (_event, fileName: string) => shell.showItemInFolder(path.join(REPLAYS_PATH, fileName)));
+    ipcMain.handle("shell:openExternal", (_event, url: string) => shell.openExternal(url));
 }
 
 export const shellService = {

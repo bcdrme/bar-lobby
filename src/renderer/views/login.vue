@@ -73,7 +73,7 @@ async function onRetry() {
 async function playOffline() {
     api.session.offlineMode = true;
     api.comms.disconnect();
-    await router.push("/singleplayer/custom");
+    await router.push("/home/overview");
 }
 
 connect();

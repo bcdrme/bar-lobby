@@ -13,6 +13,7 @@ import url from "url";
 import { shellService } from "@main/services/shell.service";
 import downloadsService from "@main/services/downloads.service";
 import replaysService from "@main/services/replays.service";
+import { miscService } from "@main/services/news.service";
 
 const log = logger("main/index.ts");
 log.info("Starting Electron main process");
@@ -136,4 +137,5 @@ app.whenReady().then(() => {
     mapsService.registerIpcHandlers(mainWindow);
     shellService.registerIpcHandlers();
     downloadsService.registerIpcHandlers(mainWindow);
+    miscService.registerIpcHandlers();
 });

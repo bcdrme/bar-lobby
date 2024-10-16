@@ -1,4 +1,4 @@
-import { AccountApi, DownloadsApi, EngineApi, GameApi, InfoApi, MainWindowApi, MapsApi, ReplaysApi, SettingsApi, ShellApi } from "@preload/preload";
+import { AccountApi, DownloadsApi, EngineApi, GameApi, InfoApi, MainWindowApi, MapsApi, MiscApi, ReplaysApi, SettingsApi, ShellApi } from "@preload/preload";
 
 declare global {
     interface Window {
@@ -12,5 +12,6 @@ declare global {
         game: GameApi;
         maps: MapsApi;
         downloads: DownloadsApi;
+        misc: MiscApi;
     }
 }
