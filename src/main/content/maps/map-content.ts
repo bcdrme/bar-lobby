@@ -79,8 +79,8 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
             });
     }
 
-    public isVersionInstalled(id: string): boolean {
-        throw new Error("Method not implemented.");
+    public isVersionInstalled(scriptName: string): boolean {
+        return this.mapNameFileNameLookup[scriptName] !== undefined;
     }
 
     public getMapByScriptName(scriptName: string) {

@@ -2,6 +2,7 @@ import { app, BrowserWindow, ipcMain, screen, shell } from "electron";
 import path from "path";
 import { settingsService } from "./services/settings.service";
 import { logger } from "./utils/logger";
+import { replayContentAPI } from "@main/content/replays/replay-content";
 
 declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string;
 declare const MAIN_WINDOW_VITE_NAME: string;
@@ -61,12 +62,12 @@ export function createWindow() {
 
     app.on("browser-window-focus", () => mainWindow.flashFrame(false));
     app.on("second-instance", (_event, commandLine, _workingDirectory, _additionalData) => {
-        console.log("Second Instance opening with command line: " + commandLine);
+        log.info("Second Instance opening with command line: " + commandLine);
         focusWindows();
         openFile(commandLine[commandLine.length - 1]);
     });
     app.on("open-file", (_, path) => {
-        console.log("Mac OS opening file: " + path);
+        log.info("Mac OS opening file: " + path);
         focusWindows();
         openFile(path);
     });
@@ -80,7 +81,7 @@ export function createWindow() {
         if (!path.endsWith(".sdfz")) {
             return;
         }
-        mainWindow.webContents.send("open-replay", path);
+        replayContentAPI.copyParseAndLaunchReplay(path);
     }
 
     // TODO add a setting to scale up and down the UI
@@ -97,11 +98,10 @@ export function createWindow() {
     }
     setDisplay(screen.getAllDisplays()[settings.displayIndex]);
 
-    //TODO add an IPC handler for changing display
+    //TODO add an IPC handler for changing display via the settings
 
     // Register IPC handlers for the main window
     ipcMain.handle("mainWindow:setFullscreen", (_event, flag: boolean) => {
-        console.log(screen.getAllDisplays());
         mainWindow.setFullScreen(flag);
     });
     ipcMain.handle("mainWindow:toggleFullscreen", () => mainWindow.setFullScreen(!mainWindow.isFullScreen()));

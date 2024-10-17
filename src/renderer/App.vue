@@ -8,7 +8,7 @@
         <Background :blur="blurBg" />
         <Notifications />
         <PromptContainer />
-        <NavBar :class="{ hidden: empty }" />
+        <NavBar :class="{ hidden: empty || state === 'preloader' || state === 'initial-setup' }" />
         <div class="lobby-version">
             {{ infosStore.lobby.version }}
         </div>
