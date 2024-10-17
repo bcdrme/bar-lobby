@@ -68,6 +68,11 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
                 }
                 log.debug(`Chokidar -=- Map added: ${filepath}`);
                 const filename = path.basename(filepath);
+                // Update the lookup maps
+                this.getMapNameFromFile(filename).then((mapName) => {
+                    this.mapNameFileNameLookup[mapName] = filename;
+                    this.fileNameMapNameLookup[filename] = mapName;
+                });
                 this.queueMapsToCache([filename]);
             })
             .on("unlink", (filepath) => {
@@ -75,6 +80,8 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
                     return;
                 }
                 log.debug(`Chokidar -=- Map removed: ${filepath}`);
+                this.mapNameFileNameLookup[this.fileNameMapNameLookup[path.basename(filepath)]] = undefined;
+                this.fileNameMapNameLookup[path.basename(filepath)] = undefined;
                 this.onMapDeleted.dispatch(path.basename(filepath));
             });
     }
@@ -92,6 +99,7 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
     }
 
     public async downloadMap(scriptName: string) {
+        if (this.isVersionInstalled(scriptName)) return;
         if (this.currentDownloads.some((download) => download.name === scriptName)) {
             return await new Promise<void>((resolve) => {
                 this.onDownloadComplete.addOnce((mapData) => {
