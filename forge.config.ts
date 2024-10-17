@@ -6,15 +6,30 @@ import { MakerRpm } from "@electron-forge/maker-rpm";
 import { MakerFlatpak } from "@electron-forge/maker-flatpak";
 import { MakerSnap } from "@electron-forge/maker-snap";
 import { VitePlugin } from "@electron-forge/plugin-vite";
-import { FusesPlugin } from "@electron-forge/plugin-fuses";
-import { FuseV1Options, FuseVersion } from "@electron/fuses";
 
 const config: ForgeConfig = {
     packagerConfig: {
         asar: false, // Cannot enable asar, it breaks map parsing
     },
     rebuildConfig: {},
-    makers: [new MakerSquirrel({}), new MakerZIP({}, ["darwin"]), new MakerRpm({}), new MakerDeb({}), new MakerFlatpak({}), new MakerSnap({})],
+    makers: [
+        new MakerSquirrel({}),
+        new MakerZIP({}, ["darwin"]),
+        new MakerRpm({
+            options: {
+                mimeType: ["application/sdfz"],
+                categories: ["Game"],
+                icon: "src/renderer/assets/images/icon.png",
+                homepage: "https://www.beyondallreason.info/",
+                license: "MIT",
+                name: "bar-lobby",
+                productName: "BAR Lobby",
+            },
+        }),
+        new MakerDeb({}),
+        new MakerFlatpak({}),
+        new MakerSnap({}),
+    ],
     plugins: [
         new VitePlugin({
             // `build` can specify multiple entry builds, which can be Main process, Preload scripts, Worker process, etc.
