@@ -75,8 +75,8 @@ const router = useRouter();
 const videoVisible = toRef(!toValue(settingsStore.skipIntro));
 
 const state: Ref<"preloader" | "initial-setup" | "default"> = ref("preloader");
-const empty = ref(false);
-const blurBg = ref(true);
+const empty = ref(router.currentRoute.value?.meta?.empty ?? false);
+const blurBg = ref(router.currentRoute.value?.meta?.blurBg ?? false);
 
 const settingsOpen = ref(false);
 const exitOpen = ref(false);

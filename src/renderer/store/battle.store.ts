@@ -3,6 +3,7 @@ import { defaultMaps } from "@main/config/default-maps";
 import { DEFAULT_ENGINE_VERSION, DEFAULT_GAME_VERSION } from "@main/config/default-versions";
 import { BattleContenderConfig, BattleOptions, Bot, StartPosType } from "@main/game/battle/battle-types";
 import { User } from "@main/model/user";
+import { db } from "@renderer/store/db";
 import { defaultMapBoxes } from "@renderer/utils/start-boxes";
 import { reactive, readonly } from "vue";
 
@@ -26,7 +27,7 @@ export const battleStateStore = readonly(
     }
 );
 
-export function defaultBattle(mapScriptName?: string) {
+export async function defaultBattle(mapScriptName?: string) {
     const me = api.session.offlineUser;
     const map = mapScriptName ?? randomFromArray(defaultMaps)!;
 
@@ -34,7 +35,7 @@ export function defaultBattle(mapScriptName?: string) {
     me.battleStatus.teamId = 0;
     me.battleStatus.isSpectator = false;
 
-    const engine = api.content.engine.installedVersions.find((version) => version.id === DEFAULT_ENGINE_VERSION);
+    const engine = await db.engineVersions.orderBy("version").last();
     const barb = engine?.ais.find((ai) => ai.shortName === "BARb");
 
     return {
@@ -55,10 +56,11 @@ export function defaultBattle(mapScriptName?: string) {
     };
 }
 
-export function resetToDefaultBattle() {
-    Object.assign(battleStore, defaultBattle());
+export async function resetToDefaultBattle() {
+    const battle = await defaultBattle();
+    Object.assign(battleStore, battle);
 }
 
-export function initBattleStore() {
+export async function initBattleStore() {
     resetToDefaultBattle();
 }

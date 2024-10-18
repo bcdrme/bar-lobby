@@ -1,23 +1,9 @@
 import { notificationsApi } from "./notifications";
-import { EngineVersion } from "@main/content/engine/engine-version";
-import { GameVersion } from "@main/content/game/game-version";
-import { MapData } from "@main/content/maps/map-data";
 import { Account } from "@main/services/account.service";
 import { Message } from "@renderer/model/messages";
 
 interface API {
     account: Account;
-    content: {
-        engine: {
-            installedVersions: EngineVersion[];
-        };
-        game: {
-            installedVersions: GameVersion[];
-        };
-        maps: {
-            installedVersions: MapData[];
-        };
-    };
     //TODO implement comms
     comms: any;
     notifications: typeof notificationsApi;
@@ -138,23 +124,7 @@ export async function apiInit() {
         },
     };
 
-    api.content = {
-        engine: {
-            installedVersions: [],
-        },
-        game: {
-            installedVersions: [],
-        },
-        maps: {
-            installedVersions: [],
-        },
-    };
-    api.content.engine.installedVersions = await window.engine.getInstalledVersions();
-    api.content.game.installedVersions = await window.game.getInstalledVersions();
-    api.content.maps.installedVersions = await window.maps.getInstalledVersions();
-
     // replaced by notificationsApi
-    // api.notifications = new NotificationsAPI();
     api.notifications = notificationsApi;
 
     // replaced by nothing, use prompt directly when needed
