@@ -5,7 +5,6 @@ import { Signal } from "$/jaz-ts-utils/signal";
 import * as path from "path";
 
 import { engineContentAPI } from "@main/content/engine/engine-content";
-import { mapContentAPI } from "@main/content/maps/map-content";
 
 import { Replay } from "@main/content/replays/replay";
 import { startScriptConverter } from "@main/utils/start-script-converter";
@@ -13,7 +12,7 @@ import { DEFAULT_ENGINE_VERSION } from "@main/config/default-versions";
 import { logger } from "@main/utils/logger";
 import { gameContentAPI } from "@main/content/game/game-content";
 import { CONTENT_PATH, REPLAYS_PATH } from "@main/config/app";
-import { Battle } from "@renderer/game/battle";
+import { BattleState, BattleStateMetadata } from "@renderer/store/battle.store";
 
 const log = logger("main/game/game.ts");
 
@@ -24,7 +23,7 @@ export class GameAPI {
 
     protected gameProcess: ChildProcess | null = null;
 
-    public async launchBattle(battle: Battle): Promise<void> {
+    public async launchBattle(battle: BattleState & BattleStateMetadata): Promise<void> {
         const script = startScriptConverter.generateScriptStr(battle);
         const scriptPath = path.join(CONTENT_PATH, this.scriptName);
         await fs.promises.writeFile(scriptPath, script);

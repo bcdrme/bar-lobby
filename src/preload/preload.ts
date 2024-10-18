@@ -13,7 +13,7 @@ import { Info } from "@main/services/info.service";
 import { Battle } from "@renderer/game/battle";
 import { FeedData, FeedEntry } from "@extractus/feed-extractor";
 import { NewsFeedData } from "@main/services/news.service";
-import { BattleState } from "@renderer/store/battle.store";
+import { BattleState, BattleStateMetadata } from "@renderer/store/battle.store";
 
 console.log("preload.ts loaded");
 
@@ -91,7 +91,7 @@ const gameApi = {
     // Game
     launchScript: (script: string): Promise<void> => ipcRenderer.invoke("game:launchScript", script),
     launchReplay: (replay: Replay): Promise<void> => ipcRenderer.invoke("game:launchReplay", replay),
-    launchBattle: (battle: BattleState): Promise<void> => ipcRenderer.invoke("game:launchBattle", battle),
+    launchBattle: (battle: BattleState & BattleStateMetadata): Promise<void> => ipcRenderer.invoke("game:launchBattle", battle),
 
     // Events
     onGameLaunched: (callback: () => void) => ipcRenderer.on("game:launched", callback),

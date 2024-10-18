@@ -153,7 +153,8 @@
             </template> -->
 
             <div class="flex-row flex-bottom gap-md">
-                <Button class="red fullwidth" @click="leave">Leave</Button>
+                <!-- <Button class="red fullwidth" @click="leave">Leave</Button> -->
+                <Button class="fullwidth green" :disabled="gameStore.isGameRunning" @click="startBattle">Start</Button>
 
                 <!-- <template v-if="isSpadsBattle(battle)">
                     <template v-if="me.battleStatus.isSpectator">
@@ -188,9 +189,6 @@
                         <Button v-else class="fullwidth green" :disabled="gameStore.isGameRunning" @click="start">Start</Button>
                     </template>
                 </template> -->
-                <template>
-                    <Button class="fullwidth green" :disabled="gameStore.isGameRunning" @click="start">Start</Button>
-                </template>
             </div>
         </div>
     </div>
@@ -202,7 +200,7 @@
 <script lang="ts" setup>
 // TODO: boss, ring, forcespec, kick, ban, preset, votes, rename battle, custom boxes,
 // show non-default mod/map options, tweakunits, stop, rejoin, balance mode
-import { Ref, ref, watch } from "vue";
+import { Ref, ref, toRaw, watch } from "vue";
 import { getBoxes, StartBoxOrientation } from "@renderer/utils/start-boxes";
 import { LuaOptionSection } from "@main/content/game/lua-options";
 import { StartPosType } from "@main/game/battle/battle-types";
@@ -217,7 +215,7 @@ import { Icon } from "@iconify/vue";
 import MapListModal from "@renderer/components/battle/MapListModal.vue";
 import MapOptionsModal from "@renderer/components/battle/MapOptionsModal.vue";
 import LuaOptionsModal from "@renderer/components/battle/LuaOptionsModal.vue";
-import { battleStore, resetToDefaultBattle } from "@renderer/store/battle.store";
+import { battleMetadataStore, battleStore, resetToDefaultBattle, startBattle } from "@renderer/store/battle.store";
 import Button from "@renderer/components/controls/Button.vue";
 import { MapData } from "@main/content/maps/map-data";
 import { db } from "@renderer/store/db";
@@ -225,6 +223,7 @@ import MapOverviewCard from "@renderer/components/maps/MapOverviewCard.vue";
 import listIcon from "@iconify-icons/mdi/format-list-bulleted";
 import cogIcon from "@iconify-icons/mdi/cog";
 import { useDexieLiveQuery } from "@renderer/composables/useDexieLiveQuery";
+import { deepToRaw } from "@renderer/utils/deep-toraw";
 
 // const map = getMapByScriptName(battleStore.battleOptions.map);
 const map = ref<MapData>();
@@ -340,9 +339,6 @@ function leaveQueue() {
 function leave() {
     // battleStore.leave();
     resetToDefaultBattle();
-}
-async function start() {
-    await window.game.launchBattle(battleStore);
 }
 </script>
 

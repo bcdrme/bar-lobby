@@ -4,6 +4,7 @@ import { gameAPI } from "@main/game/game";
 import { ipcMain } from "electron";
 import { Replay } from "@main/content/replays/replay";
 import { Battle } from "@renderer/game/battle";
+import { BattleState, BattleStateMetadata } from "@renderer/store/battle.store";
 
 function init() {
     gameContentAPI.init();
@@ -21,7 +22,7 @@ function registerIpcHandlers(mainWindow: Electron.BrowserWindow) {
     // Game
     ipcMain.handle("game:launchScript", (_, script: string) => gameAPI.launchScript(script));
     ipcMain.handle("game:launchReplay", (_, replay: Replay) => gameAPI.launchReplay(replay));
-    ipcMain.handle("game:launchBattle", (_, battle: Battle) => gameAPI.launchBattle(battle));
+    ipcMain.handle("game:launchBattle", (_, battle: BattleState & BattleStateMetadata) => gameAPI.launchBattle(battle));
 
     // Events
     gameAPI.onGameLaunched.add(() => {

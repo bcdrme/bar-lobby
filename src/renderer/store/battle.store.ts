@@ -1,6 +1,7 @@
 import { BattleOptions, Bot, Faction, StartPosType } from "@main/game/battle/battle-types";
 import { User } from "@main/model/user";
 import { db } from "@renderer/store/db";
+import { deepToRaw } from "@renderer/utils/deep-toraw";
 import { defaultMapBoxes } from "@renderer/utils/start-boxes";
 import { _ } from "ajv";
 import { reactive, readonly, watch } from "vue";
@@ -87,12 +88,11 @@ export interface BattleState {
     started: boolean;
 }
 
-interface BattleStateMetadata {
+export interface BattleStateMetadata {
     startTime?: Date;
     participants: Array<Bot | User>;
     players: Array<User>;
     teams: Array<Array<User | Bot>>;
-    spectators: Array<User>;
 }
 
 export async function resetToDefaultBattle() {
@@ -102,4 +102,8 @@ export async function resetToDefaultBattle() {
 
 export async function initBattleStore() {
     await resetToDefaultBattle();
+}
+
+export async function startBattle() {
+    await window.game.launchBattle(deepToRaw({ ...battleStore, ..._battleMetadataStore }));
 }
