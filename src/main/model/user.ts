@@ -23,9 +23,10 @@ export type CurrentUser = User & {
 };
 
 export type BattleStatus = {
+    participantId: number;
     away: boolean;
     inBattle: boolean;
-    battleId: number | null;
+    battleId?: number;
     ready: boolean;
     /* each sync property denotes the downloaded percentage of the map */
     sync: {

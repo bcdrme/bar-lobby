@@ -10,10 +10,9 @@
     <div class="scroll-container padding-right-sm">
         <div class="playerlist" :class="{ dragging: draggedParticipant !== null }">
             <TeamComponent
-                v-for="[teamId] in sortedTeams"
+                v-for="(team, teamId) in battleMetadataStore.teams"
                 :key="teamId"
                 :teamId="teamId"
-                :me="me"
                 @add-bot-clicked="openBotList"
                 @on-join-clicked="joinTeam"
                 @on-drag-start="dragStart"
@@ -27,7 +26,6 @@
             :key="-1"
             class="spectators"
             :teamId="-1"
-            :me="me"
             @add-bot-clicked="openBotList"
             @on-join-clicked="joinTeam"
             @on-drag-start="dragStart"
@@ -53,9 +51,6 @@ import { me } from "@renderer/store/me.store";
 const botListOpen = ref(false);
 const botModalTeamId = ref(0);
 
-const sortedTeams = battleMetadataStore.teams;
-const spectators = battleStore.spectators;
-
 function openBotList(teamId: number) {
     botModalTeamId.value = teamId;
     botListOpen.value = true;
@@ -68,12 +63,12 @@ function onBotSelected(bot: EngineAI | GameAI, teamId: number) {
 
 function addBot(ai: EngineAI | GameAI, teamId: number) {
     battleStore.bots.push({
-        playerId: battleMetadataStore.participants.length + 1,
         name: ai.name,
         aiShortName: "shortName" in ai ? ai.shortName : ai.name,
         ownerUserId: me.userId,
         aiOptions: {},
         battleStatus: {
+            participantId: battleMetadataStore.participants.length + 1,
             faction: Faction.Armada,
             teamId,
         },

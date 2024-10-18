@@ -15,13 +15,12 @@ watch(
     (battle) => {
         _battleMetadataStore.participants = [...battle.users, ...battle.bots, ...battle.spectators];
         _battleMetadataStore.players = battle.users;
-        _battleMetadataStore.teams = new Map<number, Array<User | Bot>>();
+        _battleMetadataStore.teams = [];
         for (const participant of _battleMetadataStore.participants) {
-            const teamId = participant.battleStatus?.teamId || 0;
-            if (!_battleMetadataStore.teams.has(teamId)) {
-                _battleMetadataStore.teams.set(teamId, []);
+            const teamId = participant.battleStatus.teamId;
+            if (!_battleMetadataStore.teams[teamId]) {
+                _battleMetadataStore.teams[teamId] = [];
             }
-            _battleMetadataStore.teams.get(teamId)?.push(participant);
         }
         if (battle.started) _battleMetadataStore.startTime = new Date();
         console.debug("UPDATED battleMetadataStore");
@@ -43,13 +42,13 @@ export async function defaultBattle(mapScriptName?: string) {
         throw new Error("No games available");
     }
 
-    let map;
+    let map: string;
     if (mapScriptName) {
-        map = await db.maps.where("scriptName").equals(mapScriptName).first();
+        map = (await db.maps.where("scriptName").equals(mapScriptName).first())?.scriptName;
     } else {
         const count = await db.maps.count();
         const randomIndex = Math.floor(Math.random() * count);
-        map = await db.maps.offset(randomIndex).first();
+        map = (await db.maps.offset(randomIndex).first())?.scriptName;
     }
 
     if (!map) {
@@ -63,7 +62,7 @@ export async function defaultBattle(mapScriptName?: string) {
             title: "Offline Custom Battle",
             engineVersion: engine.id,
             gameVersion: game.gameVersion,
-            map: mapScriptName,
+            mapScriptName: mapScriptName,
             startPosType: StartPosType.Boxes,
             startBoxes: defaultMapBoxes(),
             gameOptions: {},
@@ -72,7 +71,7 @@ export async function defaultBattle(mapScriptName?: string) {
         } as BattleOptions,
         metadata: {},
         users: [me],
-        bots: barbAi ? [{ playerId: 666, battleStatus: { faction: Faction.Armada, teamId: 1 }, ownerUserId: me.userId, name: barbAi.name, aiShortName: barbAi.shortName, aiOptions: {} }] : [],
+        bots: barbAi ? [{ battleStatus: { faction: Faction.Armada, teamId: 1, participantId: -666 }, ownerUserId: me.userId, name: barbAi.name, aiShortName: barbAi.shortName, aiOptions: {} }] : [],
         spectators: [],
         started: false,
     } as BattleState;
@@ -90,7 +89,8 @@ interface BattleStateMetadata {
     startTime?: Date;
     participants: Array<Bot | User>;
     players: Array<User>;
-    teams: Map<number, Array<User | Bot>>;
+    teams: Array<Array<User | Bot>>;
+    spectators: Array<User>;
 }
 
 export async function resetToDefaultBattle() {

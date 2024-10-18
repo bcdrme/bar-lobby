@@ -2,7 +2,7 @@ export type BattleOptions = {
     title: string;
     engineVersion: string;
     gameVersion: string;
-    map: string;
+    mapScriptName: string;
     startPosType: StartPosType;
     startBoxes: Record<number, StartBox>;
     gameOptions: Record<string, string | number | boolean>;
@@ -73,12 +73,12 @@ export type BattleContenderConfig = {
 };
 
 export type Bot = {
-    playerId: number;
     ownerUserId: number;
     aiShortName: string; // TODO: point directly to AI obj and object.freeze it?
     name: string;
     aiOptions: Record<string, unknown>;
     battleStatus: {
+        participantId: number;
         faction?: Faction;
         teamId: number;
     };

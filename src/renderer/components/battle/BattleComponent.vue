@@ -29,14 +29,14 @@
 
             <div class="flex-row gap-md">
                 <Select
-                    :modelValue="battleStore.battleOptions.map"
+                    :modelValue="battleStore.battleOptions.mapScriptName"
                     :options="[]"
                     label="Map"
                     optionLabel="scriptName"
                     optionValue="scriptName"
                     :filter="true"
                     class="fullwidth"
-                    :placeholder="battleStore.battleOptions.map"
+                    :placeholder="battleStore.battleOptions.mapScriptName"
                     @update:model-value="onMapSelected"
                 />
                 <Button v-tooltip.left="'Open map selector'" @click="openMapList">
@@ -149,7 +149,7 @@
             </template> -->
 
             <div class="flex-row flex-bottom gap-md">
-                <Button class="red fullwidth" @click="leave"> Leave </Button>
+                <Button class="red fullwidth" @click="leave">Leave</Button>
 
                 <!-- <template v-if="isSpadsBattle(battle)">
                     <template v-if="me.battleStatus.isSpectator">
@@ -198,7 +198,7 @@
 <script lang="ts" setup>
 // TODO: boss, ring, forcespec, kick, ban, preset, votes, rename battle, custom boxes,
 // show non-default mod/map options, tweakunits, stop, rejoin, balance mode
-import { Ref, ref } from "vue";
+import { Ref, ref, watch } from "vue";
 import { CurrentUser } from "@main/model/user";
 import { getBoxes, StartBoxOrientation } from "@renderer/utils/start-boxes";
 import { LuaOptionSection } from "@main/content/game/lua-options";
@@ -214,15 +214,20 @@ import { Icon } from "@iconify/vue";
 import MapListModal from "@renderer/components/battle/MapListModal.vue";
 import MapOptionsModal from "@renderer/components/battle/MapOptionsModal.vue";
 import LuaOptionsModal from "@renderer/components/battle/LuaOptionsModal.vue";
-import { useDexieLiveQueryWithDeps } from "@renderer/composables/useDexieLiveQuery";
-import { db } from "@renderer/store/db";
 import { battleStore, resetToDefaultBattle } from "@renderer/store/battle.store";
+import Button from "@renderer/components/controls/Button.vue";
+import { MapData } from "@main/content/maps/map-data";
+import { db } from "@renderer/store/db";
 
 // const map = getMapByScriptName(battleStore.battleOptions.map);
-const map = useDexieLiveQueryWithDeps([battleStore.battleOptions.map], () => {
-    if (!battleStore.battleOptions.map) return null;
-    return db.maps.get(battleStore.battleOptions.map);
-});
+const map = ref<MapData>();
+watch(
+    () => battleStore.battleOptions.mapScriptName,
+    async (mapScriptName) => {
+        console.log("mapScriptName for this battle", mapScriptName);
+        map.value = await db.maps.get(mapScriptName);
+    }
+);
 
 const mapListOpen = ref(false);
 const mapOptionsOpen = ref(false);
@@ -262,7 +267,7 @@ function setMapOptions(startPosType: StartPosType, orientation: StartBoxOrientat
 
 function onMapSelected(mapScriptName: string) {
     mapListOpen.value = false;
-    battleStore.battleOptions.map = mapScriptName;
+    battleStore.battleOptions.mapScriptName = mapScriptName;
 }
 
 function onPresetSelected(preset: string) {

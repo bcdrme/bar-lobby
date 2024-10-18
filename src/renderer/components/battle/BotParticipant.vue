@@ -59,13 +59,13 @@ function onRightClick(event: MouseEvent) {
 }
 
 function kickBot() {
-    battleStore.bots = battleStore.bots.filter((b) => b.playerId !== props.bot.playerId);
+    battleStore.bots = battleStore.bots.filter((b) => b.battleStatus.participantId !== props.bot.battleStatus.participantId);
 }
 
 // Duplicates this bot and its settings and gives it a new player id.
 function duplicateBot() {
     const duplicatedBot = structuredClone(toRaw(props.bot));
-    duplicatedBot.playerId = battleMetadataStore.participants.length + 1;
+    duplicatedBot.battleStatus.participantId = battleMetadataStore.participants.length + 1;
     battleStore.bots.push(duplicatedBot);
 }
 

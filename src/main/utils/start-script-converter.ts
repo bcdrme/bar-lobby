@@ -120,7 +120,7 @@ class StartScriptConverter {
 
         return {
             gametype: battle.battleOptions.gameVersion,
-            mapname: battle.battleOptions.map,
+            mapname: battle.battleOptions.mapScriptName,
             modoptions: battle.battleOptions.gameOptions,
             ishost: 1,
             myplayername: api.session.offlineUser.username,

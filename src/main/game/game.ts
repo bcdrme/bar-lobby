@@ -31,7 +31,7 @@ export class GameAPI {
         await this.launch({
             engineVersion: battle.battleOptions.engineVersion,
             gameVersion: battle.battleOptions.gameVersion,
-            mapScriptName: battle.battleOptions.map,
+            mapScriptName: battle.battleOptions.mapScriptName,
             launchArg: scriptPath,
         });
     }

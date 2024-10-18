@@ -10,13 +10,13 @@
         <div class="flex-row flex-center-items gap-md">
             <div class="title">{{ title }}</div>
             <div v-if="memberCount > 0" class="member-count">({{ memberCount }} Member{{ memberCount > 1 ? "s" : "" }})</div>
-            <Button v-if="!iAmSpectator" class="slim" @click="addBotClicked(teamId)"> Add bot </Button>
+            <Button v-if="!isTeamSpectator" class="slim" @click="addBotClicked(teamId)"> Add bot </Button>
             <Button v-if="showJoin" class="slim" @click="onJoinClicked(teamId)"> Join </Button>
         </div>
         <div class="participants">
             <div
-                v-for="(member, memberIndex) in members"
-                :key="`member${memberIndex}`"
+                v-for="member in members"
+                :key="member.battleStatus.participantId"
                 draggable="true"
                 @dragstart="onDragStart($event, member)"
                 @dragend="onDragEnd()"
@@ -36,7 +36,7 @@ import BotParticipant from "@renderer/components/battle/BotParticipant.vue";
 import PlayerParticipant from "@renderer/components/battle/PlayerParticipant.vue";
 import SpectatorParticipant from "@renderer/components/battle/SpectatorParticipant.vue";
 import Button from "@renderer/components/controls/Button.vue";
-import { CurrentUser, isUser, User } from "@main/model/user";
+import { isUser, User } from "@main/model/user";
 import { Bot, isBot } from "@main/game/battle/battle-types";
 import { battleMetadataStore, battleStore } from "@renderer/store/battle.store";
 import { me } from "@renderer/store/me.store";
@@ -44,14 +44,11 @@ import { me } from "@renderer/store/me.store";
 const props = defineProps<{
     teamId: number;
 }>();
-const iAmSpectator = computed(() => {
+const isTeamSpectator = computed(() => {
     return props.teamId < 0;
 });
 const title = computed(() => {
-    return iAmSpectator.value ? "Spectators" : "Team " + (props.teamId + 1);
-});
-const members = computed(() => {
-    return iAmSpectator.value ? battleStore.spectators : battleMetadataStore.teams.get(props.teamId);
+    return isTeamSpectator.value ? "Spectators" : "Team " + (props.teamId + 1);
 });
 const showJoin = computed(() => {
     const playerIsSpectator = battleStore.spectators.includes(me);
@@ -60,8 +57,14 @@ const showJoin = computed(() => {
     const listIsSpectator = props.teamId < 0;
     return playerTeam !== listTeam || (listIsSpectator && !playerIsSpectator);
 });
+const members = computed(() => {
+    if (props.teamId < 0) {
+        return battleStore.spectators;
+    }
+    return battleMetadataStore.teams[props.teamId];
+});
 const memberCount = computed(() => {
-    return iAmSpectator.value ? battleStore.spectators.length : (battleMetadataStore.teams.get(props.teamId)?.length ?? 0);
+    return battleMetadataStore.teams[props.teamId]?.length || 0;
 });
 const emit = defineEmits(["addBotClicked", "onJoinClicked", "onDragStart", "onDragEnd", "onDragEnter", "onDrop"]);
 function addBotClicked(teamId: number) {
