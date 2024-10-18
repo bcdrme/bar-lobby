@@ -25,7 +25,6 @@ export function createWindow() {
         webPreferences: {
             preload: path.join(__dirname, "../build/preload.js"),
             zoomFactor: zoomFactor(primaryDisplay),
-            // backgroundThrottling: false, // unsure if this is needed
         },
     });
     process.env.MAIN_WINDOW_ID = mainWindow.id.toString();
@@ -34,7 +33,7 @@ export function createWindow() {
 
     mainWindow.once("ready-to-show", () => {
         mainWindow.setMenuBarVisibility(false);
-        mainWindow.webContents.openDevTools();
+        if (process.env.NODE_ENV === "development") mainWindow.webContents.openDevTools();
         mainWindow.show();
         mainWindow.focus();
     });

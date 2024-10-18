@@ -111,7 +111,8 @@ app.whenReady().then(() => {
             log.error("Vue Devtools failed to install:", err?.toString());
         }
     } else if (app.isPackaged && process.env.NODE_ENV === "production") {
-        // autoUpdater.checkForUpdatesAndNotify();
+        // TODO enable electron forge's auto-updater
+        // see https://www.electronforge.io/advanced/auto-update
     }
 
     // Define CSP for all webContents
