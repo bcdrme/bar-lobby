@@ -32,7 +32,7 @@
             <div class="flex-row gap-md">
                 <Select
                     :modelValue="battleStore.battleOptions.mapScriptName"
-                    :options="[]"
+                    :options="mapListOptions"
                     label="Map"
                     optionLabel="scriptName"
                     optionValue="scriptName"
@@ -62,9 +62,9 @@
             <div class="flex-row gap-md">
                 <Select
                     :modelValue="battleStore.battleOptions.gameVersion"
-                    :options="['byar:test']"
-                    optionLabel="id"
-                    optionValue="id"
+                    :options="gameListOptions"
+                    optionLabel="gameVersion"
+                    optionValue="gameVersion"
                     label="Game"
                     :filter="true"
                     :placeholder="battleStore.battleOptions.gameVersion"
@@ -86,7 +86,7 @@
             <div>
                 <Select
                     :modelValue="battleStore.battleOptions.engineVersion"
-                    :options="[DEFAULT_ENGINE_VERSION]"
+                    :options="engineListOptions"
                     optionLabel="id"
                     optionValue="id"
                     label="Engine"
@@ -224,6 +224,7 @@ import { db } from "@renderer/store/db";
 import MapOverviewCard from "@renderer/components/maps/MapOverviewCard.vue";
 import listIcon from "@iconify-icons/mdi/format-list-bulleted";
 import cogIcon from "@iconify-icons/mdi/cog";
+import { useDexieLiveQuery } from "@renderer/composables/useDexieLiveQuery";
 
 // const map = getMapByScriptName(battleStore.battleOptions.map);
 const map = ref<MapData>();
@@ -238,6 +239,10 @@ watch(
 const mapListOpen = ref(false);
 const mapOptionsOpen = ref(false);
 const gameOptionsOpen = ref(false);
+const mapListOptions = useDexieLiveQuery(() => db.maps.toArray());
+const gameListOptions = useDexieLiveQuery(() => db.gameVersions.toArray());
+const engineListOptions = useDexieLiveQuery(() => db.engineVersions.toArray());
+
 const gameOptions: Ref<LuaOptionSection[]> = ref([]);
 
 function openMapList() {

@@ -23,12 +23,7 @@ import { ref } from "vue";
 import Textbox from "@renderer/components/controls/Textbox.vue";
 import { battleStore } from "@renderer/store/battle.store";
 
-const props = defineProps<{
-    offline: boolean;
-}>();
-
 const titleLength = computed(() => battleStore.battleOptions.title.length);
-
 const editing = ref(false);
 
 function setEditing() {
