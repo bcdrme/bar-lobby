@@ -33,7 +33,6 @@ export function createWindow() {
 
     mainWindow.once("ready-to-show", () => {
         mainWindow.setMenuBarVisibility(false);
-        if (process.env.NODE_ENV === "development") mainWindow.webContents.openDevTools();
         mainWindow.show();
         mainWindow.focus();
     });
@@ -55,7 +54,10 @@ export function createWindow() {
     }
 
     // Open the DevTools.
-    mainWindow.webContents.openDevTools();
+    if (process.env.NODE_ENV === "development") {
+        log.debug(`NODE_ENV is development, opening dev tools`);
+        mainWindow.webContents.openDevTools();
+    }
 
     mainWindow.on("restore", () => mainWindow.flashFrame(false));
 
