@@ -3,7 +3,7 @@ import { User } from "@main/model/user";
 import { db } from "@renderer/store/db";
 import { defaultMapBoxes } from "@renderer/utils/start-boxes";
 import { _ } from "ajv";
-import { reactive, readonly, toRaw, watch } from "vue";
+import { reactive, readonly, watch } from "vue";
 
 export const battleStore = reactive({} as BattleState);
 

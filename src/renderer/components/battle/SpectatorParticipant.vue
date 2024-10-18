@@ -1,5 +1,5 @@
 <template>
-    <TeamParticipant :battle="battle" @contextmenu="onRightClick">
+    <TeamParticipant @contextmenu="onRightClick">
         <div>
             <Flag class="flag" :countryCode="player.countryCode" />
         </div>
@@ -23,7 +23,6 @@ import { Battle } from "@renderer/game/battle";
 const router = useRouter();
 
 const props = defineProps<{
-    battle: Battle;
     player: User;
 }>();
 

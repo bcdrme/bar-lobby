@@ -21,9 +21,9 @@
                 @dragstart="onDragStart($event, member)"
                 @dragend="onDragEnd()"
             >
-                <!-- <SpectatorParticipant v-if="isUser(member) && member.battleStatus.isSpectator" :battle="battle" :player="member" />
-                <PlayerParticipant v-else-if="isUser(member)" :battle="battle" :player="member" />
-                <BotParticipant v-else-if="isBot(member)" :battle="battle" :bot="member" /> -->
+                <SpectatorParticipant v-if="isUser(member) && member.battleStatus.teamId < 0" :player="member" />
+                <PlayerParticipant v-else-if="isUser(member)" :player="member" />
+                <BotParticipant v-else-if="isBot(member)" :bot="member" />
             </div>
         </div>
     </div>
@@ -36,8 +36,8 @@ import BotParticipant from "@renderer/components/battle/BotParticipant.vue";
 import PlayerParticipant from "@renderer/components/battle/PlayerParticipant.vue";
 import SpectatorParticipant from "@renderer/components/battle/SpectatorParticipant.vue";
 import Button from "@renderer/components/controls/Button.vue";
-import { CurrentUser, User } from "@main/model/user";
-import { Bot } from "@main/game/battle/battle-types";
+import { CurrentUser, isUser, User } from "@main/model/user";
+import { Bot, isBot } from "@main/game/battle/battle-types";
 import { battleMetadataStore, battleStore } from "@renderer/store/battle.store";
 import { me } from "@renderer/store/me.store";
 
@@ -55,7 +55,7 @@ const members = computed(() => {
 });
 const showJoin = computed(() => {
     const playerIsSpectator = battleStore.spectators.includes(me);
-    const playerTeam = playerIsSpectator ? -1 : me.teamId;
+    const playerTeam = playerIsSpectator ? -1 : me.battleStatus.teamId;
     const listTeam = props.teamId;
     const listIsSpectator = props.teamId < 0;
     return playerTeam !== listTeam || (listIsSpectator && !playerIsSpectator);

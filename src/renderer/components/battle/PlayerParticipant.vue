@@ -1,18 +1,18 @@
 <template>
-    <TeamParticipant :battle="battle" @contextmenu="onRightClick">
+    <TeamParticipant @contextmenu="onRightClick">
         <div>
             <Flag class="flag" :countryCode="player.countryCode" />
         </div>
         <div>{{ player.username }}</div>
         <div class="flex-row flex-right flex-center">
             <div class="flex-row flex-center gap-sm">
-                <div
-                    v-if="!player.battleStatus.isSpectator && isSpadsBattle(battle)"
+                <!-- <div
+                    v-if="player.battleStatus.teamId > 0 && isSpadsBattle(battle)"
                     class="ready"
                     :class="{ isReady: player.battleStatus.ready }"
                 >
                     ⬤
-                </div>
+                </div> -->
                 <Icon v-if="isSynced" :icon="checkBold" :height="16" color="#0f0" />
                 <Icon v-else :icon="cloudDownload" :height="16" color="#f00" />
             </div>
@@ -34,12 +34,10 @@ import ContextMenu from "@renderer/components/common/ContextMenu.vue";
 import Flag from "@renderer/components/misc/Flag.vue";
 import { User } from "@main/model/user";
 import { useRouter } from "vue-router";
-import { Battle } from "@renderer/game/battle";
 
 const router = useRouter();
 
 const props = defineProps<{
-    battle: Battle;
     player: User;
 }>();
 

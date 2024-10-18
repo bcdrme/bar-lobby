@@ -85,5 +85,5 @@ export type Bot = {
 };
 
 export function isBot(bot: any): bot is Bot {
-    return "ownerUserId" in bot;
+    return "aiShortName" in bot;
 }
