@@ -58,6 +58,7 @@ export async function defaultBattle(mapScriptName?: string) {
     const barbAi = engine.ais.find((ai) => ai.shortName === "BARb");
 
     return {
+        isOnline: false,
         battleOptions: {
             title: "Offline Custom Battle",
             engineVersion: engine.id,
@@ -78,6 +79,7 @@ export async function defaultBattle(mapScriptName?: string) {
 }
 
 export interface BattleState {
+    isOnline: boolean;
     battleOptions: BattleOptions;
     users: User[];
     bots: Bot[];

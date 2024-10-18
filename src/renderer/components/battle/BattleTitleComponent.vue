@@ -4,11 +4,11 @@
             class="title-textbox"
             :class="{ 'control-not-editable': !editing }"
             :value="battleStore.battleOptions.title"
-            :readonly="!editing"
+            :readonly="!editing || !battleStore.isOnline"
             :style="{ width: titleLength + 'ch' }"
             @keyup.enter="handleEnter"
         />
-        <div v-if="!editing" class="flex-col flex-center edit-title" @click="setEditing">
+        <div v-if="!editing && battleStore.isOnline" class="flex-col flex-center edit-title" @click="setEditing">
             <Icon :icon="squareEditOutline" height="23" />
         </div>
     </div>
@@ -22,6 +22,10 @@ import { ref } from "vue";
 
 import Textbox from "@renderer/components/controls/Textbox.vue";
 import { battleStore } from "@renderer/store/battle.store";
+
+const props = defineProps<{
+    offline: boolean;
+}>();
 
 const titleLength = computed(() => battleStore.battleOptions.title.length);
 
