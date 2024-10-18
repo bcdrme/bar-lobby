@@ -20,12 +20,14 @@
             <BattleChat />
         </div> -->
         <div class="settings flex-col gap-md">
-            <MapPreview
+            <!-- <MapPreview
                 v-if="map"
                 :map="map"
                 :startPosType="battleStore.battleOptions.startPosType"
                 :startBoxes="battleStore.battleOptions.startBoxes"
-            />
+            /> -->
+
+            <MapOverviewCard :map="map" friendly-name="" />
 
             <div class="flex-row gap-md">
                 <Select
@@ -40,10 +42,10 @@
                     @update:model-value="onMapSelected"
                 />
                 <Button v-tooltip.left="'Open map selector'" @click="openMapList">
-                    <Icon :icon="'listIcon'" height="23" />
+                    <Icon :icon="listIcon" height="23" />
                 </Button>
                 <Button v-tooltip.left="'Configure map options'" @click="openMapOptions">
-                    <Icon :icon="'cogIcon'" height="23" />
+                    <Icon :icon="cogIcon" height="23" />
                 </Button>
                 <MapListModal v-model="mapListOpen" title="Maps" @map-selected="onMapSelected" />
                 <MapOptionsModal
@@ -69,7 +71,7 @@
                     @update:model-value="onGameSelected"
                 />
                 <Button v-tooltip.left="'Configure game options'" @click="openGameOptions">
-                    <Icon :icon="'cogIcon'" height="23" />
+                    <Icon :icon="cogIcon" height="23" />
                 </Button>
                 <LuaOptionsModal
                     id="game-options"
@@ -81,17 +83,19 @@
                 />
             </div>
 
-            <Select
-                :modelValue="battleStore.battleOptions.engineVersion"
-                :options="[DEFAULT_ENGINE_VERSION]"
-                optionLabel="id"
-                optionValue="id"
-                label="Engine"
-                :filter="true"
-                :placeholder="battleStore.battleOptions.engineVersion"
-                class="fullwidth"
-                @update:model-value="onEngineSelected"
-            />
+            <div>
+                <Select
+                    :modelValue="battleStore.battleOptions.engineVersion"
+                    :options="[DEFAULT_ENGINE_VERSION]"
+                    optionLabel="id"
+                    optionValue="id"
+                    label="Engine"
+                    :filter="true"
+                    :placeholder="battleStore.battleOptions.engineVersion"
+                    class="fullwidth"
+                    @update:model-value="onEngineSelected"
+                />
+            </div>
 
             <!-- <template v-if="isSpadsBattle(battle)">
                 <div class="flex-row gap-md">
@@ -199,7 +203,6 @@
 // TODO: boss, ring, forcespec, kick, ban, preset, votes, rename battle, custom boxes,
 // show non-default mod/map options, tweakunits, stop, rejoin, balance mode
 import { Ref, ref, watch } from "vue";
-import { CurrentUser } from "@main/model/user";
 import { getBoxes, StartBoxOrientation } from "@renderer/utils/start-boxes";
 import { LuaOptionSection } from "@main/content/game/lua-options";
 import { StartPosType } from "@main/game/battle/battle-types";
@@ -218,6 +221,9 @@ import { battleStore, resetToDefaultBattle } from "@renderer/store/battle.store"
 import Button from "@renderer/components/controls/Button.vue";
 import { MapData } from "@main/content/maps/map-data";
 import { db } from "@renderer/store/db";
+import MapOverviewCard from "@renderer/components/maps/MapOverviewCard.vue";
+import listIcon from "@iconify-icons/mdi/format-list-bulleted";
+import cogIcon from "@iconify-icons/mdi/cog";
 
 // const map = getMapByScriptName(battleStore.battleOptions.map);
 const map = ref<MapData>();
