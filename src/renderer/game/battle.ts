@@ -29,7 +29,7 @@ export class Battle {
     public readonly spectators: UserContender[] = [];
 
     constructor() {
-        this.battleOptions = defaultBattle("Aurelia v4.1").battleOptions;
+        // this.battleOptions = await defaultBattle().battleOptions;
     }
 
     public getContenders(): Array<Contender> {

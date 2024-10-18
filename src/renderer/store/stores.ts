@@ -8,5 +8,5 @@ import { initReplaysStore } from "@renderer/store/replays.store";
 import { initSettingsStore } from "@renderer/store/settings.store";
 
 export async function initStores() {
-    await Promise.all([initMapsStore(), initReplaysStore(), initSettingsStore(), initInfosStore(), initGameStore(), initDownloadsStore(), initBattleStore(), initEnginesStore()]);
+    await Promise.all([initMapsStore(), initReplaysStore(), initSettingsStore(), initInfosStore(), initGameStore(), initDownloadsStore(), initBattleStore(), initEnginesStore(), initBattleStore()]);
 }

@@ -1,7 +1,7 @@
 <template>
     <Modal ref="modal" :title="title" class="map-list-modal">
         <div class="container">
-            <!-- <MapPreview :map="map" :currentUser="me" :startPosType="startPosType" :startBoxes="startBoxes" /> -->
+            <MapPreview :map="map" :startPosType="startPosType" :startBoxes="startBoxes" />
 
             <div class="options flex-col gap-md">
                 <Options
@@ -47,11 +47,10 @@ import Modal from "@renderer/components/common/Modal.vue";
 import Button from "@renderer/components/controls/Button.vue";
 import Options from "@renderer/components/controls/Options.vue";
 import Range from "@renderer/components/controls/Range.vue";
-import MapPreview from "@renderer/components/maps/MapPreview.vue";
-import { CurrentUser } from "@main/model/user";
 import { getBoxes, StartBoxOrientation } from "@renderer/utils/start-boxes";
 import { StartBox, StartPosType } from "@main/game/battle/battle-types";
 import { MapData } from "@main/content/maps/map-data";
+import MapPreview from "@renderer/components/maps/MapPreview.vue";
 
 const modal: Ref<null | InstanceType<typeof Modal>> = ref(null);
 
@@ -60,7 +59,6 @@ const props = defineProps<{
     map: MapData;
     startBoxes: Record<number, StartBox>;
     startPosType: StartPosType;
-    me: CurrentUser;
 }>();
 
 const boxRange = ref(25);

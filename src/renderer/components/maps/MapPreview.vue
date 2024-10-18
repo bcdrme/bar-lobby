@@ -6,15 +6,14 @@
 import { useElementSize } from "@vueuse/core";
 import { Application, Assets, Graphics, Sprite, Texture, Color } from "pixi.js";
 import { onMounted, onUnmounted, ref, toRaw, useTemplateRef, watch } from "vue";
-import { CurrentUser } from "@main/model/user";
 import { MapData } from "@main/content/maps/map-data";
 import { StartBox, StartPosType } from "@main/game/battle/battle-types";
 import { MIPMAP_SIZE } from "@main/config/map-parsing";
 import { useImageBlobUrlCache } from "@renderer/composables/useImageBlobUrlCache";
+import { me } from "@renderer/store/me.store";
 
 const props = defineProps<{
     map?: MapData;
-    currentUser?: CurrentUser;
     startPosType?: StartPosType;
     startBoxes?: Record<number, StartBox | undefined>;
     startPositions?: Array<
@@ -66,13 +65,12 @@ watch(() => props.map, setMapImage, { deep: true });
 watch(() => props.startBoxes, drawBoxes, { deep: true });
 watch(() => props.startPositions, drawStartPositions);
 watch(
-    () => props.currentUser?.battleStatus.teamId,
+    () => me.battleStatus.teamId,
     () => {
         drawBoxes();
         drawStartPositions();
     }
 );
-watch(() => props.currentUser?.battleStatus.isSpectator, drawBoxes);
 watch(
     () => props.startPosType,
     () => {
@@ -134,8 +132,8 @@ function drawBoxes() {
         boxesGfx.alpha = 0.2;
         boxesGfx.clear();
     }
-    const isSpectator = props.currentUser?.battleStatus.isSpectator;
-    const myTeamId = props.currentUser?.battleStatus.teamId;
+    const isSpectator = me.battleStatus.teamId === -1;
+    const myTeamId = me.battleStatus.teamId;
     for (const teamIdStr in props.startBoxes) {
         const box = props.startBoxes[teamIdStr];
         if (!box) {

@@ -6,8 +6,7 @@
     <div class="view">
         <Panel class="flex-grow">
             <div class="flex-col flex-grow">
-                <BattleComponent v-if="battle" :battle="battle" :me="me" />
-                <div v-else>Error: no offline battle set</div>
+                <BattleComponent />
             </div>
         </Panel>
     </div>
@@ -17,15 +16,12 @@
 import { onUnmounted } from "vue";
 
 import BattleComponent from "@renderer/components/battle/BattleComponent.vue";
-import { Battle } from "@renderer/game/battle";
 import Panel from "@renderer/components/common/Panel.vue";
+import { resetToDefaultBattle } from "@renderer/store/battle.store";
 
-const battle = new Battle();
-const me = api.session.offlineUser;
-
+// do we really do this?
 onUnmounted(() => {
-    //TODO
-    // battle store reset
+    resetToDefaultBattle();
 });
 </script>
 

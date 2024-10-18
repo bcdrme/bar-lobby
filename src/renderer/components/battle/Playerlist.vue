@@ -1,8 +1,8 @@
 <template>
     <AddBotModal
         v-model="botListOpen"
-        :engineVersion="battle.battleOptions.engineVersion"
-        :gameVersion="battle.battleOptions.gameVersion"
+        :engineVersion="battleStore.battleOptions.engineVersion"
+        :gameVersion="battleStore.battleOptions.gameVersion"
         :teamId="botModalTeamId"
         title="Add Bot"
         @bot-selected="onBotSelected"
@@ -13,7 +13,6 @@
                 v-for="[teamId] in sortedTeams"
                 :key="teamId"
                 :teamId="teamId"
-                :battle="battle"
                 :me="me"
                 @add-bot-clicked="openBotList"
                 @on-join-clicked="joinTeam"
@@ -28,7 +27,6 @@
             :key="-1"
             class="spectators"
             :teamId="-1"
-            :battle="battle"
             :me="me"
             @add-bot-clicked="openBotList"
             @on-join-clicked="joinTeam"
@@ -41,32 +39,22 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, Ref, ref } from "vue";
+import { Ref, ref } from "vue";
 
 import AddBotModal from "@renderer/components/battle/AddBotModal.vue";
 import TeamComponent from "@renderer/components/battle/TeamComponent.vue";
-import { CurrentUser, User } from "@main/model/user";
+import { User } from "@main/model/user";
 import { EngineAI } from "@main/content/engine/engine-version";
 import { GameAI } from "@main/content/game/game-version";
 import { Bot, Faction } from "@main/game/battle/battle-types";
-import { Battle } from "@renderer/game/battle";
+import { battleMetadataStore, battleStore } from "@renderer/store/battle.store";
+import { me } from "@renderer/store/me.store";
 
-const props = defineProps<{
-    battle: Battle;
-    me: CurrentUser;
-}>();
 const botListOpen = ref(false);
 const botModalTeamId = ref(0);
 
-const sortedTeams = props.battle.getTeams();
-
-// computed(() => {
-//     const teams = new Map(props.battle.getTeams());
-//     teams.set(teams.size, []); // Empty team
-//     return teams;
-// });
-
-//const spectators = props.battle.spectators.value;
+const sortedTeams = battleMetadataStore.teams;
+const spectators = battleStore.spectators;
 
 function openBotList(teamId: number) {
     botModalTeamId.value = teamId;
@@ -79,25 +67,31 @@ function onBotSelected(bot: EngineAI | GameAI, teamId: number) {
 }
 
 function addBot(ai: EngineAI | GameAI, teamId: number) {
-    props.battle.addBot({
-        playerId: props.battle.contenders.value.length,
-        teamId,
+    battleStore.bots.push({
+        playerId: battleMetadataStore.participants.length + 1,
         name: ai.name,
         aiShortName: "shortName" in ai ? ai.shortName : ai.name,
-        faction: Faction.Armada,
-        ownerUserId: props.me.userId,
+        ownerUserId: me.userId,
         aiOptions: {},
+        battleStatus: {
+            faction: Faction.Armada,
+            teamId,
+        },
     });
 }
 
 function joinTeam(teamId: number) {
-    const playerIsSpectator = props.me.battleStatus.isSpectator;
+    const playerIsSpectator = battleStore.spectators.includes(me);
     if (playerIsSpectator && teamId >= 0) {
-        props.battle.spectatorToPlayer(props.me, teamId);
+        me.battleStatus.teamId = teamId;
+        battleStore.spectators.splice(battleStore.spectators.indexOf(me), 1);
+        battleStore.users.push(me);
     } else if (!playerIsSpectator && teamId < 0) {
-        props.battle.playerToSpectator(props.me);
+        me.battleStatus.teamId = -1;
+        battleStore.spectators.push(me);
+        battleStore.users.splice(battleStore.users.indexOf(me), 1);
     } else if (!playerIsSpectator && teamId >= 0) {
-        props.battle.setContenderTeam(props.me, teamId);
+        me.battleStatus.teamId = teamId;
     }
 }
 
@@ -117,13 +111,10 @@ function dragEnter(event: DragEvent, teamId: number) {
             el.classList.remove("highlight-error");
         });
     }
-    // this is a little verbose, but previous syntax was very hard to read
-    const playerMember = draggedParticipant.value as User;
-    const botMember = draggedParticipant.value as Bot;
-    const isPlayer = "battleStatus" in playerMember;
-    const isBot = "teamId" in botMember;
-    const isSpectator = isPlayer && playerMember.battleStatus.isSpectator;
-    const memberTeamId = playerMember?.battleStatus?.teamId ?? botMember.teamId;
+
+    const isBot = "aiShortName" in draggedParticipant.value;
+    const isSpectator = draggedParticipant.value.battleStatus.teamId < 0;
+    const memberTeamId = draggedParticipant.value.battleStatus?.teamId;
 
     const invalidMove = (isBot && teamId < 0) || (isSpectator && teamId < 0) || (memberTeamId === teamId && !isSpectator);
 
@@ -160,23 +151,7 @@ function onDrop(event: DragEvent, teamId: number) {
     if (!draggedParticipant.value || target.getAttribute("data-type") !== "group") {
         return;
     }
-    const playerMember = draggedParticipant.value as User;
-    const isPlayer = "battleStatus" in playerMember;
-    const isSpectator = isPlayer && playerMember.battleStatus.isSpectator;
-
-    if (teamId >= 0) {
-        // move to team
-        if ((isPlayer && !isSpectator) || !isPlayer) {
-            props.battle.setContenderTeam(draggedParticipant.value, teamId);
-        } else if (isPlayer && isSpectator) {
-            props.battle.spectatorToPlayer(playerMember, teamId);
-        }
-    } else {
-        // move to spectate
-        if (isPlayer && !isSpectator) {
-            props.battle.playerToSpectator(playerMember);
-        }
-    }
+    draggedParticipant.value.battleStatus.teamId = teamId;
 }
 </script>
 

@@ -73,12 +73,15 @@ export type BattleContenderConfig = {
 };
 
 export type Bot = {
+    playerId: number;
     ownerUserId: number;
     aiShortName: string; // TODO: point directly to AI obj and object.freeze it?
     name: string;
     aiOptions: Record<string, unknown>;
-    faction?: Faction;
-    teamId?: number;
+    battleStatus: {
+        faction?: Faction;
+        teamId: number;
+    };
 };
 
 export function isBot(bot: any): bot is Bot {

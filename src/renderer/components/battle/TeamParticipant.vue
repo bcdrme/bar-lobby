@@ -6,11 +6,6 @@
 
 <script lang="ts" setup>
 import { audioApi } from "@renderer/audio/audio";
-import { Battle } from "@renderer/game/battle";
-
-const props = defineProps<{
-    battle: Battle;
-}>();
 
 function onMouseEnter() {
     audioApi.play("button-hover");

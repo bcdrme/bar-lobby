@@ -22,22 +22,17 @@ const props = defineProps<{
     teamId: number;
 }>();
 
-const engineVersion = computed(() => {
-    return api.content.engine.installedVersions.find((version) => version.id === props.engineVersion);
-});
-
-const gameVersion = computed(() => {
-    return api.content.game.installedVersions.find((version) => version.gameVersion === props.gameVersion);
-});
-
 const ais = computed(() => {
     const ais: Array<EngineAI | GameAI> = [];
-    if (engineVersion.value) {
-        ais.push(...engineVersion.value.ais);
-    }
-    if (gameVersion.value) {
-        ais.push(...gameVersion.value.ais);
-    }
+
+    // TODO probably need a selected engine/game version store or something similar
+
+    // if (engineVersion.value) {
+    //     ais.push(...engineVersion.value.ais);
+    // }
+    // if (gameVersion.value) {
+    //     ais.push(...gameVersion.value.ais);
+    // }
     return ais;
 });
 

@@ -3,7 +3,7 @@
         <Textbox
             class="title-textbox"
             :class="{ 'control-not-editable': !editing }"
-            :value="battle.battleOptions.title"
+            :value="battleStore.battleOptions.title"
             :readonly="!editing"
             :style="{ width: titleLength + 'ch' }"
             @keyup.enter="handleEnter"
@@ -21,14 +21,9 @@ import { computed } from "@vue/reactivity";
 import { ref } from "vue";
 
 import Textbox from "@renderer/components/controls/Textbox.vue";
-import { CurrentUser } from "@main/model/user";
-import { Battle } from "@renderer/game/battle";
+import { battleStore } from "@renderer/store/battle.store";
 
-const props = defineProps<{
-    battle: Battle;
-    me: CurrentUser;
-}>();
-const titleLength = computed(() => props.battle.battleOptions.title.length);
+const titleLength = computed(() => battleStore.battleOptions.title.length);
 
 const editing = ref(false);
 

@@ -1,13 +1,13 @@
+import { Faction } from "@main/game/battle/battle-types";
+
 export type User = {
     userId: number;
     username: string;
     icons: Record<string, string>;
-    isBot: boolean;
     clanId: number | null;
     countryCode: string;
     isOnline: boolean;
     battleStatus: BattleStatus;
-    teamId?: number;
 };
 
 export function isUser(user: any): user is User {
@@ -26,7 +26,6 @@ export type BattleStatus = {
     away: boolean;
     inBattle: boolean;
     battleId: number | null;
-    isSpectator: boolean;
     ready: boolean;
     /* each sync property denotes the downloaded percentage of the map */
     sync: {
@@ -34,4 +33,6 @@ export type BattleStatus = {
         game: number;
         map: number;
     };
+    teamId?: number;
+    faction?: Faction;
 };
