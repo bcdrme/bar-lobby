@@ -12,9 +12,9 @@ export const gameStore = reactive({
 });
 
 async function refreshStore() {
-    db.gameVersions.clear();
+    await db.gameVersions.clear();
     const installedVersions = await window.game.getInstalledVersions();
-    db.gameVersions.bulkAdd(installedVersions);
+    await db.gameVersions.bulkAdd(installedVersions);
     const latestGameVersion = await db.gameVersions.orderBy("gameVersion").last();
     gameStore.latestGameVersion = latestGameVersion;
 }

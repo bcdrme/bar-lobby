@@ -9,13 +9,7 @@
             <div class="scroll-container" style="overflow-y: scroll">
                 <div class="maps">
                     <TransitionGroup name="maps-list">
-                        <MapOverviewCard
-                            v-for="map in maps"
-                            :key="map.scriptName"
-                            :map="map"
-                            :friendlyName="map.friendlyName"
-                            @click="mapSelected(map)"
-                        />
+                        <MapOverviewCard v-for="map in maps" :key="map.scriptName" :scriptName="map.scriptName" @click="mapSelected(map)" />
                     </TransitionGroup>
                 </div>
             </div>
@@ -55,7 +49,10 @@ const emit = defineEmits<{
 
 const maps = useDexieLiveQueryWithDeps([searchVal, sortMethod], () =>
     db.maps
+        // .where("friendlyName")
+        // .startsWithIgnoreCase(searchVal.value)
         .filter((map) => map.friendlyName.toLocaleLowerCase().includes(searchVal.value.toLocaleLowerCase()))
+        .limit(30)
         .sortBy(sortMethod.value.dbKey)
 );
 

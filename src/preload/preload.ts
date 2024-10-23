@@ -101,16 +101,18 @@ export type GameApi = typeof gameApi;
 contextBridge.exposeInMainWorld("game", gameApi);
 
 const mapsApi = {
-    sync: (maps: { scriptName: string; fileName: string }[]): Promise<void> => ipcRenderer.invoke("maps:sync", maps),
-    downloadMap: (version: string): Promise<void> => ipcRenderer.invoke("maps:downloadMap", version),
+    // Content
+    downloadMap: (scriptName: string): Promise<void> => ipcRenderer.invoke("maps:downloadMap", scriptName),
     downloadMaps: (scriptNames: string[]): Promise<void> => ipcRenderer.invoke("maps:downloadMaps", scriptNames),
     getInstalledVersions: (): Promise<MapData[]> => ipcRenderer.invoke("maps:getInstalledVersions"),
-    isVersionInstalled: (id: string): Promise<boolean> => ipcRenderer.invoke("maps:isVersionInstalled", id),
-    attemptCacheErrorMaps: (): Promise<void> => ipcRenderer.invoke("maps:attemptCacheErrorMaps"),
+    isVersionInstalled: (scriptName: string): Promise<boolean> => ipcRenderer.invoke("maps:isVersionInstalled", scriptName),
+
+    // Online features
+    fetchAllMaps: (): Promise<MapData[]> => ipcRenderer.invoke("maps:online:fetchAllMaps"),
+    fetchMapImages: (imageSource: string): Promise<ArrayBuffer> => ipcRenderer.invoke("maps:online:fetchMapImages", imageSource),
 
     // Events
-    onMapCachingStarted: (callback: (filename: string) => void) => ipcRenderer.on("maps:mapCachingStarted", (_event, filename) => callback(filename as string)),
-    onMapCached: (callback: (mapData: MapData) => void) => ipcRenderer.on("maps:mapCached", (_event, mapData) => callback(mapData as MapData)),
+    onMapAdded: (callback: (filename: string) => void) => ipcRenderer.on("maps:mapAdded", (_event, filename) => callback(filename as string)),
     onMapDeleted: (callback: (filename: string) => void) => ipcRenderer.on("maps:mapDeleted", (_event, filename) => callback(filename as string)),
 };
 export type MapsApi = typeof mapsApi;

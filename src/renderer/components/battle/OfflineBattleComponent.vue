@@ -13,7 +13,7 @@
                 :startPosType="battleStore.battleOptions.startPosType"
                 :startBoxes="battleStore.battleOptions.startBoxes"
             /> -->
-            <MapOverviewCard :map="map" friendly-name="" />
+            <MapOverviewCard :scriptName="map?.scriptName" />
             <div class="flex-row gap-md">
                 <Select
                     :modelValue="battleStore.battleOptions.mapScriptName"
@@ -80,7 +80,13 @@
                 />
             </div>
             <div class="flex-row flex-bottom gap-md">
-                <Button class="fullwidth green" :disabled="gameStore.isGameRunning" @click="battleActions.startBattle">Start</Button>
+                <DownloadContentButton
+                    :script-name="map?.scriptName"
+                    class="fullwidth green"
+                    :disabled="gameStore.isGameRunning"
+                    @click="battleActions.startBattle"
+                    >Start</DownloadContentButton
+                >
             </div>
         </div>
     </div>
@@ -107,6 +113,7 @@ import MapOverviewCard from "@renderer/components/maps/MapOverviewCard.vue";
 import listIcon from "@iconify-icons/mdi/format-list-bulleted";
 import cogIcon from "@iconify-icons/mdi/cog";
 import { useDexieLiveQuery } from "@renderer/composables/useDexieLiveQuery";
+import DownloadContentButton from "@renderer/components/controls/DownloadContentButton.vue";
 
 const map = ref<MapData>();
 watch(
