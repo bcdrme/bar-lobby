@@ -22,7 +22,7 @@ async function fetchAllMaps() {
             width: 0,
             height: 0,
             onlineImages: {
-                textureURL: map.backgroundImage?.at(0)?.downloadURL,
+                textureURL: map.photo?.at(0)?.downloadURL,
             },
             isInstalled: mapContentAPI.isVersionInstalled(map.springName),
         } as MapData;

@@ -62,8 +62,6 @@ const props = defineProps<{
     showSpoilers?: boolean;
 }>();
 
-const replay = computed(() => props.replay);
-
 const isFFA = computed(() => {
     return props.replay.preset === "ffa";
 });

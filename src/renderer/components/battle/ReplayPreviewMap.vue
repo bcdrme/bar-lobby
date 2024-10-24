@@ -1,8 +1,8 @@
 <template>
     <div v-if="map" class="map">
         <img :src="mapTextureUrl" />
-        <div v-if="replay.hostSettings.startpostype === '2'" class="boxes">
-            <div v-for="(team, index) in replay.teams" :key="index" v-startBox="team.startBox" class="box" />
+        <div class="boxes">
+            <div v-for="team in teams" :key="team.allyTeamId" v-startBox="team.startBox" class="box" />
         </div>
         <div class="start-positions">
             <div
@@ -29,48 +29,23 @@ import defaultMiniMap from "/src/renderer/assets/images/default-minimap.png?url"
 import { useDexieLiveQueryWithDeps } from "@renderer/composables/useDexieLiveQuery";
 import { useImageBlobUrlCache } from "@renderer/composables/useImageBlobUrlCache";
 import { db } from "@renderer/store/db";
-import { computed, defineComponent } from "vue";
+import { computed, defineComponent, ref, watch, watchEffect } from "vue";
 import vStartBox from "@renderer/directives/vStartBox";
 import vStartPos from "@renderer/directives/vStartPos";
 import vSetPlayerColor from "@renderer/directives/vSetPlayerColor";
 
-// const { replay } = defineProps<{
-//     replay: {
-//         hostSettings: {
-//             startpostype: string;
-//         };
-//         map: {
-//             width: number;
-//             height: number;
-//             fileName: string;
-//             mapScriptName: string;
-//         };
-//         allyTeams: {
-//             startBox: {
-//                 left: number;
-//                 top: number;
-//                 right: number;
-//                 bottom: number;
-//             };
-//             ais: {
-//                 startPos: number;
-//                 rgbColor: string;
-//                 faction: string;
-//                 name: string;
-//             }[];
-//             players: {
-//                 startPos: number;
-//                 rgbColor: string;
-//                 faction: string;
-//                 name: string;
-//             }[];
-//         }[];
-//     };
-// }>();
-
-const { replay } = defineProps<{
+const props = defineProps<{
     replay: Replay;
 }>();
+
+const teams = ref(props.replay.teams);
+
+watch(
+    () => props.replay,
+    () => {
+        teams.value = props.replay.teams;
+    }
+);
 
 defineComponent({
     directives: {
@@ -80,17 +55,28 @@ defineComponent({
     },
 });
 
-const map = useDexieLiveQueryWithDeps([() => replay.mapScriptName], () => db.maps.get(replay.mapScriptName));
+const map = useDexieLiveQueryWithDeps([() => props.replay.mapScriptName], () => db.maps.get(props.replay.mapScriptName));
 // const mapWidthElmos = computed(() => (map.value.width ? map.value.width * 512 : null));
 // const mapHeightElmos = computed(() => (map.value.height ? map.value.height * 512 : null));
 
-const mapWidthElmos = computed(() => 14 * 512);
-const mapHeightElmos = computed(() => 14 * 512);
+const mapWidthElmos = ref<number>();
+const mapHeightElmos = ref<number>();
 
 const cache = useImageBlobUrlCache();
 const mapTextureUrl = computed(() =>
     map.value?.images?.texture ? cache.get(map.value.fileName, map.value.images.texture) : defaultMiniMap
 );
+
+watchEffect(() => {
+    if (!map.value?.images?.texture) return;
+    createImageBitmap(map.value?.images?.texture)
+        .then((imgBitmap) => {
+            mapWidthElmos.value = imgBitmap.width;
+            mapHeightElmos.value = imgBitmap.height;
+            imgBitmap.close();
+        })
+        .catch();
+});
 </script>
 
 <style lang="scss" scoped>
@@ -104,7 +90,7 @@ const mapTextureUrl = computed(() =>
     img {
         max-height: 100%;
         width: 100%;
-        image-rendering: pixelated;
+        // image-rendering: pixelated;
     }
 }
 .boxes {
@@ -143,6 +129,7 @@ const mapTextureUrl = computed(() =>
         left: 6px;
         bottom: 13px;
         font-size: 12px;
+        width: max-content;
         .left &,
         .right & {
             bottom: -2px;

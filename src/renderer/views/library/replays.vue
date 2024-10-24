@@ -67,7 +67,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="right">
+                <div class="right-section">
                     <ReplayPreview v-if="selectedReplay" :replay="selectedReplay" :showSpoilers="showSpoilers">
                         <template #actions="{ replay }">
                             <DownloadContentButton :scriptName="replay.mapScriptName" @click="watchReplay(replay)"
@@ -171,7 +171,7 @@ function showReplayFile(replay: Replay) {
 </script>
 
 <style lang="scss" scoped>
-.right {
+.right-section {
     position: relative;
     width: 400px;
 }
