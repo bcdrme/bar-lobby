@@ -10,9 +10,11 @@ const jobs = new Map<
         reject: (reason?: string) => void;
     }
 >();
+
 worker.on("message", ({ imageSource, arrayBuffer }) => {
     const promiseHandles = jobs.get(imageSource);
     promiseHandles.resolve(arrayBuffer);
+    jobs.delete(imageSource);
 });
 // worker.on("error", reject);
 // worker.on("exit", (code) => {

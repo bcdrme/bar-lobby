@@ -1,11 +1,9 @@
-import { delay } from "$/jaz-ts-utils/delay";
 import { Signal } from "$/jaz-ts-utils/signal";
 import { REPLAYS_PATH } from "@main/config/app";
 import { mapContentAPI } from "@main/content/maps/map-content";
 import { asyncParseReplay } from "@main/content/replays/parse-replay";
 import { Replay } from "@main/content/replays/replay";
 import { gameAPI } from "@main/game/game";
-import { isFileInUse } from "@main/utils/file";
 import { logger } from "@main/utils/logger";
 import chokidar from "chokidar";
 import fs from "fs";
@@ -24,7 +22,6 @@ export class ReplayContentAPI {
 
     public async init() {
         await fs.promises.mkdir(REPLAYS_PATH, { recursive: true });
-        this.startCacheReplayConsumer();
         this.startWatchingReplayFolder();
         return this;
     }
@@ -41,8 +38,7 @@ export class ReplayContentAPI {
                     return;
                 }
                 log.debug(`Chokidar -=- Replay added: ${filepath}`);
-                const filename = path.basename(filepath);
-                this.queueReplaysToCache([filename]);
+                this.cacheReplay(filepath);
             })
             .on("unlink", (filepath) => {
                 if (!filepath.endsWith("sdfz")) {
@@ -68,25 +64,16 @@ export class ReplayContentAPI {
         const existingFiles = await this.scanFolderForReplays();
         const replaysToDelete = replayFileNames.filter((fileName) => !existingFiles.includes(fileName));
         replaysToDelete.forEach((fileName) => this.onReplayDeleted.dispatch(fileName));
-        const replaysToCache = existingFiles.filter((fileName) => !replayFileNames.includes(fileName));
-        this.queueReplaysToCache(replaysToCache);
+        existingFiles
+            .filter((fileName) => !replayFileNames.includes(fileName))
+            .map((fileName) => path.join(REPLAYS_PATH, fileName))
+            .forEach(this.cacheReplay);
     }
 
     protected async scanFolderForReplays() {
         let replayFiles = await fs.promises.readdir(REPLAYS_PATH);
         replayFiles = replayFiles.filter((replayFile) => replayFile.endsWith("sdfz"));
         return replayFiles;
-    }
-
-    protected async queueReplaysToCache(filenames?: string[]) {
-        let replayFiles = filenames;
-        if (!filenames) {
-            replayFiles = await this.scanFolderForReplays();
-        }
-        for (const mapFileToCache of replayFiles) {
-            this.replayCacheQueue.add(mapFileToCache);
-            this.onReplayCachingStarted.dispatch(mapFileToCache);
-        }
     }
 
     public async deleteReplay(fileName: string) {
@@ -97,36 +84,12 @@ export class ReplayContentAPI {
         }
     }
 
-    protected async startCacheReplayConsumer() {
-        if (this.cachingReplays) {
-            log.warn("Don't call cacheReplays more than once");
-            return;
-        }
-        this.cachingReplays = true;
-        while (true) {
-            const [replayToCache] = this.replayCacheQueue;
-            if (replayToCache) {
-                const replayFilePath = path.join(REPLAYS_PATH, replayToCache);
-                const fileInUse = await isFileInUse(replayFilePath);
-                if (fileInUse) {
-                    log.debug(`Cannot parse replay yet because it is still being written: ${replayToCache}`);
-                    this.replayCacheQueue.delete(replayToCache);
-                } else {
-                    await this.cacheReplay(replayFilePath);
-                }
-            } else {
-                await delay(500);
-            }
-        }
-    }
-
     protected async cacheReplay(replayFilePath: string) {
-        const replayFileName = path.parse(replayFilePath).base;
-        log.debug(`Caching: ${replayFileName}`);
+        log.debug(`Caching: ${replayFilePath}`);
         try {
             const replayData = await asyncParseReplay(replayFilePath);
             if (replayData.gameId === "00000000000000000000000000000000") {
-                throw new Error(`invalid gameId for replay: ${replayFileName}`);
+                throw new Error(`invalid gameId for replay: ${replayFilePath}`);
             }
             // TODO handle this use case
             // const conflictingReplay = await this.getReplayByGameId(replayData.gameId);
@@ -139,15 +102,14 @@ export class ReplayContentAPI {
             //         await fs.promises.rm(filePath);
             //     }
             // }
-            log.debug(`Cached replay: ${replayFileName}`);
+            log.debug(`Cached replay: ${replayFilePath}`);
             this.onReplayCached.dispatch(replayData);
         } catch (err) {
-            log.error(`Error caching replay: ${replayFileName}`, err);
+            log.error(`Error caching replay: ${replayFilePath}`, err);
             log.error(err);
             fs.promises.rename(replayFilePath, replayFilePath + ".error");
             //TODO emit error signal
         }
-        this.replayCacheQueue.delete(replayFileName);
     }
 }
 
