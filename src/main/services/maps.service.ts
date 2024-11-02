@@ -2,9 +2,7 @@ import { MapData } from "@main/content/maps/map-data";
 import { mapContentAPI } from "@main/content/maps/map-content";
 import { ipcMain } from "electron";
 import { OnlineMap } from "@main/content/maps/online-map";
-import { logger } from "@main/utils/logger";
-
-const log = logger("maps-service");
+import { fetchMapImages } from "@main/content/maps/map-image";
 
 function init() {
     mapContentAPI.init();
@@ -32,34 +30,6 @@ async function fetchAllMaps() {
             isInstalled: mapContentAPI.isVersionInstalled(map.springName),
         } as MapData;
     });
-}
-
-const jobs = new Map<string, Promise<ArrayBuffer>>();
-async function fetchMapImages(imageSource: string) {
-    if (jobs.has(imageSource)) {
-        return jobs.get(imageSource);
-    }
-    const job = new Promise<ArrayBuffer>((resolve, reject) => {
-        (async () => {
-            try {
-                const response = await fetch(imageSource);
-                const arrayBuffer = await response.arrayBuffer();
-                resolve(arrayBuffer);
-            } catch (error) {
-                log.error("Failed to fetch map images", error);
-                reject();
-            } finally {
-                if (jobs.delete(imageSource)) {
-                    log.debug(`Jobs size: ${jobs.size}`);
-                } else {
-                    log.error(`Failed to delete job for ${imageSource}`);
-                }
-            }
-        })();
-    });
-    jobs.set(imageSource, job);
-    log.debug(`Jobs size: ${jobs.size}`);
-    return job;
 }
 
 function registerIpcHandlers(mainWindow: Electron.BrowserWindow) {
