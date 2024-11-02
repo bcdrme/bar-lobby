@@ -162,6 +162,10 @@ const aspectRatioDrivenStyle = computed(() => {
 
 .highlight {
     border: 2px dashed rgba(255, 255, 255, 1);
+    box-shadow:
+        0 0 15px rgba(200, 200, 200, 0.5),
+        0 0 25px rgba(200, 200, 200, 0.4);
+    background-color: rgba(200, 200, 200, 0.15);
     //animation: subtleGlow 1.5s infinite ease-in-out; // super resource intensive unfortunately
     transition: all 0.2s ease;
 }
