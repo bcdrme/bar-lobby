@@ -50,8 +50,6 @@
         "pino-pretty": "^11.3.0",
         "primeicons": "^6.0.1",
         "primevue": "3.23.0",
-        "tga": "^1.0.7",
-        "uuid": "^10.0.0",
         "vue-i18n": "^10.0.4",
         "vue-router": "^4.4.5"
     },
@@ -73,7 +71,6 @@
         "@types/luaparse": "^0.2.12",
         "@types/marked": "^6.0.0",
         "@types/node": "^20.17.1",
-        "@types/uuid": "^10.0.0",
         "@vitejs/plugin-vue": "^5.1.4",
         "cross-env": "^7.0.3",
         "electron": "^33.0.1",
