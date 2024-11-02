@@ -49,6 +49,7 @@ import { enginesStore } from "@renderer/store/engine.store";
 import { gameStore } from "@renderer/store/game.store";
 import { downloadMap } from "@renderer/store/maps.store";
 import { useDexieLiveQueryWithDeps } from "@renderer/composables/useDexieLiveQuery";
+import Panel from "@renderer/components/common/Panel.vue";
 
 const router = useRouter();
 const { id } = defineProps<{

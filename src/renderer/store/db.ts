@@ -34,17 +34,17 @@ db.version(1).stores({
 });
 
 db.on("ready", function () {
-    console.log("Database is ready");
+    console.debug("Database is ready");
 });
 db.on("populate", function () {
-    console.log("Database is populated");
+    console.debug("Database is populated");
 });
 db.on("blocked", function () {
-    console.log("Database is blocked");
+    console.debug("Database is blocked");
 });
 db.on("versionchange", function () {
-    console.log("Database is versionchange");
+    console.debug("Database is versionchange");
 });
 db.on("close", function () {
-    console.log("Database is close");
+    console.debug("Database is close");
 });

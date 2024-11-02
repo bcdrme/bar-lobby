@@ -13,8 +13,6 @@ import { Info } from "@main/services/info.service";
 import { NewsFeedData } from "@main/services/news.service";
 import { BattleWithMetadata } from "@main/game/battle/battle-types";
 
-console.log("preload.ts loaded");
-
 const infoApi = {
     getInfo: (): Promise<Info> => ipcRenderer.invoke("info:get"),
 };
