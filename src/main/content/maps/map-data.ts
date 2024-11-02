@@ -1,3 +1,5 @@
+import { StartboxDetails, StartPosition } from "@main/content/maps/online-map";
+
 export type MapData = {
     scriptName: string;
     fileName: string;
@@ -6,6 +8,8 @@ export type MapData = {
     author: string;
     width: number;
     height: number;
+    startPositions: StartPosition;
+    startBoxes: StartboxDetails[];
     onlineImages?: {
         textureURL: string;
     };

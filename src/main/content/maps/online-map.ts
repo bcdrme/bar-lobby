@@ -31,7 +31,7 @@ interface ImageData {
     type: string;
 }
 
-interface StartPosition {
+export interface StartPosition {
     positions: { [key: string]: Coordinates };
     team: Team[];
 }
@@ -60,7 +60,7 @@ interface StartboxesSet {
     [key: string]: StartboxDetails;
 }
 
-interface StartboxDetails {
+export interface StartboxDetails {
     maxPlayersPerStartbox: number;
     startboxes: Startbox[];
 }

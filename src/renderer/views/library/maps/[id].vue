@@ -9,7 +9,7 @@
                 <h1>{{ map.friendlyName }}</h1>
                 <div class="container">
                     <div class="map-preview-container">
-                        <MapPreview :map="map" />
+                        <!-- <MapPreview :map="map" /> -->
                     </div>
                     <div class="details">
                         <div class="detail-text"><b>Description:</b> {{ map.description }}</div>
@@ -42,7 +42,6 @@
  * Back button to return to map list
  */
 import Button from "@renderer/components/controls/Button.vue";
-import MapPreview from "@renderer/components/maps/MapPreview.vue";
 import { db } from "@renderer/store/db";
 import { battleActions } from "@renderer/store/battle.store";
 import { useRouter } from "vue-router";

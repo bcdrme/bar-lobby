@@ -22,8 +22,10 @@ async function fetchAllMaps() {
             friendlyName: map.displayName,
             description: map.description,
             author: map.author,
-            width: 0,
-            height: 0,
+            width: 8,
+            height: 8,
+            startPositions: map.startPos,
+            startBoxes: Object.values(map.startboxesSet),
             onlineImages: {
                 textureURL: map.photo?.at(0)?.downloadURL,
             },

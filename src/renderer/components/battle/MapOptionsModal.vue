@@ -1,8 +1,7 @@
 <template>
     <Modal ref="modal" :title="title" class="map-list-modal">
         <div class="container">
-            <MapPreview :map="map" :startPosType="startPosType" :startBoxes="startBoxes" />
-
+            <!-- <MapPreview :map="map" :startPosType="startPosType" :startBoxes="startBoxes" /> -->
             <div class="options flex-col gap-md">
                 <Options
                     :modelValue="startPosType"
@@ -50,7 +49,6 @@ import Range from "@renderer/components/controls/Range.vue";
 import { getBoxes, StartBoxOrientation } from "@renderer/utils/start-boxes";
 import { StartBox, StartPosType } from "@main/game/battle/battle-types";
 import { MapData } from "@main/content/maps/map-data";
-import MapPreview from "@renderer/components/maps/MapPreview.vue";
 
 const modal: Ref<null | InstanceType<typeof Modal>> = ref(null);
 
