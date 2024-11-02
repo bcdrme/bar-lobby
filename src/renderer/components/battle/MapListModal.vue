@@ -16,7 +16,7 @@ defineProps<{
 const emit = defineEmits(["mapSelected"]);
 
 function mapSelected(map: MapData) {
-    emit("mapSelected", map.scriptName);
+    emit("mapSelected", map);
 }
 </script>
 

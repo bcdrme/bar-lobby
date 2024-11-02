@@ -1,4 +1,4 @@
-import { StartboxDetails } from "@main/content/maps/online-map";
+import { MapData } from "@main/content/maps/map-data";
 import { User } from "@main/model/user";
 
 export interface Battle {
@@ -19,13 +19,13 @@ export interface BattleWithMetadata extends Battle {
 export type BattleOptions = {
     engineVersion?: string;
     gameVersion?: string;
-    mapScriptName?: string;
-    startPosType: StartPosType;
-    startBoxes: StartboxDetails;
-    startBoxesIndex: number;
-    fixedPositionsIndex: number;
     gameOptions: Record<string, string | number | boolean>;
-    mapOptions: Record<string, string | number | boolean>;
+    map?: MapData;
+    mapOptions: {
+        startPosType: StartPosType;
+        startBoxesIndex?: number;
+        fixedPositionsIndex?: number;
+    };
     restrictions: Restriction[];
 };
 

@@ -8,8 +8,8 @@ export type MapData = {
     author: string;
     width: number;
     height: number;
-    startPositions: StartPosition;
-    startBoxes: StartboxDetails[];
+    startPositions?: StartPosition;
+    startBoxes?: StartboxDetails[];
     onlineImages?: {
         textureURL: string;
     };

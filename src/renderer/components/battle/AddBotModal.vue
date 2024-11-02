@@ -19,7 +19,7 @@ import { GameAI } from "@main/content/game/game-version";
 const props = defineProps<{
     engineVersion: string;
     gameVersion: string;
-    teamId: string;
+    teamId: number;
 }>();
 
 const ais = computed(() => {
@@ -37,7 +37,7 @@ const ais = computed(() => {
 });
 
 const emit = defineEmits<{
-    (event: "bot-selected", ai: EngineAI | GameAI, teamId: string): void;
+    (event: "bot-selected", ai: EngineAI | GameAI, teamId: number): void;
 }>();
 
 function addBot(ai: EngineAI | GameAI) {

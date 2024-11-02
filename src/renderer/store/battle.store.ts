@@ -72,17 +72,28 @@ function userToPlayer(user: User): Player {
     } as Player;
 }
 
+//TODO move extra players to spectators
 function updateTeams() {
-    if (!battleStore.battleOptions?.startBoxes) return;
-    // get all participant in team order
+    if (!battleStore.battleOptions.map) return;
     const currentParticipants = Object.values(battleStore.teams).flat();
-    // update teams with selected BoxDetails
-    const numberOfTeams = battleStore.battleOptions?.startBoxes?.startboxes.length;
-    const maxPlayersPerStartbox = battleStore.battleOptions?.startBoxes?.maxPlayersPerStartbox;
-    const maxPlayersTotal = numberOfTeams * maxPlayersPerStartbox;
-    battleStore.teams = new Array(numberOfTeams).fill(null).map((_, i) => {
-        return currentParticipants.slice(i * maxPlayersPerStartbox, (i + 1) * maxPlayersPerStartbox);
-    });
+    if (battleStore.battleOptions.mapOptions.startPosType === StartPosType.Boxes) {
+        // get all participant in team order
+        // update teams with selected BoxDetails
+        const startBoxes = battleStore.battleOptions.map.startBoxes[battleStore.battleOptions.mapOptions.startBoxesIndex];
+        const numberOfTeams = startBoxes.startboxes.length;
+        const maxPlayersPerStartbox = startBoxes.maxPlayersPerStartbox;
+        battleStore.teams = new Array(numberOfTeams).fill(null).map((_, i) => {
+            return currentParticipants.slice(i * maxPlayersPerStartbox, (i + 1) * maxPlayersPerStartbox);
+        });
+    }
+    if (battleStore.battleOptions.mapOptions.startPosType === StartPosType.Fixed) {
+        const teamPreset = battleStore.battleOptions.map.startPositions.team[battleStore.battleOptions.mapOptions.fixedPositionsIndex];
+        const numberOfTeams = teamPreset.sides.length;
+        const maxPlayersPerTeam = teamPreset.playersPerTeam;
+        battleStore.teams = new Array(numberOfTeams).fill(null).map((_, i) => {
+            return currentParticipants.slice(i * maxPlayersPerTeam, (i + 1) * maxPlayersPerTeam);
+        });
+    }
 }
 
 function defaultOfflineBattle(engine?: EngineVersion, game?: GameVersion, map?: MapData) {
@@ -94,10 +105,12 @@ function defaultOfflineBattle(engine?: EngineVersion, game?: GameVersion, map?: 
         battleOptions: {
             engineVersion: engine?.id,
             gameVersion: game?.gameVersion,
-            mapScriptName: map?.scriptName,
-            startPosType: StartPosType.Boxes,
             gameOptions: {},
-            mapOptions: {},
+            map,
+            mapOptions: {
+                startPosType: StartPosType.Boxes,
+                startBoxesIndex: 0,
+            },
             restrictions: [],
         } as BattleOptions,
         metadata: {},
@@ -109,6 +122,7 @@ function defaultOfflineBattle(engine?: EngineVersion, game?: GameVersion, map?: 
     battle.teams[0].push({
         id: 0,
         user: me,
+        name: me.username,
         contentSyncState: {
             engine: 1,
             game: 1,
@@ -121,7 +135,7 @@ function defaultOfflineBattle(engine?: EngineVersion, game?: GameVersion, map?: 
         id: 1,
         aiOptions: {},
         faction: Faction.Armada,
-        name: "AI",
+        name: "AI 1",
         aiShortName: barbAi?.shortName || "BARb",
         ownerUserId: 0,
     } as Bot);
@@ -149,13 +163,34 @@ watch(
             _me.battleRoomState.isSpectator = false;
             // iterate over the map id, team to find the user's team
             battle.teams.forEach((team, teamId) => {
-                if (team.find((participant) => "user" in participant && participant.user.userId === me.userId)) {
+                if (
+                    team.find((participant) => {
+                        return participant && "user" in participant && participant.user.userId === me.userId;
+                    })
+                ) {
                     _me.battleRoomState.teamId = teamId;
                 }
             });
         }
     },
     { deep: true }
+);
+
+watch(
+    () => battleStore.battleOptions.mapOptions,
+    () => {
+        updateTeams();
+    },
+    { deep: true }
+);
+
+watch(
+    () => battleStore.battleOptions.map,
+    () => {
+        battleStore.battleOptions.mapOptions.startPosType = StartPosType.Boxes;
+        battleStore.battleOptions.mapOptions.startBoxesIndex = 0;
+        updateTeams();
+    }
 );
 
 export const battleActions = {

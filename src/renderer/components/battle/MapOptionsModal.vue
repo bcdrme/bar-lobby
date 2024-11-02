@@ -1,45 +1,43 @@
 <template>
-    <Modal ref="modal" :title="title" class="map-list-modal">
+    <Modal ref="modal" title="Map options" class="map-list-modal">
         <div class="container">
             <div class="map-preview-container">
-                <MapPreview :map="map" :start-boxes-index="battleStore.battleOptions.startBoxesIndex" />
+                <MapBattlePreview />
             </div>
             <div class="options flex-col gap-md">
-                <div>
+                <div v-if="battleStore.battleOptions.map.startBoxes">
                     <h4>Boxes presets</h4>
                     <div class="box-buttons">
                         <Button
-                            v-for="(boxSet, i) in map.startBoxes"
+                            v-for="(boxSet, i) in battleStore.battleOptions.map.startBoxes"
                             :key="i"
                             @click="
                                 () => {
-                                    delete battleStore.battleOptions.startBoxes;
-                                    delete battleStore.battleOptions.fixedPositionsIndex;
-                                    battleStore.battleOptions.startPosType = StartPosType.Boxes;
-                                    battleStore.battleOptions.startBoxesIndex = i;
+                                    delete battleStore.battleOptions.mapOptions.fixedPositionsIndex;
+                                    battleStore.battleOptions.mapOptions.startPosType = StartPosType.Boxes;
+                                    battleStore.battleOptions.mapOptions.startBoxesIndex = i;
                                 }
                             "
-                            :disabled="battleStore.battleOptions.startBoxesIndex === i"
+                            :disabled="battleStore.battleOptions.mapOptions.startBoxesIndex === i"
                         >
                             <span>{{ i + 1 }}</span>
                         </Button>
                     </div>
                 </div>
-                <div>
+                <div v-if="battleStore.battleOptions.map.startPositions">
                     <h4>Fixed positions</h4>
                     <div class="box-buttons">
                         <Button
-                            v-for="(teamSet, i) in map.startPositions.team"
+                            v-for="(teamSet, i) in battleStore.battleOptions.map.startPositions.team"
                             :key="`team${i}`"
                             @click="
                                 () => {
-                                    delete battleStore.battleOptions.startBoxes;
-                                    delete battleStore.battleOptions.startBoxesIndex;
-                                    battleStore.battleOptions.startPosType = StartPosType.Fixed;
-                                    battleStore.battleOptions.fixedPositionsIndex = i;
+                                    delete battleStore.battleOptions.mapOptions.startBoxesIndex;
+                                    battleStore.battleOptions.mapOptions.startPosType = StartPosType.Fixed;
+                                    battleStore.battleOptions.mapOptions.fixedPositionsIndex = i;
                                 }
                             "
-                            :disabled="battleStore.battleOptions.startPosType === StartPosType.Fixed"
+                            :disabled="battleStore.battleOptions.mapOptions.startPosType === StartPosType.Fixed"
                             ><span>{{ i + 1 }}</span></Button
                         >
                     </div>
@@ -85,27 +83,18 @@ import { Ref, ref, watch } from "vue";
 
 import Modal from "@renderer/components/common/Modal.vue";
 import Button from "@renderer/components/controls/Button.vue";
-import { MapData } from "@main/content/maps/map-data";
-import MapPreview from "@renderer/components/maps/MapBattlePreview.vue";
 import Range from "@renderer/components/controls/Range.vue";
 import { battleStore } from "@renderer/store/battle.store";
 import { StartPosType } from "@main/game/battle/battle-types";
+import MapBattlePreview from "@renderer/components/maps/MapBattlePreview.vue";
 
 const modal: Ref<null | InstanceType<typeof Modal>> = ref(null);
-
-const props = defineProps<{
-    title: string;
-    map: MapData;
-}>();
 
 const customBoxRange = ref(25);
 
 watch(
-    () => props.map,
+    () => battleStore.battleOptions.map,
     () => {
-        delete battleStore.battleOptions.startBoxes;
-        battleStore.battleOptions.startPosType = StartPosType.Boxes;
-        battleStore.battleOptions.startBoxesIndex = 0;
         customBoxRange.value = 25;
     }
 );

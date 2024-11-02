@@ -7,17 +7,15 @@
             <Playerlist />
         </div>
         <div class="settings flex-col gap-md">
-            <MapPreview :map="map" :start-boxes-index="battleStore.battleOptions.startBoxesIndex" />
+            <MapBattlePreview />
             <div class="flex-row gap-md">
                 <Select
-                    :modelValue="battleStore.battleOptions.mapScriptName"
+                    :modelValue="battleStore.battleOptions.map"
                     :options="mapListOptions"
                     label="Map"
                     optionLabel="scriptName"
-                    optionValue="scriptName"
                     :filter="true"
                     class="fullwidth"
-                    :placeholder="battleStore.battleOptions.mapScriptName"
                     @update:model-value="onMapSelected"
                 />
                 <Button v-tooltip.left="'Open map selector'" @click="openMapList">
@@ -27,15 +25,7 @@
                     <Icon :icon="cogIcon" height="23" />
                 </Button>
                 <MapListModal v-model="mapListOpen" title="Maps" @map-selected="onMapSelected" />
-                <MapOptionsModal
-                    v-if="map"
-                    v-model="mapOptionsOpen"
-                    title="Map Options"
-                    :map="map"
-                    :startBoxes="battleStore.battleOptions.startBoxesIndex"
-                    :startPosType="battleStore.battleOptions.startPosType"
-                    @start-boxes-index-changed="onMapBoxSetSelected"
-                />
+                <MapOptionsModal v-if="battleStore.battleOptions.map" v-model="mapOptionsOpen" />
             </div>
             <div class="flex-row gap-md">
                 <Select
@@ -75,7 +65,7 @@
             </div>
             <div class="flex-row flex-bottom gap-md">
                 <DownloadContentButton
-                    :script-name="map?.scriptName"
+                    :script-name="battleStore.battleOptions.map?.scriptName"
                     class="fullwidth green"
                     :disabled="gameStore.isGameRunning"
                     @click="battleActions.startBattle"
@@ -87,10 +77,8 @@
 </template>
 
 <script lang="ts" setup>
-import { Ref, ref, watch } from "vue";
-import { getBoxes, StartBoxOrientation } from "@renderer/utils/start-boxes";
+import { Ref, ref } from "vue";
 import { LuaOptionSection } from "@main/content/game/lua-options";
-import { StartPosType } from "@main/game/battle/battle-types";
 import { gameStore } from "@renderer/store/game.store";
 import BattleTitleComponent from "@renderer/components/battle/BattleTitleComponent.vue";
 import Playerlist from "@renderer/components/battle/Playerlist.vue";
@@ -101,25 +89,13 @@ import MapOptionsModal from "@renderer/components/battle/MapOptionsModal.vue";
 import LuaOptionsModal from "@renderer/components/battle/LuaOptionsModal.vue";
 import { battleActions, battleStore } from "@renderer/store/battle.store";
 import Button from "@renderer/components/controls/Button.vue";
-import { MapData } from "@main/content/maps/map-data";
 import { db } from "@renderer/store/db";
 import listIcon from "@iconify-icons/mdi/format-list-bulleted";
 import cogIcon from "@iconify-icons/mdi/cog";
 import { useDexieLiveQuery } from "@renderer/composables/useDexieLiveQuery";
 import DownloadContentButton from "@renderer/components/controls/DownloadContentButton.vue";
-import MapPreview from "@renderer/components/maps/MapBattlePreview.vue";
-
-const map = ref<MapData>();
-watch(
-    () => battleStore.battleOptions.mapScriptName,
-    async (mapScriptName) => {
-        console.log("mapScriptName for this battle", mapScriptName);
-        if (!mapScriptName) {
-            return;
-        }
-        map.value = await db.maps.get(mapScriptName);
-    }
-);
+import MapBattlePreview from "@renderer/components/maps/MapBattlePreview.vue";
+import { MapData } from "@main/content/maps/map-data";
 
 const mapListOpen = ref(false);
 const mapOptionsOpen = ref(false);
@@ -133,6 +109,7 @@ const gameOptions: Ref<LuaOptionSection[]> = ref([]);
 function openMapList() {
     mapListOpen.value = true;
 }
+
 function openMapOptions() {
     mapOptionsOpen.value = true;
 }
@@ -145,6 +122,11 @@ function onGameSelected(gameVersion: string) {
     battleStore.battleOptions.gameVersion = gameVersion;
 }
 
+function onMapSelected(map: MapData) {
+    battleStore.battleOptions.map = map;
+    mapListOpen.value = false;
+}
+
 //TODO this is not working
 async function openGameOptions() {
     // TODO: show loader on button (maybe @clickAsync event?)
@@ -155,17 +137,6 @@ async function openGameOptions() {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function setGameOptions(options: Record<string, any>) {
     battleStore.battleOptions.gameOptions = options;
-}
-
-function onMapSelected(mapScriptName: string) {
-    mapListOpen.value = false;
-    battleStore.battleOptions.mapScriptName = mapScriptName;
-}
-
-function onMapBoxSetSelected(index: number) {
-    battleStore.battleOptions.startBoxesIndex = index;
-    battleStore.battleOptions.startBoxes = map.value.startBoxes[index];
-    battleActions.updateTeams();
 }
 </script>
 

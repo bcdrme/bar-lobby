@@ -2,16 +2,16 @@
     <div class="map-container">
         <div v-if="map" class="map" :style="aspectRatioDrivenStyle">
             <img :src="mapTextureUrl" />
-            <div v-if="battleStore.battleOptions.startPosType === StartPosType.Boxes && boxes" class="boxes">
+            <div v-if="battleStore.battleOptions.mapOptions.startPosType === StartPosType.Boxes && boxes" class="boxes">
                 <div v-for="(box, i) in boxes" :key="`box${i}`" v-startBox="box" class="box highlight">
                     <div class="box-tooltip">
                         <span>{{ i + 1 }}</span>
                     </div>
                 </div>
             </div>
-            <div v-if="battleStore.battleOptions.startPosType === StartPosType.Fixed" class="start-positions">
+            <div v-if="battleStore.battleOptions.mapOptions.startPosType === StartPosType.Fixed" class="start-positions">
                 <div
-                    v-for="(side, sideIndex) in map.startPositions?.team[battleStore.battleOptions.fixedPositionsIndex]?.sides"
+                    v-for="(side, sideIndex) in map.startPositions?.team[battleStore.battleOptions.mapOptions.fixedPositionsIndex]?.sides"
                     :key="`side${sideIndex}`"
                 >
                     <div
@@ -32,7 +32,6 @@
 </template>
 
 <script setup lang="ts">
-import { MapData } from "@main/content/maps/map-data";
 import { StartPosType } from "@main/game/battle/battle-types";
 import { useImageBlobUrlCache } from "@renderer/composables/useImageBlobUrlCache";
 import vSetPlayerColor from "@renderer/directives/vSetPlayerColor";
@@ -50,42 +49,41 @@ defineComponent({
     },
 });
 
-const props = defineProps<{
-    map: MapData;
-}>();
-
+const map = ref(battleStore.battleOptions.map);
 const { get } = useImageBlobUrlCache();
 const mapTextureUrl = computed(() => {
-    if (!props.map?.images) {
+    if (!map.value?.images) {
         return;
     }
-    return get(props.map?.scriptName, props.map?.images.texture);
+    return get(map.value?.scriptName, map.value?.images.texture);
 });
+
 watchEffect(() => {
-    if (!props.map?.scriptName) {
+    if (!map.value?.scriptName) {
         return;
     }
-    if (!props.map?.images?.texture) {
-        fetchMapImages(props.map);
+    if (!map.value?.images?.texture) {
+        fetchMapImages(map.value);
     }
 });
 
-const startBoxes = ref(props.map?.startBoxes);
-const startPositions = ref(props.map?.startPositions);
-const mapWidthElmos = ref(props.map?.width ? props.map.width * 512 : null);
-const mapHeightElmos = ref(props.map?.height ? props.map.height * 512 : null);
+const startBoxes = ref(map.value?.startBoxes);
+const startPositions = ref(map.value?.startPositions);
+const mapWidthElmos = ref(map.value?.width ? map.value.width * 512 : null);
+const mapHeightElmos = ref(map.value?.height ? map.value.height * 512 : null);
 watch(
-    () => props.map,
+    () => battleStore.battleOptions.map,
     () => {
-        startBoxes.value = props.map?.startBoxes;
-        startPositions.value = props.map?.startPositions;
-        mapWidthElmos.value = props.map?.width ? props.map.width * 512 : null;
-        mapHeightElmos.value = props.map?.height ? props.map.height * 512 : null;
+        map.value = battleStore.battleOptions.map;
+        startBoxes.value = map.value?.startBoxes;
+        startPositions.value = map.value?.startPositions;
+        mapWidthElmos.value = map.value?.width ? map.value.width * 512 : null;
+        mapHeightElmos.value = map.value?.height ? map.value.height * 512 : null;
     }
 );
 
 const boxes = computed(() => {
-    return startBoxes.value.at(battleStore.battleOptions.startBoxesIndex)?.startboxes.map((box) => {
+    return startBoxes.value.at(battleStore.battleOptions.mapOptions.startBoxesIndex)?.startboxes.map((box) => {
         const { x: x1, y: y1 } = box.poly.at(0);
         const { x: x2, y: y2 } = box.poly.at(1);
         return {
@@ -98,10 +96,10 @@ const boxes = computed(() => {
 });
 
 const aspectRatioDrivenStyle = computed(() => {
-    if (!props.map?.width || !props.map?.height) {
+    if (!map.value?.width || !map.value?.height) {
         return;
     }
-    return props.map.width / props.map.height > 1 ? "height: auto;" : "height: 100%;";
+    return map.value.width / map.value.height > 1 ? "height: auto;" : "height: 100%;";
 });
 
 const rgbColors = [

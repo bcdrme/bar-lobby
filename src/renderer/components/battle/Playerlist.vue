@@ -55,13 +55,13 @@ function openBotList(teamId: string) {
 }
 
 //TODO only handling engine AIs for now
-function onBotSelected(bot: EngineAI, teamId: string) {
+function onBotSelected(bot: EngineAI, teamId: number) {
     botListOpen.value = false;
     addBot(bot, teamId);
 }
 
 //TODO only handling engine AIs for now
-function addBot(ai: EngineAI, teamId: string) {
+function addBot(ai: EngineAI, teamId: number) {
     battleStore.teams[teamId].push({
         id: battleWithMetadataStore.participants.length,
         name: ai.name,
