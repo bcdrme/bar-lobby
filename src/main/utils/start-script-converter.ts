@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { assign } from "$/jaz-ts-utils/object";
 import { BattleWithMetadata, isPlayer, StartPosType } from "@main/game/battle/battle-types";
 import { AllyTeam, Bot, Game, Player, Team } from "@main/model/start-script";
 
@@ -46,7 +45,7 @@ class StartScriptConverter {
             if (battle.battleOptions.startPosType === StartPosType.Boxes) {
                 const box = battle.battleOptions.startBoxes[allyTeam.id];
                 if (box) {
-                    assign(allyTeam, {
+                    Object.assign(allyTeam, {
                         startrectleft: box.xPercent,
                         startrecttop: box.yPercent,
                         startrectright: box.xPercent + box.widthPercent,

@@ -4,7 +4,6 @@
             <TabPanel v-for="section of sections.filter((section) => !section.hidden)" :key="section.key" :header="section.name">
                 <div class="flex-col gap-md">
                     <h4>{{ section.description }}</h4>
-
                     <div class="gridform">
                         <template v-for="option in section.options.filter((option) => !option.hidden)" :key="option.key">
                             <div>
@@ -46,9 +45,9 @@
         </TabView>
         <template #footer>
             <div class="actions">
-                <Button class="red fullwidth" @click="close"> Cancel </Button>
-                <Button class="yellow fullwidth" @click="reset"> Reset all to default </Button>
-                <Button class="green fullwidth" @click="save"> Save </Button>
+                <Button class="red fullwidth" @click="close">Cancel</Button>
+                <Button class="yellow fullwidth" @click="reset">Reset all to default</Button>
+                <Button class="green fullwidth" @click="save">Save</Button>
             </div>
         </template>
     </Modal>
@@ -58,7 +57,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import TabPanel from "primevue/tabpanel";
 import { reactive, Ref, ref, toRaw } from "vue";
-
 import Modal from "@renderer/components/common/Modal.vue";
 import TabView from "@renderer/components/common/TabView.vue";
 import Button from "@renderer/components/controls/Button.vue";
@@ -66,7 +64,6 @@ import Checkbox from "@renderer/components/controls/Checkbox.vue";
 import Range from "@renderer/components/controls/Range.vue";
 import Select from "@renderer/components/controls/Select.vue";
 import Textbox from "@renderer/components/controls/Textbox.vue";
-import { setObject } from "@renderer/utils/temp";
 import { LuaOptionSection, LuaOptionNumber, LuaOptionBoolean, LuaOptionString, LuaOptionList } from "@main/content/game/lua-options";
 
 const props = defineProps<{
@@ -77,7 +74,6 @@ const props = defineProps<{
 }>();
 
 const modal: Ref<null | InstanceType<typeof Modal>> = ref(null);
-
 const options: Record<string, any> = reactive({});
 
 const emits = defineEmits<{
@@ -93,7 +89,7 @@ function setOptionValue(option: LuaOptionNumber | LuaOptionBoolean | LuaOptionSt
 }
 
 function open() {
-    setObject(options, toRaw(props.luaOptions));
+    Object.assign(options, toRaw(props.luaOptions));
 }
 
 function close() {
@@ -101,7 +97,7 @@ function close() {
 }
 
 function reset() {
-    setObject(options, {});
+    // Object.assign(options, {});
 }
 
 function save() {

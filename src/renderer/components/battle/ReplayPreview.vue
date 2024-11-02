@@ -54,7 +54,6 @@ import trophyVariant from "@iconify-icons/mdi/trophy-variant";
 import { computed } from "vue";
 import BattlePreviewParticipant from "@renderer/components/battle/BattlePreviewParticipant.vue";
 import { Replay } from "@main/content/replays/replay";
-import { groupBy } from "$/jaz-ts-utils/object";
 import ReplayPreviewMap from "@renderer/components/battle/ReplayPreviewMap.vue";
 
 const props = defineProps<{
@@ -67,7 +66,7 @@ const isFFA = computed(() => {
 });
 
 const teams = computed(() => {
-    const teams = groupBy(props.replay.contenders, (contender) => contender.allyTeamId);
+    const teams = Map.groupBy(props.replay.contenders, (contender) => contender.allyTeamId);
     const sortedTeams = new Map([...teams.entries()].sort());
     return sortedTeams;
 });

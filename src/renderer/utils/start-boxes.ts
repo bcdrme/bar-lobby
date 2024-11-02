@@ -1,5 +1,4 @@
 // TODO: add deep readonly type and add a clone method that removes it
-import { roundToMultiple } from "$/jaz-ts-utils/math";
 import { StartBox } from "@main/game/battle/battle-types";
 
 export function getBoxes(orientation: StartBoxOrientation, percent = 30) {
@@ -61,4 +60,8 @@ export function spadsBoxToStartBox(spadsBox: any) {
         heightPercent: roundToMultiple(spadsBox.y2 / 200 - spadsBox.y1 / 200, 0.01),
     };
     return box;
+}
+
+function roundToMultiple(num: number, multiple: number) {
+    return Number((Math.round(num / multiple) * multiple).toFixed(2));
 }
