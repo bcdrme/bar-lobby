@@ -11,7 +11,6 @@ import chokidar from "chokidar";
 import fs from "fs";
 
 import path from "path";
-import { reactive } from "vue";
 
 const log = logger("replay-content.ts");
 
@@ -20,7 +19,7 @@ export class ReplayContentAPI {
     public readonly onReplayCached: Signal<Replay> = new Signal();
     public readonly onReplayDeleted: Signal<string> = new Signal();
 
-    protected readonly replayCacheQueue: Set<string> = reactive(new Set());
+    protected readonly replayCacheQueue: Set<string> = new Set();
     protected cachingReplays = false;
 
     public async init() {
@@ -104,7 +103,6 @@ export class ReplayContentAPI {
             return;
         }
         this.cachingReplays = true;
-
         while (true) {
             const [replayToCache] = this.replayCacheQueue;
             if (replayToCache) {

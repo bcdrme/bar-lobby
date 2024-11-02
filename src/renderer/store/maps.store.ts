@@ -16,12 +16,9 @@ export async function getRandomMap(): Promise<MapData> {
     return map;
 }
 
-let initializationPromise: Promise<void> | null = null;
 export async function initMapsStore() {
     if (mapsStore.isInitialized) return;
-    if (initializationPromise) return initializationPromise;
-    initializationPromise = init();
-    return initializationPromise;
+    return init();
 }
 
 async function init() {
