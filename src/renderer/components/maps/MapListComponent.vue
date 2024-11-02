@@ -49,22 +49,20 @@ const emit = defineEmits<{
     (event: "map-selected", map: MapData): void;
 }>();
 
-const limit = ref(10);
+const limit = ref(30);
 const el = ref<HTMLElement | null>(null);
 const { reset } = useInfiniteScroll(
     el,
     () => {
-        limit.value += 10;
+        limit.value += 30;
     },
-    { distance: 200 }
+    { distance: 300, interval: 550 }
 );
 watch([searchVal, sortMethod], () => {
     reset();
 });
 const maps = useDexieLiveQueryWithDeps([searchVal, sortMethod, limit], () =>
     db.maps
-        // .where("friendlyName")
-        // .startsWithIgnoreCase(searchVal.value)
         .filter((map) => map.friendlyName.toLocaleLowerCase().includes(searchVal.value.toLocaleLowerCase()))
         .limit(limit.value)
         .sortBy(sortMethod.value.dbKey)
