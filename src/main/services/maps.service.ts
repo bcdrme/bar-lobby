@@ -2,6 +2,9 @@ import { MapData } from "@main/content/maps/map-data";
 import { mapContentAPI } from "@main/content/maps/map-content";
 import { ipcMain } from "electron";
 import { OnlineMap } from "@main/content/maps/online-map";
+import { logger } from "@main/utils/logger";
+
+const log = logger("maps-service");
 
 function init() {
     mapContentAPI.init();
@@ -41,15 +44,19 @@ async function fetchMapImages(imageSource: string) {
                 const arrayBuffer = await response.arrayBuffer();
                 resolve(arrayBuffer);
             } catch (error) {
-                console.error("Failed to fetch map images", error);
+                log.error("Failed to fetch map images", error);
                 reject();
             } finally {
-                jobs.delete(imageSource);
+                if (jobs.delete(imageSource)) {
+                    log.debug(`Jobs size: ${jobs.size}`);
+                } else {
+                    log.error(`Failed to delete job for ${imageSource}`);
+                }
             }
         })();
     });
     jobs.set(imageSource, job);
-    console.log(`Jobs size: ${jobs.size}`);
+    log.debug(`Jobs size: ${jobs.size}`);
     return job;
 }
 

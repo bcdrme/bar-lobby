@@ -4,13 +4,14 @@
 
 <script lang="ts" setup>
 import { useElementSize } from "@vueuse/core";
-import { Application, Assets, Graphics, Sprite, Texture, Color } from "pixi.js";
+import { Application, Assets, Graphics, Sprite, Texture } from "pixi.js";
 import { onMounted, onUnmounted, useTemplateRef, watch } from "vue";
 import { MapData } from "@main/content/maps/map-data";
 import { StartBox, StartPosType } from "@main/game/battle/battle-types";
 import { MIPMAP_SIZE } from "@main/config/map-parsing";
 import { me } from "@renderer/store/me.store";
 import defaultMiniMap from "/src/renderer/assets/images/default-minimap.png?url";
+import { useImageBlobUrlCache } from "@renderer/composables/useImageBlobUrlCache";
 
 const props = defineProps<{
     map?: MapData;
@@ -32,6 +33,8 @@ let app: Application;
 let mapSprite: Sprite;
 const boxesGfx = new Graphics();
 const startPositionsGfx = new Graphics();
+
+const { get } = useImageBlobUrlCache();
 
 onMounted(async () => {
     app = new Application();
@@ -87,13 +90,11 @@ function onResize() {
 }
 
 async function setMapImage() {
-    if (!props.map) {
-        return;
-    }
+    const imageUrl = props.map?.images?.texture ? get(props.map.scriptName, props.map.images.texture) : defaultMiniMap;
     if (mapSprite) {
         app.stage.removeChild(mapSprite);
     }
-    const texture = await Assets.load<Texture>(props.map.images?.texture || defaultMiniMap);
+    const texture = await Assets.load<Texture>({ src: imageUrl, loadParser: "loadTextures" });
     mapSprite = Sprite.from(texture);
     mapSprite.setSize({
         width: props.map.width * MIPMAP_SIZE * 16,
