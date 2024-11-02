@@ -5,7 +5,14 @@
                 <div class="gridform">
                     <template v-for="option in section.options.filter((option) => !option.hidden)" :key="option.key">
                         <div>
-                            <div v-tooltip.bottom="{ value: option.description || '' }">{{ option.name }}</div>
+                            <div
+                                v-tooltip.bottom="{ value: option.description || '' }"
+                                :class="{
+                                    overriden: battleStore.battleOptions.gameMode.options[option.key] !== undefined,
+                                }"
+                            >
+                                {{ option.name }}
+                            </div>
                         </div>
                         <Range
                             v-if="option.type === 'number'"
@@ -15,12 +22,18 @@
                             :step="option.step"
                             @update:model-value="(value: any) => setOptionValue(option, value)"
                             v-tooltip.bottom="{ value: option.description || '' }"
+                            :class="{
+                                overriden: battleStore.battleOptions.gameMode.options[option.key] !== undefined,
+                            }"
                         />
                         <Checkbox
                             v-if="option.type === 'boolean'"
                             :modelValue="battleStore.battleOptions.gameMode.options[option.key] ?? option.default"
                             @update:model-value="(value) => setOptionValue(option, value)"
                             v-tooltip.right="{ value: option.description || '' }"
+                            :class="{
+                                overriden: battleStore.battleOptions.gameMode.options[option.key] !== undefined,
+                            }"
                         />
                         <Textarea
                             v-if="option.type === 'string'"
@@ -28,6 +41,9 @@
                             :modelValue="battleStore.battleOptions.gameMode.options[option.key] ?? option.default"
                             @update:model-value="(value) => setOptionValue(option, value)"
                             v-tooltip.bottom="{ value: option.description || '' }"
+                            :class="{
+                                overriden: battleStore.battleOptions.gameMode.options[option.key] !== undefined,
+                            }"
                         />
                         <Select
                             v-if="option.type === 'list'"
@@ -37,6 +53,9 @@
                             optionValue="key"
                             @update:model-value="(value: any) => setOptionValue(option, value)"
                             v-tooltip.bottom="{ value: option.description || '' }"
+                            :class="{
+                                overriden: battleStore.battleOptions.gameMode.options[option.key] !== undefined,
+                            }"
                         />
                     </template>
                 </div>
@@ -111,5 +130,15 @@ function reset() {
 
 .gridform {
     padding-bottom: 25px;
+}
+
+.overriden {
+    color: #ffcc00;
+    ::v-deep .p-slider-handle {
+        background-color: #ffcc00;
+    }
+    ::v-deep .p-slider-range {
+        background-color: #ffcc00;
+    }
 }
 </style>

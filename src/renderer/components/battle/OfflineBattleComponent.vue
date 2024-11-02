@@ -77,7 +77,6 @@ import Select from "@renderer/components/controls/Select.vue";
 import { Icon } from "@iconify/vue";
 import MapListModal from "@renderer/components/battle/MapListModal.vue";
 import MapOptionsModal from "@renderer/components/battle/MapOptionsModal.vue";
-import LuaOptionsModal from "@renderer/components/battle/LuaOptionsModal.vue";
 import { battleActions, battleStore } from "@renderer/store/battle.store";
 import Button from "@renderer/components/controls/Button.vue";
 import { db } from "@renderer/store/db";
