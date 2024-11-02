@@ -65,12 +65,14 @@
             </div>
             <div class="flex-row flex-bottom gap-md">
                 <DownloadContentButton
-                    :script-name="battleStore.battleOptions.map?.scriptName"
+                    v-if="battleStore.battleOptions.map"
+                    :map="battleStore.battleOptions.map"
                     class="fullwidth green"
                     :disabled="gameStore.isGameRunning"
                     @click="battleActions.startBattle"
                     >Start</DownloadContentButton
                 >
+                <Button v-else class="fullwidth green" disabled>Start</Button>
             </div>
         </div>
     </div>

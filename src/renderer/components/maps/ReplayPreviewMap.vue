@@ -1,22 +1,24 @@
 <template>
-    <div v-if="map" class="map">
-        <img loading="lazy" :src="mapTextureUrl" />
-        <div class="boxes">
-            <div v-for="team in teams" :key="team.allyTeamId" v-startBox="team.startBox" class="box" />
-        </div>
-        <div class="start-positions">
-            <div
-                v-for="(player, index) in replay.contenders.filter((p) => p.startPos)"
-                :key="index"
-                v-startPos="[{ x: player.startPos?.x, y: player.startPos?.z }, mapWidthElmos, mapHeightElmos]"
-                v-setPlayerColor="player.rgbColor"
-                class="start-pos"
-            >
-                <div class="start-pos-tooltip">
-                    <img v-if="player.faction === 'Armada'" src="/src/renderer/assets/images/factions/armada_faction.png" />
-                    <img v-else-if="player.faction === 'Cortex'" src="/src/renderer/assets/images/factions/cortex_faction.png" />
-                    <img v-else src="/src/renderer/assets/images/factions/unknown_faction.png" />
-                    <span>{{ player.name }}</span>
+    <div class="map-container" :style="{ aspectRatio: mapTextureUrl ? 'auto' : 1 }">
+        <div v-if="mapTextureUrl" class="map">
+            <img :src="mapTextureUrl" />
+            <div class="boxes">
+                <div v-for="team in teams" :key="team.allyTeamId" v-startBox="team.startBox" class="box" />
+            </div>
+            <div class="start-positions">
+                <div
+                    v-for="(player, index) in replay?.contenders.filter((p) => p.startPos)"
+                    :key="index"
+                    v-startPos="[{ x: player.startPos?.x, y: player.startPos?.z }, mapWidthElmos, mapHeightElmos]"
+                    v-setPlayerColor="player.rgbColor"
+                    class="start-pos"
+                >
+                    <div class="start-pos-tooltip">
+                        <img v-if="player.faction === 'Armada'" src="/src/renderer/assets/images/factions/armada_faction.png" />
+                        <img v-else-if="player.faction === 'Cortex'" src="/src/renderer/assets/images/factions/cortex_faction.png" />
+                        <img v-else src="/src/renderer/assets/images/factions/unknown_faction.png" />
+                        <span>{{ player.name }}</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -25,7 +27,6 @@
 
 <script setup lang="ts">
 import { Replay } from "@main/content/replays/replay";
-import defaultMiniMap from "/src/renderer/assets/images/default-minimap.png?url";
 import { useDexieLiveQueryWithDeps } from "@renderer/composables/useDexieLiveQuery";
 import { useImageBlobUrlCache } from "@renderer/composables/useImageBlobUrlCache";
 import { db } from "@renderer/store/db";
@@ -36,15 +37,15 @@ import vSetPlayerColor from "@renderer/directives/vSetPlayerColor";
 import { fetchMapImages } from "@renderer/store/maps.store";
 
 const props = defineProps<{
-    replay: Replay;
+    replay?: Replay;
 }>();
 
-const teams = ref(props.replay.teams);
+const teams = ref(props.replay?.teams || []);
 
 watch(
     () => props.replay,
     () => {
-        teams.value = props.replay.teams;
+        if (props.replay) teams.value = props.replay.teams;
     }
 );
 
@@ -56,13 +57,17 @@ defineComponent({
     },
 });
 
-const map = useDexieLiveQueryWithDeps([() => props.replay.mapScriptName], () => db.maps.get(props.replay.mapScriptName));
-const mapWidthElmos = computed(() => (map.value.width ? map.value.width * 512 : null));
-const mapHeightElmos = computed(() => (map.value.height ? map.value.height * 512 : null));
+const map = useDexieLiveQueryWithDeps([() => props.replay?.mapScriptName], () => {
+    if (!props.replay) return null;
+    return db.maps.get(props.replay.mapScriptName);
+});
+const mapWidthElmos = computed(() => (map.value?.width ? map.value.width * 512 : null));
+const mapHeightElmos = computed(() => (map.value?.height ? map.value.height * 512 : null));
 const cache = useImageBlobUrlCache();
-const mapTextureUrl = computed(() =>
-    map.value?.images?.texture ? cache.get(map.value.fileName, map.value.images.texture) : defaultMiniMap
-);
+const mapTextureUrl = computed(() => {
+    if (!map.value?.images?.texture) return null;
+    return cache.get(map.value.fileName, map.value.images.texture);
+});
 watchEffect(() => {
     if (!map.value) {
         return;
@@ -74,7 +79,17 @@ watchEffect(() => {
 </script>
 
 <style lang="scss" scoped>
+.map-container {
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
 .map {
+    height: 100%;
     position: relative;
     object-fit: contain;
     display: flex;

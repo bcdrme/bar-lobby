@@ -8,15 +8,13 @@
             <div class="flex-row flex-grow gap-md">
                 <div class="flex-col flex-grow gap-md">
                     <div class="flex-row gap-md">
-                        <h1>Local Replays</h1>
-                        <!-- <Divider layout="vertical" />
-                <h1>Online Replays</h1> -->
+                        <h1>Replays</h1>
                     </div>
                     <div class="flex-row gap-md">
                         <TriStateCheckbox v-model="endedNormally" label="Ended Normally" />
                         <Checkbox v-model="showSpoilers" label="Show Spoilers" />
                         <div class="flex-right flex-row gap-md" style="padding-right: 5px">
-                            <Button @click="openBrowserToReplayService">Download</Button>
+                            <Button @click="openBrowserToReplayService">Browse Online Replays</Button>
                             <Button @click="openReplaysFolder">Open Replays Folder</Button>
                         </div>
                     </div>
@@ -68,12 +66,12 @@
                     </div>
                 </div>
                 <div class="right-section">
-                    <ReplayPreview v-if="selectedReplay" :replay="selectedReplay" :showSpoilers="showSpoilers">
+                    <ReplayPreview :replay="selectedReplay" :showSpoilers="showSpoilers">
                         <template #actions="{ replay }">
-                            <DownloadContentButton :scriptName="replay.mapScriptName" @click="watchReplay(replay)"
-                                >Watch</DownloadContentButton
-                            >
-                            <Button @click="showReplayFile(replay)">Show File</Button>
+                            <DownloadContentButton v-if="map" :map="map" @click="watchReplay(replay)">Watch</DownloadContentButton>
+                            <Button v-else disabled style="flex-grow: 1">Watch</Button>
+                            <Button v-if="replay" @click="showReplayFile(replay)">Show File</Button>
+                            <Button v-else disabled>Show File</Button>
                         </template>
                     </ReplayPreview>
                 </div>
@@ -140,6 +138,11 @@ const replays = useDexieLiveQueryWithDeps([endedNormally, offset, limit, sortFie
     return query.reverse().sortBy(sortField.value);
 });
 
+const map = useDexieLiveQueryWithDeps([() => selectedReplay.value?.mapScriptName], () => {
+    if (!selectedReplay.value) return null;
+    return db.maps.get(selectedReplay.value.mapScriptName);
+});
+
 function onPage(event: DataTablePageEvent) {
     offset.value = event.first;
 }
@@ -159,10 +162,6 @@ function openReplaysFolder() {
 
 function watchReplay(replay: Replay) {
     window.game.launchReplay(replay);
-}
-
-function downloadMap(replay: Replay) {
-    window.maps.downloadMap(replay.mapScriptName);
 }
 
 function showReplayFile(replay: Replay) {

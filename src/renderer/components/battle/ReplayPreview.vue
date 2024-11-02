@@ -31,7 +31,7 @@
                     />
                 </div>
             </div>
-            <div v-if="replay.spectators.length">
+            <div v-if="replay?.spectators.length">
                 <div class="team-title">Spectators</div>
                 <div class="contenders">
                     <BattlePreviewParticipant
@@ -54,18 +54,21 @@ import trophyVariant from "@iconify-icons/mdi/trophy-variant";
 import { computed } from "vue";
 import BattlePreviewParticipant from "@renderer/components/battle/BattlePreviewParticipant.vue";
 import { Replay } from "@main/content/replays/replay";
-import ReplayPreviewMap from "@renderer/components/battle/ReplayPreviewMap.vue";
+import ReplayPreviewMap from "@renderer/components/maps/ReplayPreviewMap.vue";
 
 const props = defineProps<{
-    replay: Replay;
+    replay?: Replay;
     showSpoilers?: boolean;
 }>();
 
 const isFFA = computed(() => {
-    return props.replay.preset === "ffa";
+    return props.replay?.preset === "ffa";
 });
 
 const teams = computed(() => {
+    if (!props.replay) {
+        return [];
+    }
     const teams = Map.groupBy(props.replay.contenders, (contender) => contender.allyTeamId);
     const sortedTeams = new Map([...teams.entries()].sort());
     return sortedTeams;
