@@ -7,8 +7,7 @@
             <Playerlist />
         </div>
         <div class="settings flex-col gap-md">
-            <MapPreview :map="map" />
-            <!-- <MapOverviewCard :scriptName="map?.scriptName" /> -->
+            <MapPreview :map="map" :start-boxes-index="battleStore.battleOptions.startBoxesIndex" />
             <div class="flex-row gap-md">
                 <Select
                     :modelValue="battleStore.battleOptions.mapScriptName"
@@ -33,9 +32,9 @@
                     v-model="mapOptionsOpen"
                     title="Map Options"
                     :map="map"
-                    :startBoxes="battleStore.battleOptions.startBoxes"
+                    :startBoxes="battleStore.battleOptions.startBoxesIndex"
                     :startPosType="battleStore.battleOptions.startPosType"
-                    @set-map-options="setMapOptions"
+                    @start-boxes-index-changed="onMapBoxSetSelected"
                 />
             </div>
             <div class="flex-row gap-md">
@@ -104,7 +103,6 @@ import { battleActions, battleStore } from "@renderer/store/battle.store";
 import Button from "@renderer/components/controls/Button.vue";
 import { MapData } from "@main/content/maps/map-data";
 import { db } from "@renderer/store/db";
-import MapOverviewCard from "@renderer/components/maps/MapOverviewCard.vue";
 import listIcon from "@iconify-icons/mdi/format-list-bulleted";
 import cogIcon from "@iconify-icons/mdi/cog";
 import { useDexieLiveQuery } from "@renderer/composables/useDexieLiveQuery";
@@ -159,14 +157,15 @@ function setGameOptions(options: Record<string, any>) {
     battleStore.battleOptions.gameOptions = options;
 }
 
-function setMapOptions(startPosType: StartPosType, orientation: StartBoxOrientation, size: number) {
-    battleStore.battleOptions.startPosType = startPosType;
-    battleStore.battleOptions.startBoxes = getBoxes(orientation, size);
-}
-
 function onMapSelected(mapScriptName: string) {
     mapListOpen.value = false;
     battleStore.battleOptions.mapScriptName = mapScriptName;
+}
+
+function onMapBoxSetSelected(index: number) {
+    battleStore.battleOptions.startBoxesIndex = index;
+    battleStore.battleOptions.startBoxes = map.value.startBoxes[index];
+    battleActions.updateTeams();
 }
 </script>
 

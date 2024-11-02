@@ -5,11 +5,16 @@ import { Battle, BattleOptions, BattleWithMetadata, Bot, Faction, Player, StartP
 import { User } from "@main/model/user";
 import { _me, me } from "@renderer/store/me.store";
 import { deepToRaw } from "@renderer/utils/deep-toraw";
-import { defaultMapBoxes } from "@renderer/utils/start-boxes";
 import { reactive, readonly, watch } from "vue";
 
 // Store
-export const battleStore = reactive({} as Battle);
+export const battleStore = reactive({
+    title: "Battle",
+    isOnline: false,
+    battleOptions: {},
+    teams: [],
+    spectators: [],
+} as Battle);
 
 // Automatically computing metadata for the battle
 const _battleWithMetadataStore = reactive({} as BattleWithMetadata);
@@ -18,7 +23,6 @@ watch(
     battleStore,
     (battle) => {
         Object.assign(_battleWithMetadataStore, battle);
-
         _battleWithMetadataStore.participants = Object.values(battle.teams).flat();
         if (battle.started && !_battleWithMetadataStore.startTime) _battleWithMetadataStore.startTime = new Date();
     },
@@ -68,6 +72,19 @@ function userToPlayer(user: User): Player {
     } as Player;
 }
 
+function updateTeams() {
+    if (!battleStore.battleOptions?.startBoxes) return;
+    // get all participant in team order
+    const currentParticipants = Object.values(battleStore.teams).flat();
+    // update teams with selected BoxDetails
+    const numberOfTeams = battleStore.battleOptions?.startBoxes?.startboxes.length;
+    const maxPlayersPerStartbox = battleStore.battleOptions?.startBoxes?.maxPlayersPerStartbox;
+    const maxPlayersTotal = numberOfTeams * maxPlayersPerStartbox;
+    battleStore.teams = new Array(numberOfTeams).fill(null).map((_, i) => {
+        return currentParticipants.slice(i * maxPlayersPerStartbox, (i + 1) * maxPlayersPerStartbox);
+    });
+}
+
 function defaultOfflineBattle(engine?: EngineVersion, game?: GameVersion, map?: MapData) {
     const barbAi = engine?.ais.find((ai) => ai.shortName === "BARb");
     const battle = {
@@ -79,16 +96,12 @@ function defaultOfflineBattle(engine?: EngineVersion, game?: GameVersion, map?: 
             gameVersion: game?.gameVersion,
             mapScriptName: map?.scriptName,
             startPosType: StartPosType.Boxes,
-            startBoxes: defaultMapBoxes(),
             gameOptions: {},
             mapOptions: {},
             restrictions: [],
         } as BattleOptions,
         metadata: {},
-        teams: {
-            0: [],
-            1: [],
-        },
+        teams: [[], []], // Maybe make a Team interface with maxPlayersPerTeam or fetch that info from the map
         spectators: [],
         started: false,
     } as Battle;
@@ -135,7 +148,7 @@ watch(
         } else {
             _me.battleRoomState.isSpectator = false;
             // iterate over the map id, team to find the user's team
-            Object.entries(battle.teams).forEach(([teamId, team]) => {
+            battle.teams.forEach((team, teamId) => {
                 if (team.find((participant) => "user" in participant && participant.user.userId === me.userId)) {
                     _me.battleRoomState.teamId = teamId;
                 }
@@ -151,6 +164,7 @@ export const battleActions = {
     moveBotToTeam,
     removeBot,
     startBattle,
+    updateTeams,
     resetToDefaultBattle,
 };
 

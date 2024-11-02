@@ -3,7 +3,11 @@
         <div v-if="map" class="map" :style="aspectRatioDrivenStyle">
             <img :src="mapTextureUrl" />
             <div v-if="boxes" class="boxes">
-                <div v-for="(box, i) in boxes" :key="`box${i}`" v-startBox="box" class="box highlight" />
+                <div v-for="(box, i) in boxes" :key="`box${i}`" v-startBox="box" class="box highlight">
+                    <div class="box-tooltip">
+                        <span>{{ i + 1 }}</span>
+                    </div>
+                </div>
             </div>
         </div>
         <!-- <div class="start-positions">
@@ -129,6 +133,15 @@ const aspectRatioDrivenStyle = computed(() => {
     // &:nth-child(1) {
     //     background: rgba(23, 202, 32, 0.3);
     // }
+}
+
+.box-tooltip {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 1.5rem;
 }
 
 @keyframes subtleGlow {

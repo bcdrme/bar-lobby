@@ -1,3 +1,4 @@
+import { StartboxDetails } from "@main/content/maps/online-map";
 import { User } from "@main/model/user";
 
 export interface Battle {
@@ -5,7 +6,7 @@ export interface Battle {
     isOnline: boolean;
     battleOptions: BattleOptions;
     me: Player;
-    teams: Record<string, Array<Player | Bot>>;
+    teams: Array<Array<Player | Bot>>;
     spectators: Player[];
     started: boolean;
 }
@@ -20,7 +21,8 @@ export type BattleOptions = {
     gameVersion?: string;
     mapScriptName?: string;
     startPosType: StartPosType;
-    startBoxes: Record<number, StartBox>;
+    startBoxes: StartboxDetails;
+    startBoxesIndex: number;
     gameOptions: Record<string, string | number | boolean>;
     mapOptions: Record<string, string | number | boolean>;
     restrictions: Restriction[];

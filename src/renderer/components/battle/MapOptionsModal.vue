@@ -35,7 +35,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Ref, ref, watch } from "vue";
+import { Ref, ref, watch, watchEffect } from "vue";
 
 import Modal from "@renderer/components/common/Modal.vue";
 import Button from "@renderer/components/controls/Button.vue";
@@ -60,7 +60,11 @@ watch(
     }
 );
 
-const emit = defineEmits(["setMapOptions"]);
+const emit = defineEmits(["setMapOptions", "startBoxesIndexChanged"]);
+
+watchEffect(() => {
+    emit("startBoxesIndexChanged", selectedBoxSetIndex.value);
+});
 
 function close() {
     modal.value?.close();
