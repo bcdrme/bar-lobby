@@ -24,9 +24,7 @@ const props = defineProps<{
 
 const ais = computed(() => {
     const ais: Array<EngineAI | GameAI> = [];
-
     // TODO probably need a selected engine/game version store or something similar
-
     // if (engineVersion.value) {
     //     ais.push(...engineVersion.value.ais);
     // }

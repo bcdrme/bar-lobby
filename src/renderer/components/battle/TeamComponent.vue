@@ -34,7 +34,7 @@ import { computed } from "vue";
 import BotParticipant from "@renderer/components/battle/BotParticipant.vue";
 import PlayerParticipant from "@renderer/components/battle/PlayerParticipant.vue";
 import Button from "@renderer/components/controls/Button.vue";
-import { Bot, isBot, isPlayer, Player } from "@main/game/battle/battle-types";
+import { Bot, isBot, isPlayer, Player, StartPosType } from "@main/game/battle/battle-types";
 import { battleWithMetadataStore } from "@renderer/store/battle.store";
 import { me } from "@renderer/store/me.store";
 
@@ -48,7 +48,15 @@ const memberCount = computed(() => {
 });
 
 const maxPlayersPerTeam = computed(() => {
-    return battleWithMetadataStore.battleOptions.startBoxes?.maxPlayersPerStartbox || 1;
+    if (!battleWithMetadataStore.battleOptions.map) return 1;
+    if (battleWithMetadataStore.battleOptions.mapOptions.startPosType === StartPosType.Boxes)
+        return battleWithMetadataStore.battleOptions.map.startBoxes[battleWithMetadataStore.battleOptions.mapOptions.startBoxesIndex]
+            .maxPlayersPerStartbox;
+    if (battleWithMetadataStore.battleOptions.mapOptions.startPosType === StartPosType.Fixed)
+        return battleWithMetadataStore.battleOptions.map.startPositions.team[
+            battleWithMetadataStore.battleOptions.mapOptions.fixedPositionsIndex
+        ].playersPerTeam;
+    return 1;
 });
 
 const showJoin = computed(() => {
@@ -59,18 +67,23 @@ const emit = defineEmits(["addBotClicked", "onJoinClicked", "onDragStart", "onDr
 function addBotClicked(teamId: number) {
     emit("addBotClicked", teamId);
 }
+
 function onJoinClicked(teamId: number) {
     emit("onJoinClicked", teamId);
 }
+
 function onDragStart(event: DragEvent, member: Player | Bot) {
     emit("onDragStart", event, member);
 }
+
 function onDragEnd() {
     emit("onDragEnd");
 }
+
 function onDragEnter(event: DragEvent, teamId: number) {
     emit("onDragEnter", event, teamId);
 }
+
 function onDrop(event: DragEvent, teamId: number) {
     emit("onDrop", event, teamId);
 }
