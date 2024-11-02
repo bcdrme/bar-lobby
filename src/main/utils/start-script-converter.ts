@@ -112,7 +112,7 @@ class StartScriptConverter {
         return {
             gametype: battle.battleOptions.gameVersion,
             mapname: battle.battleOptions.mapScriptName,
-            modoptions: battle.battleOptions.gameOptions,
+            modoptions: battle.battleOptions.gameMode,
             ishost: 1,
             myplayername: battle.me.user.username,
             startpostype: battle.battleOptions.startPosType,

@@ -24,34 +24,8 @@
                         </Button>
                     </div>
                 </div>
-                <div v-if="battleStore.battleOptions.map.startPositions">
-                    <h4>Fixed positions</h4>
-                    <div class="box-buttons">
-                        <Button
-                            v-for="(teamSet, i) in battleStore.battleOptions.map.startPositions.team"
-                            :key="`team${i}`"
-                            @click="
-                                () => {
-                                    delete battleStore.battleOptions.mapOptions.startBoxesIndex;
-                                    battleStore.battleOptions.mapOptions.startPosType = StartPosType.Fixed;
-                                    battleStore.battleOptions.mapOptions.fixedPositionsIndex = i;
-                                }
-                            "
-                            :disabled="battleStore.battleOptions.mapOptions.startPosType === StartPosType.Fixed"
-                            ><span>{{ i + 1 }}</span></Button
-                        >
-                    </div>
-                </div>
-                <div>
-                    <h4>FFA</h4>
-                    <div class="box-buttons">
-                        <Button>
-                            <span>Random</span>
-                        </Button>
-                    </div>
-                </div>
                 <div class="flex-col gap-sm">
-                    <h4>Custom</h4>
+                    <h4>Custom boxes</h4>
                     <div class="box-buttons">
                         <Button>
                             <img src="/src/renderer/assets/images/icons/east-vs-west.png" />
@@ -68,6 +42,27 @@
                     </div>
                     <div class="box-buttons">
                         <Range v-model="customBoxRange" :min="5" :max="100" :step="5" />
+                    </div>
+                </div>
+                <div>
+                    <h4>Fixed positions</h4>
+                    <div class="box-buttons">
+                        <Button
+                            v-for="(teamSet, i) in battleStore.battleOptions.map.startPositions?.team"
+                            :key="`team${i}`"
+                            @click="
+                                () => {
+                                    delete battleStore.battleOptions.mapOptions.startBoxesIndex;
+                                    battleStore.battleOptions.mapOptions.startPosType = StartPosType.Fixed;
+                                    battleStore.battleOptions.mapOptions.fixedPositionsIndex = i;
+                                }
+                            "
+                            :disabled="battleStore.battleOptions.mapOptions.startPosType === StartPosType.Fixed"
+                            ><span>{{ i + 1 }}</span></Button
+                        >
+                        <Button>
+                            <span>Random</span>
+                        </Button>
                     </div>
                 </div>
                 <div class="actions">

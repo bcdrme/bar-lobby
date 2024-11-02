@@ -73,7 +73,7 @@
                 <LuaOptionsModal
                     id="game-options"
                     v-model="gameOptionsOpen"
-                    :luaOptions="battleStore.battleOptions.gameOptions"
+                    :luaOptions="battleStore.battleOptions.gameMode"
                     :title="`Game Options - ${battleStore.battleOptions.gameVersion}`"
                     :sections="gameOptions"
                     @set-options="setGameOptions"
@@ -258,7 +258,7 @@ async function openGameOptions() {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function setGameOptions(options: Record<string, any>) {
-    battleStore.battleOptions.gameOptions = options;
+    battleStore.battleOptions.gameMode = options;
 }
 
 function setMapOptions(startPosType: StartPosType, orientation: StartBoxOrientation, size: number) {

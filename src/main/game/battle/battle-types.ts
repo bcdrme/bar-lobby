@@ -16,10 +16,15 @@ export interface BattleWithMetadata extends Battle {
     participants: Array<Player | Bot>;
 }
 
+export type GameMode = {
+    label: string;
+    options: Record<string, string | number | boolean>;
+};
+
 export type BattleOptions = {
     engineVersion?: string;
     gameVersion?: string;
-    gameOptions: Record<string, string | number | boolean>;
+    gameMode: GameMode;
     map?: MapData;
     mapOptions: {
         startPosType: StartPosType;
