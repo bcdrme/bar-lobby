@@ -1,6 +1,6 @@
 <template>
     <div v-if="map" class="map">
-        <img :src="mapTextureUrl" />
+        <img loading="lazy" :src="mapTextureUrl" />
         <div class="boxes">
             <div v-for="team in teams" :key="team.allyTeamId" v-startBox="team.startBox" class="box" />
         </div>

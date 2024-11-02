@@ -1,7 +1,7 @@
 <template>
     <div class="map-container">
         <div v-if="map" class="map" :style="aspectRatioDrivenStyle">
-            <img :src="mapTextureUrl" />
+            <img loading="lazy" :src="mapTextureUrl" />
             <div v-if="battleStore.battleOptions.mapOptions.startPosType === StartPosType.Boxes && boxes" class="boxes">
                 <div v-for="(box, i) in boxes" :key="`box${i}`" v-startBox="box" class="box highlight">
                     <div class="box-tooltip">

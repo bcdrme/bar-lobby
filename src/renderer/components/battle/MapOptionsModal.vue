@@ -1,5 +1,5 @@
 <template>
-    <Modal ref="modal" title="Map options" class="map-list-modal">
+    <Modal ref="modal" title="Map options" style="height: 80vh; max-width: 120vh">
         <div class="container">
             <div class="map-preview-container">
                 <MapBattlePreview />
@@ -105,6 +105,11 @@ function close() {
 </script>
 
 <style lang="scss" scoped>
+.map-options-modal {
+    height: 80vh;
+    width: 1440px;
+}
+
 .container {
     height: 100%;
     position: relative;
