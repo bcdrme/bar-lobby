@@ -7,10 +7,12 @@ export interface OnlineMap {
     description: string;
     displayName: string;
     gameType: string[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     inGameShots: any[];
     inPool: boolean;
     mapLists: string[];
     minPlayerCount: number;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     perspectiveShot: any[];
     photo: ImageData[];
     playerCount: number;

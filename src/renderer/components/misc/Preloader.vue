@@ -13,11 +13,11 @@ import { audioApi } from "@renderer/audio/audio";
 import { backgroundImages, fontFiles } from "@renderer/assets/assetFiles";
 import { initMapsStore } from "@renderer/store/maps.store";
 import { initReplaysStore } from "@renderer/store/replays.store";
-import { db, initDb } from "@renderer/store/db";
+import { initDb } from "@renderer/store/db";
 
 const emit = defineEmits(["complete"]);
 
-const thingsToPreload = [initMapsStore, initReplaysStore, initDb];
+const thingsToPreload = [initDb, loadAllFonts, initMapsStore, initReplaysStore];
 
 const total = Object.values(fontFiles).length + thingsToPreload.length;
 const progress = ref(0);
@@ -31,10 +31,6 @@ document.documentElement.style.setProperty("--background", `url(${randomBackgrou
 
 onMounted(async () => {
     try {
-        for (const fontFile of Object.values(fontFiles)) {
-            await loadFont(fontFile);
-            progress.value++;
-        }
         for (const thing of thingsToPreload) {
             await thing();
             progress.value++;
@@ -45,6 +41,12 @@ onMounted(async () => {
     audioApi.load();
     emit("complete");
 });
+
+async function loadAllFonts() {
+    for (const fontFile of Object.values(fontFiles)) {
+        await loadFont(fontFile);
+    }
+}
 
 async function loadFont(url: string) {
     console.debug("Loading font:", url);
