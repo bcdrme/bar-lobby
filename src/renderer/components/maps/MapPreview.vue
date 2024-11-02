@@ -164,29 +164,29 @@ function drawStartPositions() {
         startPositionsGfx.visible = true;
         startPositionsGfx.clear();
     }
-    const startPositions =
-        props.startPositions ??
-        props.map.startPositions?.map((pos) => {
-            return {
-                position: pos,
-                rgbColor: { r: 255, g: 255, b: 255 },
-            };
-        }) ??
-        [];
-    for (const startPos of startPositions) {
-        if (!startPos) {
-            continue;
-        }
-        let color = Color.shared.setValue(0xffffff);
-        if (startPos.rgbColor) {
-            color = new Color([startPos.rgbColor.r / 255, startPos.rgbColor.g / 255, startPos.rgbColor.b / 255]);
-        }
-        startPositionsGfx.fill(color);
-        const x = (startPos.position.x / (props.map.width * 512)) * mapSprite.width + mapSprite.x;
-        const y = (startPos.position.z / (props.map.height * 512)) * mapSprite.height + mapSprite.y;
-        const radius = 5;
-        startPositionsGfx.ellipse(x - radius * 0.5, y - radius * 0.5, radius, radius);
-    }
+    // const startPositions =
+    //     props.startPositions ??
+    //     props.map.startPositions?.map((pos) => {
+    //         return {
+    //             position: pos,
+    //             rgbColor: { r: 255, g: 255, b: 255 },
+    //         };
+    //     }) ??
+    //     [];
+    // for (const startPos of startPositions) {
+    //     if (!startPos) {
+    //         continue;
+    //     }
+    //     let color = Color.shared.setValue(0xffffff);
+    //     if (startPos.rgbColor) {
+    //         color = new Color([startPos.rgbColor.r / 255, startPos.rgbColor.g / 255, startPos.rgbColor.b / 255]);
+    //     }
+    //     startPositionsGfx.fill(color);
+    //     const x = (startPos.position.x / (props.map.width * 512)) * mapSprite.width + mapSprite.x;
+    //     const y = (startPos.position.z / (props.map.height * 512)) * mapSprite.height + mapSprite.y;
+    //     const radius = 5;
+    //     startPositionsGfx.ellipse(x - radius * 0.5, y - radius * 0.5, radius, radius);
+    // }
 }
 </script>
 

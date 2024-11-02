@@ -23,9 +23,7 @@ const props = defineProps<{
 }>();
 
 const map = useDexieLiveQueryWithDeps([() => props.scriptName], () => db.maps.get(props.scriptName));
-
 const cache = useImageBlobUrlCache();
-
 const mapSize = computed(() => (map.value ? map.value.width + "x" + map.value.height : "Unknown"));
 const imageUrl = computed(() => (map.value?.images?.texture ? cache.get(map.value.scriptName, map.value.images.texture) : defaultMiniMap));
 

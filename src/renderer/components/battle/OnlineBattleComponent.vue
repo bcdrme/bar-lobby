@@ -26,7 +26,7 @@
                 :startPosType="battleStore.battleOptions.startPosType"
                 :startBoxes="battleStore.battleOptions.startBoxes"
             /> -->
-            <MapOverviewCard v-if="map" :map="map" />
+            <MapOverviewCard :script-name="battleStore.battleOptions.mapScriptName" />
             <div class="flex-row gap-md">
                 <Select
                     :modelValue="battleStore.battleOptions.mapScriptName"
