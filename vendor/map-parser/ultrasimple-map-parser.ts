@@ -21,6 +21,9 @@ export class UltraSimpleMapParser {
                 throw new Error(`${mapFilePath} - ${fileExt} extension is not supported, .sd7 and .sdz only.`);
             }
             const archive = await this.extractSd7(mapFilePath, tempArchiveDir);
+            if(!archive.mapInfo) {
+                throw new Error(`${mapFilePath} - mapinfo.lua not found in the archive`);
+            }
             const mapInfo = await this.parseMapInfo(archive.mapInfo);
             let scriptName = "";
             if (mapInfo && mapInfo.name && mapInfo.version && mapInfo.name.includes(mapInfo.version!)) {

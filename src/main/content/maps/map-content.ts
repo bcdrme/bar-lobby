@@ -37,10 +37,15 @@ export class MapContentAPI extends PrDownloaderAPI<MapData> {
         const sd7filePaths = filePaths.filter((path) => path.endsWith(".sd7"));
         log.debug(`Found ${sd7filePaths.length} maps`);
         for (const filePath of sd7filePaths) {
-            const mapName = await this.getMapNameFromFile(filePath);
-            const fileName = path.basename(filePath);
-            this.mapNameFileNameLookup[mapName] = fileName;
-            this.fileNameMapNameLookup[fileName] = mapName;
+            try {
+                const mapName = await this.getMapNameFromFile(filePath);
+                const fileName = path.basename(filePath);
+                this.mapNameFileNameLookup[mapName] = fileName;
+                this.fileNameMapNameLookup[fileName] = mapName;
+            } catch (err) {
+                log.error(`File may be corrupted, removing ${filePath}: ${err}`);
+                fs.promises.rm(path.join(this.mapsDir, filePath));
+            }
         }
         log.info(`Found ${Object.keys(this.mapNameFileNameLookup).length} maps`);
     }
