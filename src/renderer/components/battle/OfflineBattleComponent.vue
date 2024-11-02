@@ -27,25 +27,7 @@
                 <MapListModal v-model="mapListOpen" title="Maps" @map-selected="onMapSelected" />
                 <MapOptionsModal v-if="battleStore.battleOptions.map" v-model="mapOptionsOpen" />
             </div>
-            <div>
-                <Select
-                    :modelValue="battleStore.battleOptions.gameMode"
-                    optionLabel="label"
-                    :options="gameModeListOptions"
-                    label="Presets"
-                    @update:model-value="onGameModeSelected"
-                />
-                <div class="custom-game-options"></div>
-                <Button class="fullwidth" @click="openGameOptions">Configure Game Options</Button>
-                <LuaOptionsModal
-                    id="game-options"
-                    v-model="gameOptionsOpen"
-                    :luaOptions="battleStore.battleOptions.gameMode"
-                    :title="`Game Options - ${battleStore.battleOptions.gameVersion}`"
-                    :sections="gameOptions"
-                    @set-options="setGameOptions"
-                />
-            </div>
+            <GameModeComponent />
             <div v-if="settingsStore.devMode">
                 <Select
                     :modelValue="battleStore.battleOptions.gameVersion"
@@ -87,8 +69,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Ref, ref } from "vue";
-import { LuaOptionSection } from "@main/content/game/lua-options";
+import { ref } from "vue";
 import { gameStore } from "@renderer/store/game.store";
 import BattleTitleComponent from "@renderer/components/battle/BattleTitleComponent.vue";
 import Playerlist from "@renderer/components/battle/Playerlist.vue";
@@ -107,25 +88,13 @@ import DownloadContentButton from "@renderer/components/controls/DownloadContent
 import MapBattlePreview from "@renderer/components/maps/MapBattlePreview.vue";
 import { MapData } from "@main/content/maps/map-data";
 import { settingsStore } from "@renderer/store/settings.store";
-import { GameMode } from "@main/game/battle/battle-types";
+import GameModeComponent from "@renderer/components/battle/GameModeComponent.vue";
 
 const mapListOpen = ref(false);
 const mapOptionsOpen = ref(false);
-const gameOptionsOpen = ref(false);
 const mapListOptions = useDexieLiveQuery(() => db.maps.toArray());
 const gameListOptions = useDexieLiveQuery(() => db.gameVersions.toArray());
 const engineListOptions = useDexieLiveQuery(() => db.engineVersions.toArray());
-
-//TODO have theses presets come from the game
-const gameModeListOptions: GameMode[] = [
-    { label: "Skirmish", options: {} },
-    { label: "FFA", options: {} },
-    { label: "Raptors", options: {} },
-    { label: "Scavengers", options: {} },
-    { label: "Custom", options: {} },
-];
-
-const gameOptions: Ref<LuaOptionSection[]> = ref([]);
 
 function openMapList() {
     mapListOpen.value = true;
@@ -146,20 +115,6 @@ function onGameSelected(gameVersion: string) {
 function onMapSelected(map: MapData) {
     battleStore.battleOptions.map = map;
     mapListOpen.value = false;
-}
-
-async function openGameOptions() {
-    gameOptionsOpen.value = true;
-}
-
-function onGameModeSelected(gameMode: GameMode) {
-    battleStore.battleOptions.gameMode = gameMode;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function setGameOptions(options: Record<string, any>) {
-    battleStore.battleOptions.gameMode.label = "Custom";
-    battleStore.battleOptions.gameMode.options = options;
 }
 </script>
 
@@ -215,16 +170,5 @@ function setGameOptions(options: Record<string, any>) {
 
 .checkbox {
     margin-right: 10px;
-}
-
-.custom-game-options {
-    min-height: 200px;
-    overflow-y: scroll;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background-color: rgba(0, 0, 0, 0.3);
-    gap: 10px;
 }
 </style>

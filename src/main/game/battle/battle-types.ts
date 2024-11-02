@@ -1,4 +1,3 @@
-import { LuaOptionSection } from "@main/content/game/lua-options";
 import { MapData } from "@main/content/maps/map-data";
 import { User } from "@main/model/user";
 
@@ -19,7 +18,8 @@ export interface BattleWithMetadata extends Battle {
 
 export type GameMode = {
     label: string;
-    options: LuaOptionSection[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    options: Record<string, any>;
 };
 
 export type BattleOptions = {

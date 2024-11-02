@@ -1,6 +1,7 @@
 import { GameVersion } from "@main/content/game/game-version";
+import { LuaOption } from "@main/content/game/lua-options";
 import { db } from "@renderer/store/db";
-import { reactive } from "vue";
+import { reactive, watch } from "vue";
 
 export const gameStore = reactive({
     isInitialized: false,
@@ -9,6 +10,7 @@ export const gameStore = reactive({
     isInitialized: boolean;
     isGameRunning: boolean;
     latestGameVersion?: GameVersion;
+    optionsMap?: Record<string, LuaOption & { section: string }>;
 });
 
 async function refreshStore() {
@@ -18,6 +20,23 @@ async function refreshStore() {
     const latestGameVersion = await db.gameVersions.orderBy("gameVersion").last();
     gameStore.latestGameVersion = latestGameVersion;
 }
+
+watch(
+    () => gameStore.latestGameVersion,
+    (latestGameVersion) => {
+        if (latestGameVersion) {
+            gameStore.optionsMap = latestGameVersion.luaOptionSections.reduce(
+                (acc, section) => {
+                    for (const option of section.options) {
+                        acc[option.key] = { ...option, section: section.name };
+                    }
+                    return acc;
+                },
+                {} as Record<string, LuaOption & { section: string }>
+            );
+        }
+    }
+);
 
 export async function initGameStore() {
     window.downloads.onDownloadGameComplete(async (downloadInfo) => {

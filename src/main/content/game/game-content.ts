@@ -80,10 +80,10 @@ export class GameContentAPI extends PrDownloaderAPI<GameVersion> {
         for (const packageFile of packages) {
             const packageMd5 = packageFile.replace(".sdp", "");
             const gameVersion = this.packageGameVersionLookup[packageMd5];
-            const options = await this.getGameOptions(packageMd5);
+            const luaOptionSections = await this.getGameOptions(packageMd5);
             const ais = await this.getAis(packageMd5);
             if (gameVersion) {
-                this.installedVersions.push({ gameVersion, packageMd5, options, ais });
+                this.installedVersions.push({ gameVersion, packageMd5, luaOptionSections, ais });
             }
         }
         this.sortVersions();
@@ -268,9 +268,9 @@ export class GameContentAPI extends PrDownloaderAPI<GameVersion> {
             await this.scanPackagesDir();
         } else {
             const packageMd5 = this.gameVersionPackageLookup[gameVersion];
-            const options = await this.getGameOptions(packageMd5);
+            const luaOptionSections = await this.getGameOptions(packageMd5);
             const ais = await this.getAis(packageMd5);
-            this.installedVersions.push({ gameVersion, packageMd5, options, ais });
+            this.installedVersions.push({ gameVersion, packageMd5, luaOptionSections, ais });
             this.sortVersions();
         }
     }

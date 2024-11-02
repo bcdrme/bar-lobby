@@ -3,7 +3,7 @@ import { LuaOptionSection } from "@main/content/game/lua-options";
 export type GameVersion = {
     gameVersion: string;
     packageMd5: string;
-    options: LuaOptionSection[];
+    luaOptionSections: LuaOptionSection[];
     ais: GameAI[];
 };
 
