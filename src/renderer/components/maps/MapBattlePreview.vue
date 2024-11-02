@@ -161,8 +161,8 @@ const aspectRatioDrivenStyle = computed(() => {
 }
 
 .highlight {
-    border: 2px dashed rgba(255, 255, 255, 1); /* More defined gray border */
-    animation: subtleGlow 1.5s infinite ease-in-out; /* Slightly shorter for a bit more activity */
+    border: 2px dashed rgba(255, 255, 255, 1);
+    //animation: subtleGlow 1.5s infinite ease-in-out; // super resource intensive unfortunately
     transition: all 0.2s ease;
 }
 </style>
