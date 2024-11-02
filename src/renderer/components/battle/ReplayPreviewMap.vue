@@ -71,8 +71,8 @@ watchEffect(() => {
     if (!map.value?.images?.texture) return;
     createImageBitmap(map.value?.images?.texture)
         .then((imgBitmap) => {
-            mapWidthElmos.value = imgBitmap.width;
-            mapHeightElmos.value = imgBitmap.height;
+            mapWidthElmos.value = map.value.width * 512;
+            mapHeightElmos.value = map.value.height * 512;
             imgBitmap.close();
         })
         .catch();

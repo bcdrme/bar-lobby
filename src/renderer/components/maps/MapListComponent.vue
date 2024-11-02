@@ -56,7 +56,7 @@ const { reset } = useInfiniteScroll(
     () => {
         limit.value += 10;
     },
-    { distance: 20 }
+    { distance: 200 }
 );
 watch([searchVal, sortMethod], () => {
     reset();
