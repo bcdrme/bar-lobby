@@ -144,6 +144,7 @@ function save() {
 
 <style lang="scss" scoped>
 .container {
+    height: 100%;
     position: relative;
     display: flex;
     gap: 10px;

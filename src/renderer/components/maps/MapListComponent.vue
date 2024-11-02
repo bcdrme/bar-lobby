@@ -6,7 +6,7 @@
         </div>
 
         <div class="flex-col flex-grow fullheight">
-            <div class="scroll-container" style="overflow-y: scroll">
+            <div class="scroll-container" style="overflow-y: scroll" ref="el">
                 <div class="maps">
                     <TransitionGroup name="maps-list">
                         <MapOverviewCard v-for="map in maps" :key="map.scriptName" :scriptName="map.scriptName" @click="mapSelected(map)" />
@@ -26,7 +26,7 @@
  * - Demo map button that launches a simple offline game on the map
  */
 
-import { Ref, ref } from "vue";
+import { Ref, ref, watch } from "vue";
 
 import SearchBox from "@renderer/components/controls/SearchBox.vue";
 import Select from "@renderer/components/controls/Select.vue";
@@ -34,6 +34,8 @@ import MapOverviewCard from "@renderer/components/maps/MapOverviewCard.vue";
 import { MapData } from "@main/content/maps/map-data";
 import { db } from "@renderer/store/db";
 import { useDexieLiveQueryWithDeps } from "@renderer/composables/useDexieLiveQuery";
+
+import { useInfiniteScroll } from "@vueuse/core";
 
 type SortMethod = { label: string; dbKey: string };
 
@@ -47,12 +49,24 @@ const emit = defineEmits<{
     (event: "map-selected", map: MapData): void;
 }>();
 
-const maps = useDexieLiveQueryWithDeps([searchVal, sortMethod], () =>
+const limit = ref(10);
+const el = ref<HTMLElement | null>(null);
+const { reset } = useInfiniteScroll(
+    el,
+    () => {
+        limit.value += 10;
+    },
+    { distance: 20 }
+);
+watch([searchVal, sortMethod], () => {
+    reset();
+});
+const maps = useDexieLiveQueryWithDeps([searchVal, sortMethod, limit], () =>
     db.maps
         // .where("friendlyName")
         // .startsWithIgnoreCase(searchVal.value)
         .filter((map) => map.friendlyName.toLocaleLowerCase().includes(searchVal.value.toLocaleLowerCase()))
-        .limit(30)
+        .limit(limit.value)
         .sortBy(sortMethod.value.dbKey)
 );
 
