@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="container">
         <Select
             :modelValue="battleStore.battleOptions.gameMode"
             optionLabel="label"
@@ -7,7 +7,7 @@
             label="Presets"
             @update:model-value="onGameModeSelected"
         />
-        <div class="custom-game-options">
+        <div class="custom-game-options scroll-container">
             <div v-for="[section, options] in groupedBySection.entries()" :key="section.name">
                 <div class="overriden-section">{{ section.name }}</div>
                 <div class="overriden-game-option" v-for="(value, key) in options" :key="key">
@@ -21,7 +21,7 @@
             id="game-options"
             v-model="gameOptionsOpen"
             :luaOptions="battleStore.battleOptions.gameMode"
-            :title="`Game Options - ${battleStore.battleOptions.gameVersion}`"
+            title="Game Options"
             :sections="gameStore.latestGameVersion.luaOptionSections"
         />
     </div>
@@ -79,10 +79,14 @@ function onGameModeSelected(gameMode: GameMode) {
 </script>
 
 <style lang="scss" scoped>
+.container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
 .custom-game-options {
     padding: 10px;
-    height: 200px;
-    overflow-y: scroll;
     display: flex;
     flex-direction: column;
     border: 1px solid rgba(255, 255, 255, 0.1);

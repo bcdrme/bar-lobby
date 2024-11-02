@@ -114,6 +114,7 @@ const rgbColors = [
 
 <style lang="scss" scoped>
 .map-container {
+    flex-shrink: 0;
     aspect-ratio: 1;
     overflow: hidden;
     display: flex;
