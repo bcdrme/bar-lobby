@@ -2,6 +2,9 @@
     <Modal ref="modal" :title="title" class="map-list-modal">
         <div class="container">
             <!-- <MapPreview :map="map" :startPosType="startPosType" :startBoxes="startBoxes" /> -->
+            <div class="map-preview-container">
+                <MapPreview :map="map" />
+            </div>
             <div class="options flex-col gap-md">
                 <Options
                     :modelValue="startPosType"
@@ -49,6 +52,7 @@ import Range from "@renderer/components/controls/Range.vue";
 import { getBoxes, StartBoxOrientation } from "@renderer/utils/start-boxes";
 import { StartBox, StartPosType } from "@main/game/battle/battle-types";
 import { MapData } from "@main/content/maps/map-data";
+import MapPreview from "@renderer/components/maps/MapPreview.vue";
 
 const modal: Ref<null | InstanceType<typeof Modal>> = ref(null);
 
@@ -147,6 +151,11 @@ function save() {
     display: flex;
     gap: 10px;
 }
+
+.map-preview-container {
+    aspect-ratio: 1;
+}
+
 .box-buttons {
     display: flex;
     flex-direction: row;
@@ -165,12 +174,15 @@ function save() {
         opacity: 0.7;
     }
 }
+
 .options {
     width: 100%;
 }
+
 .control {
     max-height: 80px;
 }
+
 .actions {
     display: grid;
     grid-template-columns: 1fr 1fr;

@@ -8,9 +8,7 @@
             <div v-if="map" class="gap-md page">
                 <h1>{{ map.friendlyName }}</h1>
                 <div class="container">
-                    <div class="map-preview-container">
-                        <!-- <MapPreview :map="map" /> -->
-                    </div>
+                    <MapPreview :map="map" />
                     <div class="details">
                         <div class="detail-text"><b>Description:</b> {{ map.description }}</div>
                         <!-- <div v-if="map.mapInfo?.author" class="detail-text"><b>Author:</b> {{ map.mapInfo.author }}</div>
@@ -50,6 +48,7 @@ import { gameStore } from "@renderer/store/game.store";
 import { downloadMap } from "@renderer/store/maps.store";
 import { useDexieLiveQueryWithDeps } from "@renderer/composables/useDexieLiveQuery";
 import Panel from "@renderer/components/common/Panel.vue";
+import MapPreview from "@renderer/components/maps/MapPreview.vue";
 
 const router = useRouter();
 const { id } = defineProps<{
@@ -67,18 +66,14 @@ async function play() {
 <style lang="scss" scoped>
 .view {
     padding: 20px;
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    gap: 10px;
     overflow: hidden;
 }
 
 .page {
-    display: flex;
-    flex-direction: column;
     height: 100%;
     max-height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .container {
@@ -88,14 +83,10 @@ async function play() {
     height: 100%;
 }
 
-.map-preview-container {
-    height: 100%;
-    aspect-ratio: 1;
-}
-
 .details {
     display: flex;
     flex-direction: column;
     gap: 5px;
+    width: 512px;
 }
 </style>
