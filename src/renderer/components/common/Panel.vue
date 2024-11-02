@@ -4,7 +4,7 @@
             <slot name="header" />
         </div>
 
-        <div class="content">
+        <div class="content" :style="{ padding: noPadding ? 0 : '30px' }">
             <slot />
         </div>
 
@@ -17,6 +17,7 @@
 <script lang="ts" setup>
 defineProps<{
     empty?: boolean;
+    noPadding?: boolean;
 }>();
 </script>
 

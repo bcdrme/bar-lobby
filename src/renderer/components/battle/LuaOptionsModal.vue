@@ -1,5 +1,5 @@
 <template>
-    <Modal ref="modal" :title="title">
+    <Modal ref="modal" :title="title" no-padding>
         <TabView class="lua-options-panel">
             <TabPanel v-for="section of sections.filter((section) => !section.hidden)" :key="section.key" :header="section.name">
                 <div class="gridform">
@@ -104,7 +104,7 @@ function close() {
 }
 
 function reset() {
-    Object.assign(battleStore.battleOptions.gameMode.options, {});
+    battleStore.battleOptions.gameMode.options = {};
 }
 </script>
 
