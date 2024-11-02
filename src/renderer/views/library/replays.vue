@@ -70,9 +70,9 @@
                 <div class="right">
                     <ReplayPreview v-if="selectedReplay" :replay="selectedReplay" :showSpoilers="showSpoilers">
                         <template #actions="{ replay }">
-                            <Button v-if="hasMap" class="green flex-grow" @click="watchReplay(replay)">Watch</Button>
-                            <Button v-else-if="downloading" class="green flex-grow" disabled>Downloading map ...</Button>
-                            <Button v-else class="red flex-grow" @click="downloadMap(replay)">Download map</Button>
+                            <DownloadContentButton :scriptName="replay.mapScriptName" @click="watchReplay(replay)"
+                                >Watch</DownloadContentButton
+                            >
                             <Button @click="showReplayFile(replay)">Show File</Button>
                         </template>
                     </ReplayPreview>
@@ -100,7 +100,7 @@
 
 import { format } from "date-fns";
 import Column from "primevue/column";
-import { computed, Ref, ref, shallowRef } from "vue";
+import { Ref, ref, shallowRef } from "vue";
 
 import Button from "@renderer/components/controls/Button.vue";
 import Checkbox from "@renderer/components/controls/Checkbox.vue";
@@ -112,8 +112,7 @@ import Panel from "@renderer/components/common/Panel.vue";
 import { db } from "@renderer/store/db";
 import { useDexieLiveQueryWithDeps } from "@renderer/composables/useDexieLiveQuery";
 import ReplayPreview from "@renderer/components/battle/ReplayPreview.vue";
-import { downloadsStore } from "@renderer/store/downloads.store";
-import { mapFileNameToFriendlyName } from "@main/content/maps/map-data";
+import DownloadContentButton from "@renderer/components/controls/DownloadContentButton.vue";
 
 const endedNormally: Ref<boolean | null> = ref(true);
 const showSpoilers = ref(true);
@@ -140,12 +139,6 @@ const replays = useDexieLiveQueryWithDeps([endedNormally, offset, limit, sortFie
     }
     return query.reverse().sortBy(sortField.value);
 });
-
-const hasMap = useDexieLiveQueryWithDeps([selectedReplay], () => db.maps.get(selectedReplay.value?.mapScriptName));
-//TODO inefficient and potentially buggy because of the mapFileNameToFriendlyName
-const downloading = computed(() =>
-    downloadsStore.mapDownloads.some((d) => d.name === mapFileNameToFriendlyName(selectedReplay.value?.mapScriptName))
-);
 
 function onPage(event: DataTablePageEvent) {
     offset.value = event.first;

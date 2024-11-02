@@ -1,6 +1,6 @@
 <template>
     <div class="flex-col gap-md fullheight">
-        <MapOverviewCard v-if="map" :map="map" :friendlyName="mapName" />
+        <MapOverviewCard v-if="map" :map="map" />
         <div class="teams scroll-container">
             <div v-if="isFFA">
                 <div class="team-title">Players</div>

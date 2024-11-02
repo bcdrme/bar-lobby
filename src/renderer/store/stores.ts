@@ -7,6 +7,10 @@ import { initMapsStore } from "@renderer/store/maps.store";
 import { initReplaysStore } from "@renderer/store/replays.store";
 import { initSettingsStore } from "@renderer/store/settings.store";
 
-export async function initStores() {
-    await Promise.all([initMapsStore(), initReplaysStore(), initSettingsStore(), initInfosStore(), initGameStore(), initDownloadsStore(), initBattleStore(), initEnginesStore(), initBattleStore()]);
+export async function initPreMountStores() {
+    await Promise.all([initSettingsStore(), initInfosStore(), initGameStore(), initDownloadsStore(), initBattleStore(), initEnginesStore()]);
+}
+
+export async function initPostMountStores() {
+    await Promise.all([initMapsStore(), initReplaysStore()]);
 }

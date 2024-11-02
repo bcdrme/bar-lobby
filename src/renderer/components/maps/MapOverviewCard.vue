@@ -2,7 +2,7 @@
     <div class="map">
         <div class="background" :style="`background-image: url('${imageUrl}')`"></div>
         <div class="name">
-            {{ friendlyName }}
+            {{ map?.friendlyName }}
         </div>
         <div class="attributes">
             <div>{{ mapSize }}</div>
@@ -11,28 +11,32 @@
 </template>
 
 <script lang="ts" setup>
-import { MapData } from "@main/content/maps/map-data";
 import defaultMiniMap from "/src/renderer/assets/images/default-minimap.png?url";
-import { ref, watch } from "vue";
+import { computed, watchEffect } from "vue";
 import { useImageBlobUrlCache } from "@renderer/composables/useImageBlobUrlCache";
+import { fetchMapImages } from "@renderer/store/maps.store";
+import { useDexieLiveQueryWithDeps } from "@renderer/composables/useDexieLiveQuery";
+import { db } from "@renderer/store/db";
 
 const props = defineProps<{
-    map?: MapData;
-    friendlyName: string;
+    scriptName: string;
 }>();
+
+const map = useDexieLiveQueryWithDeps([() => props.scriptName], () => db.maps.get(props.scriptName));
 
 const cache = useImageBlobUrlCache();
 
-const mapSize = ref(props.map ? props.map.width + "x" + props.map.height : "Unknown");
-const imageUrl = ref(props.map ? cache.get(props.map.fileName, props.map.images.texture) : defaultMiniMap);
+const mapSize = computed(() => (map.value ? map.value.width + "x" + map.value.height : "Unknown"));
+const imageUrl = computed(() => (map.value?.images?.texture ? cache.get(map.value.fileName, map.value.images.texture) : defaultMiniMap));
 
-watch(
-    () => props.map,
-    () => {
-        mapSize.value = props.map ? props.map.width + "x" + props.map.height : "Unknown";
-        imageUrl.value = props.map ? cache.get(props.map.fileName, props.map.images.texture) : defaultMiniMap;
+watchEffect(() => {
+    if (!map.value) {
+        return;
     }
-);
+    if (!map.value.images?.texture) {
+        fetchMapImages(map.value);
+    }
+});
 </script>
 
 <style lang="scss" scoped>

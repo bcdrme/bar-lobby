@@ -1,6 +1,6 @@
 <template>
     <div class="flex-col gap-md fullheight">
-        <MapOverviewCard :map="map" :friendlyName="mapName" />
+        <MapOverviewCard v-if="scriptName" :scriptName="scriptName" />
         <div class="teams scroll-container">
             <div v-if="isFFA">
                 <div class="team-title">Players</div>
@@ -55,9 +55,6 @@ import { computed } from "vue";
 import BattlePreviewParticipant from "@renderer/components/battle/BattlePreviewParticipant.vue";
 import MapOverviewCard from "@renderer/components/maps/MapOverviewCard.vue";
 import { Replay } from "@main/content/replays/replay";
-import { db } from "@renderer/store/db";
-import { useDexieLiveQueryWithDeps } from "@renderer/composables/useDexieLiveQuery";
-import { mapFileNameToFriendlyName } from "@main/content/maps/map-data";
 import { groupBy } from "$/jaz-ts-utils/object";
 
 const props = defineProps<{
@@ -67,14 +64,6 @@ const props = defineProps<{
 
 const replay = computed(() => props.replay);
 const scriptName = computed(() => props.replay.mapScriptName || "");
-
-const map = useDexieLiveQueryWithDeps([scriptName], () => {
-    return db.maps.get(scriptName.value);
-});
-
-const mapName = computed(() => {
-    return mapFileNameToFriendlyName(props.replay.mapScriptName);
-});
 
 const isFFA = computed(() => {
     return props.replay.preset === "ffa";

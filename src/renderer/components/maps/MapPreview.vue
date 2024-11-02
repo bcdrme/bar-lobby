@@ -10,6 +10,7 @@ import { MapData } from "@main/content/maps/map-data";
 import { StartBox, StartPosType } from "@main/game/battle/battle-types";
 import { MIPMAP_SIZE } from "@main/config/map-parsing";
 import { me } from "@renderer/store/me.store";
+import defaultMiniMap from "/src/renderer/assets/images/default-minimap.png?url";
 
 const props = defineProps<{
     map?: MapData;
@@ -92,7 +93,7 @@ async function setMapImage() {
     if (mapSprite) {
         app.stage.removeChild(mapSprite);
     }
-    const texture = await Assets.load<Texture>(props.map.images.texture);
+    const texture = await Assets.load<Texture>(props.map.images?.texture || defaultMiniMap);
     mapSprite = Sprite.from(texture);
     mapSprite.setSize({
         width: props.map.width * MIPMAP_SIZE * 16,

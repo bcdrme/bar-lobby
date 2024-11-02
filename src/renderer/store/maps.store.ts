@@ -16,22 +16,55 @@ export async function getRandomMap(): Promise<MapData> {
     return map;
 }
 
+let initializationPromise: Promise<void> | null = null;
 export async function initMapsStore() {
-    window.maps.onMapCached((mapData: MapData) => {
-        console.debug("Received map cached event", mapData);
-        db.maps.add(mapData);
+    if (mapsStore.isInitialized) return;
+    if (initializationPromise) return initializationPromise;
+    initializationPromise = init();
+    return initializationPromise;
+}
+
+async function init() {
+    window.maps.onMapAdded((filename: string) => {
+        console.debug("Received map added event", filename);
+        db.maps.where("fileName").equals(filename).modify({ isInstalled: true });
     });
     window.maps.onMapDeleted((filename: string) => {
         console.debug("Received map deleted event", filename);
-        db.maps.where("fileName").equals(filename).delete();
+        db.maps.where("fileName").equals(filename).modify({ isInstalled: false });
     });
-    await syncMaps();
+    const maps = await window.maps.fetchAllMaps();
+    console.debug("Received all maps", maps);
+    await Promise.allSettled(
+        maps.map((map) => {
+            db.maps.get(map.scriptName).then((existingMap) => {
+                if (!existingMap) {
+                    return db.maps.put(map) as Promise<unknown>;
+                } else {
+                    return db.maps.update(map.scriptName, map) as Promise<unknown>;
+                }
+            });
+        })
+    );
     mapsStore.isInitialized = true;
 }
 
-async function syncMaps() {
-    console.debug("Syncing maps");
-    // Sync all maps with actual files in map folder
-    const allMaps = await db.maps.toArray();
-    window.maps.sync(allMaps.map((map) => ({ scriptName: map.scriptName, fileName: map.fileName })));
+export async function fetchMapImages(map: MapData) {
+    if (!map.onlineImages?.textureURL) return;
+    const arrayBuffer = await window.maps.fetchMapImages(map.onlineImages.textureURL);
+    await db.maps.update(map.scriptName, { images: { texture: new Blob([arrayBuffer], { type: "image/jpeg" }) } });
+    console.debug("Updated map images ", map.scriptName);
+}
+
+export async function downloadMap(scriptName: string) {
+    db.maps.update(scriptName, { isDownloading: true });
+    await window.maps
+        .downloadMap(scriptName)
+        .then(() => {
+            db.maps.update(scriptName, { isInstalled: true, isDownloading: false });
+        })
+        .catch((error) => {
+            console.error("Failed to download map", error);
+            db.maps.update(scriptName, { isDownloading: false });
+        });
 }

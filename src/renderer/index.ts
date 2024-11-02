@@ -16,7 +16,7 @@ import { elementInViewDirective } from "@renderer/utils/element-in-view-directiv
 import { audioApi } from "@renderer/audio/audio";
 import { router } from "@renderer/router";
 import { settingsStore } from "@renderer/store/settings.store";
-import { initStores } from "@renderer/store/stores";
+import { initPreMountStores } from "@renderer/store/stores";
 
 // Apply unsafe-eval patch for pixi.js
 import "pixi.js/unsafe-eval";
@@ -44,8 +44,6 @@ declare module "vue-router" {
             settingsStore.fullscreen = !settingsStore.fullscreen;
         }
     });
-    //TODO implement this
-    // await replayOpenedHandlers();
 })();
 
 async function setupVue() {
@@ -62,7 +60,7 @@ async function setupVue() {
         app.config.globalProperties.window = window;
     }
     // Init stores before mounting app
-    await initStores();
+    await initPreMountStores();
     await audioApi.init();
     app.mount("#app");
 }
