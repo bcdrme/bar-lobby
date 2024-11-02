@@ -2,32 +2,78 @@
     <Modal ref="modal" :title="title" class="map-list-modal">
         <div class="container">
             <div class="map-preview-container">
-                <MapPreview :map="map" :start-boxes-index="selectedBoxSetIndex" />
+                <MapPreview :map="map" :start-boxes-index="battleStore.battleOptions.startBoxesIndex" />
             </div>
             <div class="options flex-col gap-md">
-                <!-- <Options
-                    :modelValue="startPosType"
-                    :options="startPosOptions"
-                    label="Start Pos"
-                    optionLabel="label"
-                    optionValue="value"
-                    :unselectable="false"
-                    class="fullwidth"
-                    @update:model-value="onStartPosChange"
-                /> -->
-                <div class="box-buttons">
-                    <Button
-                        v-for="(boxSet, i) in startBoxSets"
-                        :key="i"
-                        @click="selectedBoxSetIndex = i"
-                        :disabled="selectedBoxSetIndex === i"
-                    >
-                        <span>{{ i + 1 }}</span>
-                    </Button>
+                <div>
+                    <h4>Boxes presets</h4>
+                    <div class="box-buttons">
+                        <Button
+                            v-for="(boxSet, i) in map.startBoxes"
+                            :key="i"
+                            @click="
+                                () => {
+                                    delete battleStore.battleOptions.startBoxes;
+                                    delete battleStore.battleOptions.fixedPositionsIndex;
+                                    battleStore.battleOptions.startPosType = StartPosType.Boxes;
+                                    battleStore.battleOptions.startBoxesIndex = i;
+                                }
+                            "
+                            :disabled="battleStore.battleOptions.startBoxesIndex === i"
+                        >
+                            <span>{{ i + 1 }}</span>
+                        </Button>
+                    </div>
+                </div>
+                <div>
+                    <h4>Fixed positions</h4>
+                    <div class="box-buttons">
+                        <Button
+                            v-for="(teamSet, i) in map.startPositions.team"
+                            :key="`team${i}`"
+                            @click="
+                                () => {
+                                    delete battleStore.battleOptions.startBoxes;
+                                    delete battleStore.battleOptions.startBoxesIndex;
+                                    battleStore.battleOptions.startPosType = StartPosType.Fixed;
+                                    battleStore.battleOptions.fixedPositionsIndex = i;
+                                }
+                            "
+                            :disabled="battleStore.battleOptions.startPosType === StartPosType.Fixed"
+                            ><span>{{ i + 1 }}</span></Button
+                        >
+                    </div>
+                </div>
+                <div>
+                    <h4>FFA</h4>
+                    <div class="box-buttons">
+                        <Button>
+                            <span>Random</span>
+                        </Button>
+                    </div>
+                </div>
+                <div class="flex-col gap-sm">
+                    <h4>Custom</h4>
+                    <div class="box-buttons">
+                        <Button>
+                            <img src="/src/renderer/assets/images/icons/east-vs-west.png" />
+                        </Button>
+                        <Button>
+                            <img src="/src/renderer/assets/images/icons/north-vs-south.png" />
+                        </Button>
+                        <Button>
+                            <img src="/src/renderer/assets/images/icons/northeast-vs-southwest.png" />
+                        </Button>
+                        <Button>
+                            <img src="/src/renderer/assets/images/icons/northwest-vs-southeast.png" />
+                        </Button>
+                    </div>
+                    <div class="box-buttons">
+                        <Range v-model="customBoxRange" :min="5" :max="100" :step="5" />
+                    </div>
                 </div>
                 <div class="actions">
-                    <Button class="red fullwidth" @click="close"> Cancel</Button>
-                    <Button class="green fullwidth" @click="save"> Save</Button>
+                    <Button class="green fullwidth" @click="close">Close</Button>
                 </div>
             </div>
         </div>
@@ -35,13 +81,15 @@
 </template>
 
 <script lang="ts" setup>
-import { Ref, ref, watch, watchEffect } from "vue";
+import { Ref, ref, watch } from "vue";
 
 import Modal from "@renderer/components/common/Modal.vue";
 import Button from "@renderer/components/controls/Button.vue";
-import Options from "@renderer/components/controls/Options.vue";
 import { MapData } from "@main/content/maps/map-data";
 import MapPreview from "@renderer/components/maps/MapBattlePreview.vue";
+import Range from "@renderer/components/controls/Range.vue";
+import { battleStore } from "@renderer/store/battle.store";
+import { StartPosType } from "@main/game/battle/battle-types";
 
 const modal: Ref<null | InstanceType<typeof Modal>> = ref(null);
 
@@ -50,28 +98,19 @@ const props = defineProps<{
     map: MapData;
 }>();
 
-const selectedBoxSetIndex = ref(0);
-const startBoxSets = ref(props.map.startBoxes);
+const customBoxRange = ref(25);
+
 watch(
     () => props.map,
     () => {
-        selectedBoxSetIndex.value = 0;
-        startBoxSets.value = props.map.startBoxes;
+        delete battleStore.battleOptions.startBoxes;
+        battleStore.battleOptions.startPosType = StartPosType.Boxes;
+        battleStore.battleOptions.startBoxesIndex = 0;
+        customBoxRange.value = 25;
     }
 );
 
-const emit = defineEmits(["setMapOptions", "startBoxesIndexChanged"]);
-
-watchEffect(() => {
-    emit("startBoxesIndexChanged", selectedBoxSetIndex.value);
-});
-
 function close() {
-    modal.value?.close();
-}
-
-function save() {
-    // emit("setMapOptions", startPosType.value, getBoxOrientation(), boxRange.value);
     modal.value?.close();
 }
 </script>
@@ -98,10 +137,18 @@ function save() {
             img {
                 opacity: 1;
             }
+            span {
+                opacity: 1;
+            }
         }
     }
+    img {
+        max-width: 50px;
+        image-rendering: pixelated;
+        opacity: 0.7;
+    }
     span {
-        width: 50px;
+        min-width: 50px;
         opacity: 0.7;
         font-size: 2rem;
     }
@@ -116,9 +163,6 @@ function save() {
 }
 
 .actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-column-gap: 10px;
     margin-top: auto;
     width: 100%;
 }

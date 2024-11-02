@@ -8,7 +8,7 @@
             <div
                 v-for="(player, index) in replay.contenders.filter((p) => p.startPos)"
                 :key="index"
-                v-startPos="[player.startPos, mapWidthElmos, mapHeightElmos]"
+                v-startPos="[{ x: player.startPos?.x, y: player.startPos?.z }, mapWidthElmos, mapHeightElmos]"
                 v-setPlayerColor="player.rgbColor"
                 class="start-pos"
             >
@@ -87,11 +87,13 @@ watchEffect(() => {
         // image-rendering: pixelated;
     }
 }
+
 .boxes {
     position: absolute;
     width: 100%;
     height: 100%;
 }
+
 .box {
     position: absolute;
     background: rgba(194, 10, 10, 0.3);
@@ -101,12 +103,14 @@ watchEffect(() => {
         background: rgba(23, 202, 32, 0.3);
     }
 }
+
 .start-positions {
     position: absolute;
     width: 100%;
     height: 100%;
     z-index: 0;
 }
+
 .start-pos {
     position: absolute;
     width: 14px;

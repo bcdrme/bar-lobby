@@ -20,8 +20,8 @@ async function fetchAllMaps() {
             friendlyName: map.displayName,
             description: map.description,
             author: map.author,
-            width: 8,
-            height: 8,
+            width: 12,
+            height: 20,
             startPositions: map.startPos,
             startBoxes: Object.values(map.startboxesSet),
             onlineImages: {

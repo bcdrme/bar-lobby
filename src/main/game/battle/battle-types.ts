@@ -23,6 +23,7 @@ export type BattleOptions = {
     startPosType: StartPosType;
     startBoxes: StartboxDetails;
     startBoxesIndex: number;
+    fixedPositionsIndex: number;
     gameOptions: Record<string, string | number | boolean>;
     mapOptions: Record<string, string | number | boolean>;
     restrictions: Restriction[];
@@ -82,6 +83,7 @@ export type Restriction = {
 
 export type Player = {
     id: number;
+    name: string;
     user: User;
     contentSyncState: {
         engine: number;
