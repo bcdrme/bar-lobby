@@ -1,6 +1,6 @@
 <template>
     <div class="flex-col gap-md fullheight">
-        <MapOverviewCard v-if="scriptName" :scriptName="scriptName" />
+        <ReplayPreviewMap :replay="replay" />
         <div class="teams scroll-container">
             <div v-if="isFFA">
                 <div class="team-title">Players</div>
@@ -53,9 +53,9 @@ import { Icon } from "@iconify/vue";
 import trophyVariant from "@iconify-icons/mdi/trophy-variant";
 import { computed } from "vue";
 import BattlePreviewParticipant from "@renderer/components/battle/BattlePreviewParticipant.vue";
-import MapOverviewCard from "@renderer/components/maps/MapOverviewCard.vue";
 import { Replay } from "@main/content/replays/replay";
 import { groupBy } from "$/jaz-ts-utils/object";
+import ReplayPreviewMap from "@renderer/components/battle/ReplayPreviewMap.vue";
 
 const props = defineProps<{
     replay: Replay;
@@ -63,7 +63,6 @@ const props = defineProps<{
 }>();
 
 const replay = computed(() => props.replay);
-const scriptName = computed(() => props.replay.mapScriptName || "");
 
 const isFFA = computed(() => {
     return props.replay.preset === "ffa";
