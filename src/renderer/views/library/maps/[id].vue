@@ -8,7 +8,7 @@
             <div v-if="map" class="gap-md page">
                 <h1>{{ map.friendlyName }}</h1>
                 <div class="container">
-                    <MapPreview :map="map" />
+                    <MapSimplePreview :map="map" />
                     <div class="details">
                         <div class="detail-text"><b>Description:</b> {{ map.description }}</div>
                         <!-- <div v-if="map.mapInfo?.author" class="detail-text"><b>Author:</b> {{ map.mapInfo.author }}</div>
@@ -48,7 +48,8 @@ import { gameStore } from "@renderer/store/game.store";
 import { downloadMap } from "@renderer/store/maps.store";
 import { useDexieLiveQueryWithDeps } from "@renderer/composables/useDexieLiveQuery";
 import Panel from "@renderer/components/common/Panel.vue";
-import MapPreview from "@renderer/components/maps/MapPreview.vue";
+import MapPreview from "@renderer/components/maps/MapBattlePreview.vue";
+import MapSimplePreview from "@renderer/components/maps/MapSimplePreview.vue";
 
 const router = useRouter();
 const { id } = defineProps<{

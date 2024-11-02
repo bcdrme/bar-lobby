@@ -26,7 +26,7 @@
  * - Demo map button that launches a simple offline game on the map
  */
 
-import { Ref, ref, watch } from "vue";
+import { Ref, ref } from "vue";
 
 import SearchBox from "@renderer/components/controls/SearchBox.vue";
 import Select from "@renderer/components/controls/Select.vue";

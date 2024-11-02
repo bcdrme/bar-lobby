@@ -41,7 +41,7 @@ import Modal from "@renderer/components/common/Modal.vue";
 import Button from "@renderer/components/controls/Button.vue";
 import Options from "@renderer/components/controls/Options.vue";
 import { MapData } from "@main/content/maps/map-data";
-import MapPreview from "@renderer/components/maps/MapPreview.vue";
+import MapPreview from "@renderer/components/maps/MapBattlePreview.vue";
 
 const modal: Ref<null | InstanceType<typeof Modal>> = ref(null);
 

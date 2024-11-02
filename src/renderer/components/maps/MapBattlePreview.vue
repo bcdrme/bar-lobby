@@ -1,6 +1,6 @@
 <template>
     <div class="map-container">
-        <div class="map" :style="aspectRatioDrivenStyle">
+        <div v-if="map" class="map" :style="aspectRatioDrivenStyle">
             <img :src="mapTextureUrl" />
             <div v-if="boxes" class="boxes">
                 <div v-for="(box, i) in boxes" :key="`box${i}`" v-startBox="box" class="box highlight" />
@@ -48,10 +48,10 @@ const props = defineProps<{
 
 const { get } = useImageBlobUrlCache();
 const mapTextureUrl = computed(() => {
-    if (!props.map.images) {
+    if (!props.map?.images) {
         return;
     }
-    return get(props.map.scriptName, props.map.images.texture);
+    return get(props.map?.scriptName, props.map?.images.texture);
 });
 watchEffect(() => {
     if (!props.map?.scriptName) {
@@ -62,13 +62,13 @@ watchEffect(() => {
     }
 });
 
-const startBoxes = ref(props.map.startBoxes);
-const startPositions = ref(props.map.startPositions);
+const startBoxes = ref(props.map?.startBoxes);
+const startPositions = ref(props.map?.startPositions);
 watch(
     () => props.map,
     () => {
-        startBoxes.value = props.map.startBoxes;
-        startPositions.value = props.map.startPositions;
+        startBoxes.value = props.map?.startBoxes;
+        startPositions.value = props.map?.startPositions;
     }
 );
 
@@ -86,7 +86,7 @@ const boxes = computed(() => {
 });
 
 const aspectRatioDrivenStyle = computed(() => {
-    if (!props.map.width || !props.map.height) {
+    if (!props.map?.width || !props.map?.height) {
         return;
     }
     return props.map.width / props.map.height > 1 ? "height: auto;" : "height: 100%;";
@@ -95,8 +95,7 @@ const aspectRatioDrivenStyle = computed(() => {
 
 <style lang="scss" scoped>
 .map-container {
-    height: 100%;
-    flex-grow: 1;
+    aspect-ratio: 1;
     overflow: hidden;
     display: flex;
     align-items: center;
@@ -106,7 +105,6 @@ const aspectRatioDrivenStyle = computed(() => {
 }
 
 .map {
-    height: 100%;
     position: relative;
     object-fit: contain;
     display: flex;

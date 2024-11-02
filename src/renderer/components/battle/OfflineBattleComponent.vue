@@ -7,13 +7,8 @@
             <Playerlist />
         </div>
         <div class="settings flex-col gap-md">
-            <!-- <MapPreview
-                v-if="map"
-                :map="map"
-                :startPosType="battleStore.battleOptions.startPosType"
-                :startBoxes="battleStore.battleOptions.startBoxes"
-            /> -->
-            <MapOverviewCard :scriptName="map?.scriptName" />
+            <MapPreview :map="map" />
+            <!-- <MapOverviewCard :scriptName="map?.scriptName" /> -->
             <div class="flex-row gap-md">
                 <Select
                     :modelValue="battleStore.battleOptions.mapScriptName"
@@ -114,6 +109,7 @@ import listIcon from "@iconify-icons/mdi/format-list-bulleted";
 import cogIcon from "@iconify-icons/mdi/cog";
 import { useDexieLiveQuery } from "@renderer/composables/useDexieLiveQuery";
 import DownloadContentButton from "@renderer/components/controls/DownloadContentButton.vue";
+import MapPreview from "@renderer/components/maps/MapBattlePreview.vue";
 
 const map = ref<MapData>();
 watch(
