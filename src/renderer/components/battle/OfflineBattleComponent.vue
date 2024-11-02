@@ -27,7 +27,18 @@
                 <MapListModal v-model="mapListOpen" title="Maps" @map-selected="onMapSelected" />
                 <MapOptionsModal v-if="battleStore.battleOptions.map" v-model="mapOptionsOpen" />
             </div>
-            <div class="flex-row gap-md">
+            <div>
+                <Button class="fullwidth" @click="openGameOptions">Configure Game Options</Button>
+                <LuaOptionsModal
+                    id="game-options"
+                    v-model="gameOptionsOpen"
+                    :luaOptions="battleStore.battleOptions.gameOptions"
+                    :title="`Game Options - ${battleStore.battleOptions.gameVersion}`"
+                    :sections="gameOptions"
+                    @set-options="setGameOptions"
+                />
+            </div>
+            <div v-if="settingsStore.devMode">
                 <Select
                     :modelValue="battleStore.battleOptions.gameVersion"
                     :options="gameListOptions"
@@ -38,19 +49,8 @@
                     :placeholder="battleStore.battleOptions.gameVersion"
                     @update:model-value="onGameSelected"
                 />
-                <Button v-tooltip.left="'Configure game options'" @click="openGameOptions">
-                    <Icon :icon="cogIcon" height="23" />
-                </Button>
-                <LuaOptionsModal
-                    id="game-options"
-                    v-model="gameOptionsOpen"
-                    :luaOptions="battleStore.battleOptions.gameOptions"
-                    :title="`Game Options - ${battleStore.battleOptions.gameVersion}`"
-                    :sections="gameOptions"
-                    @set-options="setGameOptions"
-                />
             </div>
-            <div>
+            <div v-if="settingsStore.devMode">
                 <Select
                     :modelValue="battleStore.battleOptions.engineVersion"
                     :options="engineListOptions"
@@ -98,6 +98,7 @@ import { useDexieLiveQuery } from "@renderer/composables/useDexieLiveQuery";
 import DownloadContentButton from "@renderer/components/controls/DownloadContentButton.vue";
 import MapBattlePreview from "@renderer/components/maps/MapBattlePreview.vue";
 import { MapData } from "@main/content/maps/map-data";
+import { settingsStore } from "@renderer/store/settings.store";
 
 const mapListOpen = ref(false);
 const mapOptionsOpen = ref(false);
