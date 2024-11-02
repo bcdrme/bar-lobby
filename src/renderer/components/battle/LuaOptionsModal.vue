@@ -1,45 +1,47 @@
 <template>
-    <Modal ref="modal" :title="title" class="lua-options-modal" @open="open">
+    <Modal ref="modal" :title="title" class="lua-options-modal" style="padding: 0" @open="open">
         <TabView class="lua-options-panel">
             <TabPanel v-for="section of sections.filter((section) => !section.hidden)" :key="section.key" :header="section.name">
-                <div class="flex-col gap-md">
-                    <h4>{{ section.description }}</h4>
-                    <div class="gridform">
-                        <template v-for="option in section.options.filter((option) => !option.hidden)" :key="option.key">
-                            <div>
-                                <div>{{ option.name }}</div>
-                                <div v-if="option.description" class="description txt-sm flex-wrap">
-                                    {{ option.description }}
-                                </div>
-                            </div>
-                            <Range
-                                v-if="option.type === 'number'"
-                                :modelValue="options[option.key] ?? option.default"
-                                :min="option.min"
-                                :max="option.max"
-                                :step="option.step"
-                                @update:model-value="(value: any) => setOptionValue(option, value)"
-                            />
-                            <Checkbox
-                                v-if="option.type === 'boolean'"
-                                :modelValue="options[option.key] ?? option.default"
-                                @update:model-value="(value) => setOptionValue(option, value)"
-                            />
-                            <Textbox
-                                v-if="option.type === 'string'"
-                                :modelValue="options[option.key] ?? option.default"
-                                @update:model-value="(value) => setOptionValue(option, value)"
-                            />
-                            <Select
-                                v-if="option.type === 'list'"
-                                :modelValue="options[option.key] ?? option.default"
-                                :options="option.options"
-                                optionLabel="name"
-                                optionValue="key"
-                                @update:model-value="(value: any) => setOptionValue(option, value)"
-                            />
-                        </template>
-                    </div>
+                <h4>{{ section.description }}</h4>
+                <div class="gridform">
+                    <template v-for="option in section.options.filter((option) => !option.hidden)" :key="option.key">
+                        <div>
+                            <div v-tooltip.bottom="{ value: option.description }">{{ option.name }}</div>
+                            <!-- <div v-if="option.description" class="description txt-sm flex-wrap">
+                                {{ option.description }}
+                            </div> -->
+                        </div>
+                        <Range
+                            v-if="option.type === 'number'"
+                            :modelValue="options[option.key] ?? option.default"
+                            :min="option.min"
+                            :max="option.max"
+                            :step="option.step"
+                            @update:model-value="(value: any) => setOptionValue(option, value)"
+                            v-tooltip.bottom="{ value: option.description }"
+                        />
+                        <Checkbox
+                            v-if="option.type === 'boolean'"
+                            :modelValue="options[option.key] ?? option.default"
+                            @update:model-value="(value) => setOptionValue(option, value)"
+                            v-tooltip.bottom="{ value: option.description }"
+                        />
+                        <Textbox
+                            v-if="option.type === 'string'"
+                            :modelValue="options[option.key] ?? option.default"
+                            @update:model-value="(value) => setOptionValue(option, value)"
+                            v-tooltip.bottom="{ value: option.description }"
+                        />
+                        <Select
+                            v-if="option.type === 'list'"
+                            :modelValue="options[option.key] ?? option.default"
+                            :options="option.options"
+                            optionLabel="name"
+                            optionValue="key"
+                            @update:model-value="(value: any) => setOptionValue(option, value)"
+                            v-tooltip.bottom="{ value: option.description }"
+                        />
+                    </template>
                 </div>
             </TabPanel>
         </TabView>
@@ -107,14 +109,11 @@ function save() {
 </script>
 
 <style lang="scss" scoped>
-:global(.lua-options-modal > .content) {
-    padding: 0 !important;
-}
 .lua-options-panel {
     display: flex;
     flex-direction: column;
-    width: 700px;
-    height: 600px;
+    width: 80vw;
+    height: 80vh;
 }
 .description {
     white-space: pre;

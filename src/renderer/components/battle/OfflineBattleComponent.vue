@@ -148,10 +148,7 @@ function onMapSelected(map: MapData) {
     mapListOpen.value = false;
 }
 
-//TODO this is not working
 async function openGameOptions() {
-    // TODO: show loader on button (maybe @clickAsync event?)
-    gameOptions.value = await window.game.getGameOptions(battleStore.battleOptions.gameVersion);
     gameOptionsOpen.value = true;
 }
 

@@ -1,3 +1,4 @@
+import { LuaOptionSection } from "@main/content/game/lua-options";
 import { MapData } from "@main/content/maps/map-data";
 import { User } from "@main/model/user";
 
@@ -18,7 +19,7 @@ export interface BattleWithMetadata extends Battle {
 
 export type GameMode = {
     label: string;
-    options: Record<string, string | number | boolean>;
+    options: LuaOptionSection[];
 };
 
 export type BattleOptions = {

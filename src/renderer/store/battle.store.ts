@@ -107,7 +107,7 @@ function defaultOfflineBattle(engine?: EngineVersion, game?: GameVersion, map?: 
             gameVersion: game?.gameVersion,
             gameMode: {
                 label: "Skirmish",
-                options: {},
+                options: game?.options,
             },
             map,
             mapOptions: {

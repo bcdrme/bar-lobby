@@ -6,7 +6,6 @@ import { Account } from "@main/services/account.service";
 import { EngineVersion } from "@main/content/engine/engine-version";
 import { GameVersion } from "@main/content/game/game-version";
 import { MapData } from "@main/content/maps/map-data";
-import { LuaOptionSection } from "@main/content/game/lua-options";
 import { Scenario } from "@main/content/game/scenario";
 import { DownloadInfo } from "@main/content/downloads";
 import { Info } from "@main/services/info.service";
@@ -80,7 +79,6 @@ contextBridge.exposeInMainWorld("engine", engineApi);
 const gameApi = {
     // Content
     downloadGame: (version: string): Promise<void> => ipcRenderer.invoke("game:downloadGame", version),
-    getGameOptions: (version: string): Promise<LuaOptionSection[]> => ipcRenderer.invoke("game:getOptions", version),
     getScenarios: (): Promise<Scenario[]> => ipcRenderer.invoke("game:getScenarios"),
     getInstalledVersions: (): Promise<GameVersion[]> => ipcRenderer.invoke("game:getInstalledVersions"),
     isVersionInstalled: (version: string): Promise<boolean> => ipcRenderer.invoke("game:isVersionInstalled", version),
