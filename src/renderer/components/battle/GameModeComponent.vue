@@ -10,9 +10,9 @@
         <div class="custom-game-options scroll-container">
             <div v-for="[section, options] in groupedBySection.entries()" :key="section.name">
                 <div class="overriden-section">{{ section.name }}</div>
-                <div class="overriden-game-option" v-for="(value, key) in options" :key="key">
-                    <div>{{ section.options[key].name }}</div>
-                    <div>{{ value }}</div>
+                <div class="overriden-game-option" v-for="option in options" :key="option.key">
+                    <div>{{ option.name }}</div>
+                    <div class="value">{{ option.value }}</div>
                 </div>
             </div>
         </div>
@@ -45,7 +45,7 @@ const gameModeListOptions: GameMode[] = [
     { label: "Scavengers", options: {} },
 ];
 
-const groupedBySection = ref(new Map<LuaOptionSection, LuaOption[]>());
+const groupedBySection = ref(new Map<LuaOptionSection, (LuaOption & { value: boolean | string | number })[]>());
 
 watch(
     () => battleStore.battleOptions.gameMode.options,
@@ -57,7 +57,7 @@ watch(
                     if (!groupedBySection.value.has(section)) {
                         groupedBySection.value.set(section, []);
                     }
-                    groupedBySection.value.get(section).push(overridenOptions[option.key]);
+                    groupedBySection.value.get(section).push({ ...option, value: overridenOptions[option.key] });
                 }
             });
         });
@@ -105,5 +105,11 @@ function onGameModeSelected(gameMode: GameMode) {
 .overriden-game-option {
     display: flex;
     justify-content: space-between;
+    gap: 20px;
+}
+
+.value {
+    overflow-x: hidden;
+    text-overflow: ellipsis;
 }
 </style>
