@@ -51,16 +51,13 @@ const emit = defineEmits<{
 
 const limit = ref(30);
 const el = ref<HTMLElement | null>(null);
-const { reset } = useInfiniteScroll(
+useInfiniteScroll(
     el,
     () => {
         limit.value += 30;
     },
     { distance: 300, interval: 550 }
 );
-watch([searchVal, sortMethod], () => {
-    reset();
-});
 const maps = useDexieLiveQueryWithDeps([searchVal, sortMethod, limit], () =>
     db.maps
         .filter((map) => map.friendlyName.toLocaleLowerCase().includes(searchVal.value.toLocaleLowerCase()))
