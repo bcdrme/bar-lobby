@@ -7,14 +7,28 @@
 <script setup lang="ts">
 import { MapData } from "@main/content/maps/map-data";
 import { useImageBlobUrlCache } from "@renderer/composables/useImageBlobUrlCache";
-import { computed } from "vue";
+import { fetchMapImages } from "@renderer/store/maps.store";
+import { computed, watchEffect } from "vue";
 
 const props = defineProps<{
     map: MapData;
 }>();
 
 const { get } = useImageBlobUrlCache();
-const image = computed(() => get(props.map.scriptName, props.map.images.texture));
+const image = computed(() => {
+    if (!props.map.images) {
+        return;
+    }
+    return get(props.map.scriptName, props.map.images.texture);
+});
+watchEffect(() => {
+    if (!props.map?.scriptName) {
+        return;
+    }
+    if (!props.map?.images?.texture) {
+        fetchMapImages(props.map);
+    }
+});
 </script>
 
 <style lang="scss" scoped>

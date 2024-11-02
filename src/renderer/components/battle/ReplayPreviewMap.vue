@@ -33,6 +33,7 @@ import { computed, defineComponent, ref, watch, watchEffect } from "vue";
 import vStartBox from "@renderer/directives/vStartBox";
 import vStartPos from "@renderer/directives/vStartPos";
 import vSetPlayerColor from "@renderer/directives/vSetPlayerColor";
+import { fetchMapImages } from "@renderer/store/maps.store";
 
 const props = defineProps<{
     replay: Replay;
@@ -56,26 +57,19 @@ defineComponent({
 });
 
 const map = useDexieLiveQueryWithDeps([() => props.replay.mapScriptName], () => db.maps.get(props.replay.mapScriptName));
-// const mapWidthElmos = computed(() => (map.value.width ? map.value.width * 512 : null));
-// const mapHeightElmos = computed(() => (map.value.height ? map.value.height * 512 : null));
-
-const mapWidthElmos = ref<number>();
-const mapHeightElmos = ref<number>();
-
+const mapWidthElmos = computed(() => (map.value.width ? map.value.width * 512 : null));
+const mapHeightElmos = computed(() => (map.value.height ? map.value.height * 512 : null));
 const cache = useImageBlobUrlCache();
 const mapTextureUrl = computed(() =>
     map.value?.images?.texture ? cache.get(map.value.fileName, map.value.images.texture) : defaultMiniMap
 );
-
 watchEffect(() => {
-    if (!map.value?.images?.texture) return;
-    createImageBitmap(map.value?.images?.texture)
-        .then((imgBitmap) => {
-            mapWidthElmos.value = map.value.width * 512;
-            mapHeightElmos.value = map.value.height * 512;
-            imgBitmap.close();
-        })
-        .catch();
+    if (!map.value) {
+        return;
+    }
+    if (!map.value.images?.texture) {
+        fetchMapImages(map.value);
+    }
 });
 </script>
 

@@ -6,7 +6,6 @@ if (isMainThread) {
     // listen to messages from the main thread
     parentPort.on("message", async (imageSource: string) => {
         try {
-            console.log(`Fetching image from ${imageSource}`);
             const response = await fetch(imageSource);
             const arrayBuffer = await response.arrayBuffer();
             parentPort.postMessage({ imageSource, arrayBuffer });
