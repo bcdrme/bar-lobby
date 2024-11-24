@@ -10,15 +10,7 @@
             </div>
             <div class="layout">
                 <Panel class="map-filters">
-                    <Button></Button>
-                    <Button></Button>
-                    <Button></Button>
-                    <Button></Button>
-                    <Button></Button>
-                    <Button></Button>
-                    <Checkbox></Checkbox>
-                    <Checkbox></Checkbox>
-                    <Checkbox></Checkbox>
+                    <MapFiltersComponent />
                 </Panel>
                 <Panel class="flex-grow">
                     <div class="flex-col fullheight">
@@ -31,22 +23,9 @@
 </template>
 
 <script lang="ts" setup>
-/**
- * TODO:
- * - Similar to online map browser
- * - Indicator whether map is installed or not
- * - Easy one click install button
- * - Demo map button that launches a simple offline game on the map
- * - Searchable
- * - Sortable
- * - Filterable
- * - Paginated
- */
-
 import { MapData } from "@main/content/maps/map-data";
 import Panel from "@renderer/components/common/Panel.vue";
-import Button from "@renderer/components/controls/Button.vue";
-import Checkbox from "@renderer/components/controls/Checkbox.vue";
+import MapFiltersComponent from "@renderer/components/maps/MapFiltersComponent.vue";
 import MapListComponent from "@renderer/components/maps/MapListComponent.vue";
 import { useRouter } from "vue-router";
 
@@ -75,9 +54,7 @@ async function onMapSelected(map: MapData) {
 }
 
 .map-filters {
+    height: 100%;
     width: 300px;
-    display: grid;
-    grid-template-rows: auto 1fr;
-    gap: 20px;
 }
 </style>
