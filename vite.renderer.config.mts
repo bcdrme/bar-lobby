@@ -3,6 +3,8 @@ import vue from "@vitejs/plugin-vue";
 import path from "path";
 import VueRouter from "unplugin-vue-router/vite";
 import vueDevTools from "vite-plugin-vue-devtools";
+import { templateCompilerOptions } from "@tresjs/core";
+import glsl from "vite-plugin-glsl";
 
 // https://vitejs.dev/config
 export default defineConfig({
@@ -37,6 +39,9 @@ export default defineConfig({
             routesFolder: "src/renderer/views",
             dts: "src/renderer/typed-router.d.ts",
         }),
-        vue(),
+        glsl(),
+        vue({
+            ...templateCompilerOptions,
+        }),
     ],
 });

@@ -107,7 +107,7 @@ const router = useRouter();
 const allRoutes = router.getRoutes();
 const primaryRoutes = computed(() => {
     return allRoutes
-        .filter((r) => ["/singleplayer", "/multiplayer", "/library", "/learn", "/store", "/development"].includes(r.path))
+        .filter((r) => ["/singleplayer", "/multiplayer", "/invasion", "/library"].includes(r.path))
         .filter(
             (r) =>
                 (r.meta.hide === false || r.meta.hide === undefined) &&

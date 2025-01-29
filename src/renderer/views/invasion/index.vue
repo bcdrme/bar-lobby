@@ -1,9 +1,9 @@
 <route lang="json5">
 {
     meta: {
-        redirect: "/multiplayer/ranked",
-        title: "Versus",
-        order: 1,
+        redirect: "/invasion/atlas",
+        title: "Invasion",
+        order: 2,
         onlineOnly: true,
     },
 }
