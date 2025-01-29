@@ -5,8 +5,16 @@
         </div>
         <div class="infos"></div>
         <svg class="line">
-            <polyline :points="points"></polyline>
+            <polyline :points="points" stroke="url(#gradient)"></polyline>
             <circle :cx="scenario.x" :cy="scenario.y" r="4" fill="#22c55e" outline="#22c55e"></circle>
+            <defs>
+                <linearGradient class="gradient" id="gradient">
+                    <stop offset="0%" stop-color="#22c55e" stop-opacity="0.2"></stop>
+                    <stop offset="10%" stop-color="#22c55e"></stop>
+                    <stop offset="90%" stop-color="#22c55e"></stop>
+                    <stop offset="100%" stop-color="#22c55e" stop-opacity="0.2"></stop>
+                </linearGradient>
+            </defs>
         </svg>
     </div>
 </template>
@@ -54,7 +62,7 @@ polyline {
     fill: none;
     stroke-width: 1.5;
     stroke-linecap: round;
-    stroke: #22c55e;
+    // stroke: #22c55e;
 }
 
 circle {
