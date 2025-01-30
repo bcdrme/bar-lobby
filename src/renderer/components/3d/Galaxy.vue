@@ -95,7 +95,7 @@ const shader = {
     vertexShader,
     fragmentShader,
     uniforms: {
-        uTime: { value: 0 },
+        uTime: { value: 100 },
         uSize: {
             value: parameters.size,
         },
@@ -152,10 +152,12 @@ const bufferRef = ref(null);
 const { onLoop } = useRenderLoop();
 
 onLoop(({ elapsed }) => {
-    if (bufferRef.value) {
-        bufferRef.value.material.uniforms.uTime.value = elapsed;
-    }
+    // if (bufferRef.value) {
+    //     bufferRef.value.material.uniforms.uTime.value = elapsed;
+    // }
+    // camera.value.position.x = Math.sin(elapsed / 1000) * 3;
 });
+
 useControls("fpsgraph");
 const { count, size, radius, branches, spin, randomness, randomnessPower, insideColor, outsideColor } = useControls({
     count: {
@@ -234,6 +236,6 @@ watch(
     &:hover {
         opacity: 1;
     }
-    z-index: 5;
+    z-index: 99;
 }
 </style>

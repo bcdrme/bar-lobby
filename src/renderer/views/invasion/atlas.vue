@@ -11,7 +11,7 @@
 
 <template>
     <div class="atlas-view">
-        <div class="atlas-container">
+        <!-- <div class="atlas-container">
             <div class="view-title">
                 <h1>A.T.L.A.S.</h1>
                 <div>99 commanders in battle</div>
@@ -39,7 +39,7 @@
             />
 
             <button class="quick-play-button searching">Deploy now</button>
-        </div>
+        </div> -->
         <div class="atlas-background">
             <Galaxy />
         </div>
@@ -87,13 +87,24 @@ import MissionTile from "@renderer/components/misc/MissionTile.vue";
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle, #000000ba, #000000fd);
+    background: radial-gradient(circle, #070012, #000000);
     transition: all 1s ease;
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: -1;
+    // z-index: -1; 
     // animation: pulse 1s infinite ease-in-out;
+}
+
+.atlas-background:after {
+    @extend .fullsize;
+    left: 0;
+    top: 0;
+    background-image: url("/src/renderer/assets/images/squares.png");
+    background-size: auto;
+    opacity: 0.3;
+    mix-blend-mode: overlay; // doesn't support transition
+    z-index: -1;
 }
 
 .atlas-container {
