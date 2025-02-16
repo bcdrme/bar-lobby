@@ -8,6 +8,8 @@ export type User = {
     rank: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
     status: "offline" | "menu" | "playing" | "lobby";
 
+    bannerId: number;
+
     // Is the user a friend?
     isFriend: 0 | 1;
 

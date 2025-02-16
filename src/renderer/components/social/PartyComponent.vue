@@ -29,7 +29,9 @@ import { useDexieLiveQuery } from "@renderer/composables/useDexieLiveQuery";
 import { db } from "@renderer/store/db";
 import { me } from "@renderer/store/me.store";
 
-const partyUsers = useDexieLiveQuery(() => db.users.where("partyId").notEqual(null).toArray());
+// const partyUsers = useDexieLiveQuery(() => db.users.where("partyId").notEqual(null).toArray());
+const partyUsers = useDexieLiveQuery(() => db.users.where("userId").notEqual(me.userId).limit(1).toArray());
+
 const meUser = useDexieLiveQuery(() => db.users.get(me.userId));
 </script>
 

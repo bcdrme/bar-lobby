@@ -1,15 +1,19 @@
 <template>
     <div class="slot" v-if="user">
-        <div class="banner"></div>
-        <div class="avatar">
+        <div
+            class="banner"
+            :style="{
+                backgroundImage: `url(${user.bannerId ? `/src/renderer/assets/images/banners/${user.bannerId}.webp` : ''})`,
+            }"
+        ></div>
+        <!-- <div class="avatar">
             <img src="/src/renderer/assets/images/icons/terrains/map_metal.png" alt="rank" />
-        </div>
-        <div class="ribbon">
+        </div> -->
+        <div class="ribbon" :style="{ backgroundColor: user.isMe ? 'rgb(255, 203, 107)' : 'rgb(220, 220, 220)' }">
             <Rank class="rank" :rank="user.rank" />
             <div class="username">
-                <!-- <Flag :country="user.countryCode" /> -->
                 {{ user.username }}
-                <div class="state">ready</div>
+                <div class="state txt-outlined">ready</div>
             </div>
             <Rank class="rank" :rank="user.rank" />
         </div>
@@ -24,10 +28,9 @@
 
 <script lang="ts" setup>
 import { User } from "@main/model/user";
-import Flag from "@renderer/components/misc/Flag.vue";
 import Rank from "@renderer/components/misc/Rank.vue";
 
-const props = defineProps<{
+defineProps<{
     user?: User;
 }>();
 </script>
@@ -40,7 +43,6 @@ const props = defineProps<{
     align-items: center;
     width: 250px;
     height: 100%;
-    margin-top: 40px;
     transition: all 0.3s ease;
 
     &.empty {
@@ -77,8 +79,9 @@ const props = defineProps<{
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url("/src/renderer/assets/images/backgrounds/3.png");
+    background-image: url("/src/renderer/assets/images/banners/66b3a6cd-1df0-48ff-9c68-62d679f8fd0a.webp");
     background-size: cover;
+    background-position: center;
     mask-image: linear-gradient(rgba(0, 0, 0, 1), rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
     &.empty {
         background-image: none;

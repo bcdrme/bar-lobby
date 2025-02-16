@@ -435,10 +435,9 @@ $chatColor: #82828272;
 }
 
 .failed {
-    color: rgba(226, 91, 91, 0.521);
-    font-size: 8px;
-    position: absolute;
-    right: 20px;
+    color: rgb(255 66 66);
+    font-size: 9px;
+    text-shadow: none;
 }
 
 .timestamp {

@@ -26,6 +26,7 @@ function insertFakeUsers() {
             isMe: 0,
             isFriend: 0,
             lastSeen: Date.now() - 1000 * 60 * 60 * 6,
+            bannerId: 1,
         },
         {
             userId: "2",
@@ -39,6 +40,7 @@ function insertFakeUsers() {
             isMe: 0,
             isFriend: 0,
             lastSeen: Date.now() - 1000 * 60 * 60 * 12,
+            bannerId: 2,
         },
         {
             userId: "3",
@@ -52,6 +54,7 @@ function insertFakeUsers() {
             isMe: 0,
             isFriend: 0,
             lastSeen: Date.now() - 1000 * 60 * 60 * 24,
+            bannerId: 3,
         },
     ] as User[];
     db.users.bulkPut(users);
@@ -71,6 +74,7 @@ function insertFakeOnlineFriends() {
             isMe: 0,
             isFriend: 1,
             lastSeen: Date.now(),
+            bannerId: 4,
         },
         {
             userId: "5",
@@ -84,6 +88,7 @@ function insertFakeOnlineFriends() {
             isMe: 0,
             isFriend: 1,
             lastSeen: Date.now(),
+            bannerId: 5,
         },
         {
             userId: "6",
@@ -97,6 +102,7 @@ function insertFakeOnlineFriends() {
             isMe: 0,
             isFriend: 1,
             lastSeen: Date.now(),
+            bannerId: 6,
         },
     ] as User[];
     db.users.bulkPut(users);
@@ -116,6 +122,7 @@ function insertFakeOfflineFriends() {
             isMe: 0,
             isFriend: 1,
             lastSeen: Date.now() - 1000 * 60 * 60 * 6,
+            bannerId: 1,
         },
         {
             userId: "8",
@@ -129,6 +136,7 @@ function insertFakeOfflineFriends() {
             isMe: 0,
             isFriend: 1,
             lastSeen: Date.now() - 1000 * 60 * 60 * 12,
+            bannerId: 1,
         },
         {
             userId: "9",
@@ -142,6 +150,7 @@ function insertFakeOfflineFriends() {
             isMe: 0,
             isFriend: 1,
             lastSeen: Date.now() - 1000 * 60 * 60 * 24,
+            bannerId: 1,
         },
     ] as User[];
     db.users.bulkPut(users);
@@ -165,6 +174,7 @@ export function initUsersStore() {
                 isMe: 1, // TODO unweirdify this after we have a proper protocol for users
                 isFriend: 0, // TODO unweirdify this after we have a proper protocol for users
                 lastSeen: Date.now(),
+                bannerId: Math.floor(Math.random() * 6) + 1,
             } as User;
         });
         db.users.bulkPut(users);

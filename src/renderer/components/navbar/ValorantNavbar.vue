@@ -2,19 +2,19 @@
     <nav class="navbar">
         <!-- Top row with play button -->
         <div class="play-container">
-            <button class="side-button">
+            <button class="side-button txt-outlined">
                 <span>home</span>
             </button>
-            <button class="side-button">
+            <button class="side-button txt-outlined">
                 <span>profile</span>
             </button>
-            <button class="main-button">
+            <button class="main-button txt-outlined">
                 <span>Play</span>
             </button>
-            <button class="side-button">
+            <button class="side-button txt-outlined">
                 <span>arcade</span>
             </button>
-            <button class="side-button">
+            <button class="side-button txt-outlined">
                 <span>watch</span>
             </button>
         </div>
@@ -28,18 +28,25 @@
                 v-for="item in menuItems"
                 :key="item"
                 class="menu-item"
-                :class="{ active: activeItem === item }"
+                :class="{ active: activeItem === item, locked: item === 'DUEL' }"
                 @click="activeItem = item"
+                :disabled="item === 'DUEL'"
+                tooltip="This game mode is locked"
             >
                 {{ item }}
                 <div class="hover-indicator"></div>
                 <div v-if="activeItem === item" class="active-indicator"></div>
+                <div class="locked" v-if="item === 'DUEL'">
+                    <Icon name="lock" :icon="lock" />
+                </div>
             </button>
         </div>
     </nav>
 </template>
 
 <script setup lang="ts">
+import { Icon } from "@iconify/vue/dist/iconify.js";
+import lock from "@iconify-icons/mdi/lock";
 import { ref } from "vue";
 
 const menuItems = ["DUEL", "SMALL TEAM", "TEAM", "FFA", "SCAVENGERS", "RAPTORS", "CUSTOM GAME"] as const;
@@ -75,7 +82,6 @@ $accentColor: #22c55e;
     font-size: 38px;
     color: #fff;
     border: none;
-    // box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
     text-align: center;
     cursor: pointer;
     position: relative;
@@ -170,21 +176,24 @@ $accentColor: #22c55e;
     padding: 0.25rem 0;
     cursor: pointer;
     transition: color 0.2s;
-
-    &:hover {
+    &:hover:not(.locked) {
         color: white;
-
         .hover-indicator {
             transform: scaleX(1);
         }
     }
-
     &.active {
         color: white;
-
-        .hover-indicator {
-            background-color: $accentColor;
-        }
+    }
+    &.locked {
+        opacity: 0.4;
+    }
+    .locked {
+        position: absolute;
+        width: 100%;
+        text-align: center;
+        bottom: -20px;
+        font-size: 16px;
     }
 }
 

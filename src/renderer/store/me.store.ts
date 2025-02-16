@@ -23,6 +23,7 @@ export const me = reactive<
     incomingFriendRequestUserIds: new Set<number>(),
     friendUserIds: new Set<number>(),
     ignoreUserIds: new Set<number>(),
+    bannerId: 6,
 });
 
 async function login() {
@@ -57,6 +58,7 @@ window.tachyon.onEvent("user/updated", (event) => {
     const myData = event.users[0];
     if (myData) {
         Object.assign(me, myData);
+        me.bannerId = 6;
     }
 });
 
