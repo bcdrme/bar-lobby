@@ -5,26 +5,16 @@
         @focusin="expandChat"
         @focusout="collapseChat"
     >
-        <span class="main-unread-messages-dot" :class="{ active: hasUnreadMessages }">◼</span>
+        <!-- <span class="main-unread-messages-dot" :class="{ active: hasUnreadMessages }"></span> -->
         <div ref="tabs" class="tabs">
-            <div
-                class="tab"
-                :class="{
-                    unread: chatRoom.unreadMessages > 0,
-                }"
-                v-for="chatRoom in chatStore.chatRooms"
-                :key="chatRoom.id"
-            >
+            <div class="tab" :class="{ unread: chatRoom.unreadMessages > 0 }" v-for="chatRoom in chatStore.chatRooms" :key="chatRoom.id">
                 <Button
                     class="txt-secondary"
-                    :class="{
-                        active: chatStore.selectedChatRoom.id === chatRoom.id,
-                        unread: chatRoom.unreadMessages > 0,
-                    }"
+                    :class="{ active: chatStore.selectedChatRoom.id === chatRoom.id, unread: chatRoom.unreadMessages > 0 }"
                     @click="clickTab(chatRoom)"
                     @mousedown.prevent
                 >
-                    <span class="unread-messages-dot" :class="{ active: chatRoom.unreadMessages > 0 }">◼</span>
+                    <span class="unread-messages-dot" :class="{ active: chatRoom.unreadMessages > 0 }"></span>
                     {{ chatRoom.name }}
                     <span class="close-button" v-if="chatRoom.closeable" @click="(e) => closeChatRoom(e, chatRoom)">
                         <Icon :icon="closeThick" />
@@ -67,6 +57,13 @@
         <div class="chat-input">
             <div class="target" :style="{ color: chatStore.selectedChatRoom.color }">To ({{ chatStore.selectedChatRoom.name }}):</div>
             <input ref="textBox" v-model="newMessage" @keydown.enter="sendMessage" placeholder="Type here to chat. Use '/' for commands." />
+            <div class="shortcut-hint" v-if="isExpanded">
+                <span class="txt-outlined">esc</span>
+            </div>
+            <div class="shortcut-hint" v-else>
+                <span class="txt-outlined">shift</span>
+                <span class="txt-outlined">enter</span>
+            </div>
         </div>
     </div>
 </template>
@@ -123,16 +120,8 @@ const clickOnMember = (member: string) => {
 
 const sendMessage = () => {
     if (newMessage.value.trim() !== "") {
-        chatActions.sendMessage({
-            userId: me.userId,
-            userName: me.username,
-            text: newMessage.value,
-            timestamp: Date.now(),
-        });
-        chatMessagesRef.value.scrollTo({
-            behavior: "instant",
-            top: 0,
-        });
+        chatActions.sendMessage({ userId: me.userId, userName: me.username, text: newMessage.value, timestamp: Date.now() });
+        chatMessagesRef.value.scrollTo({ behavior: "instant", top: 0 });
         newMessage.value = "";
     }
 };
@@ -148,19 +137,13 @@ const expandChat = () => {
 
 const collapseChat = () => {
     isExpanded.value = false;
-    chatMessagesRef.value.scrollTo({
-        behavior: "instant",
-        top: 0,
-    });
+    chatMessagesRef.value.scrollTo({ behavior: "instant", top: 0 });
 };
 
 const clickTab = (chatRoom: ChatRoom) => {
     chatActions.selectChatRoom(chatRoom.id);
     textBox.value?.focus();
-    chatMessagesRef.value.scrollTo({
-        behavior: "instant",
-        top: 0,
-    });
+    chatMessagesRef.value.scrollTo({ behavior: "instant", top: 0 });
 };
 
 const closeChatRoom = (e: Event, chatRoom: ChatRoom) => {
@@ -191,7 +174,9 @@ onKeyDown(
 
 <style lang="scss" scoped>
 $unreadColor: #46ea2b;
-$chatColor: rgba(27, 27, 27, 0.8);
+$atMeColor: #46ea2b;
+$atMeBgColor: #45ea2b58;
+$chatColor: rgba(27, 27, 27, 1);
 
 .time-divider {
     display: flex;
@@ -224,21 +209,19 @@ $chatColor: rgba(27, 27, 27, 0.8);
 }
 
 .unread-messages-dot {
-    position: absolute;
-    left: 6px;
-    display: none;
-    font-size: 12px;
-    color: $unreadColor;
-    text-shadow: 0 0 12px $unreadColor;
+    // font-size: 12px;
+    height: 7px;
+    width: 7px;
+    color: transparent;
+    background: linear-gradient(180deg, rgba(45, 45, 45, 0.5) 15%, rgba(0, 0, 0, 0.5) 52%);
+    box-shadow: inset 0px 2px 3px rgba(0, 0, 0, 0.75);
     &.active {
-        display: inline;
+        background: $unreadColor;
+        box-shadow: 0 0 12px $unreadColor;
     }
 }
 
 .close-button {
-    position: absolute;
-    z-index: 1;
-    right: 4px;
     padding: 3px;
     cursor: pointer;
     line-height: 0;
@@ -305,30 +288,29 @@ $chatColor: rgba(27, 27, 27, 0.8);
 
 .tabs {
     position: absolute;
-    top: -42px;
+    top: -33px;
     transition: all 0.4s ease-in-out;
     flex-direction: row;
     width: 100%;
     display: flex;
     overflow-x: hidden;
     .tab {
-        text-wrap: none;
-        padding-top: 8px;
         margin-right: 2px;
         &.unread {
             z-index: 1;
         }
-        clip-path: polygon(calc(100% - 15px) 0, 100% 15px, 100% 100%, 0 100%, 0 0);
+        clip-path: polygon(calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%, 0 0);
     }
     .button {
         font-size: 10px;
         text-wrap-mode: nowrap;
         border: none;
         background: rgba(0, 0, 0, 0.6);
-        border-bottom: 1px solid #000000;
         flex-grow: 0;
         :deep(> button) {
-            padding: 0 18px;
+            padding: 0 12px;
+            display: flex;
+            gap: 4px;
         }
         &:hover,
         &.active {
@@ -337,10 +319,9 @@ $chatColor: rgba(27, 27, 27, 0.8);
             background-color: $chatColor;
             // box-shadow: 0 0 16px rgba(0, 0, 0, 0.7);
         }
-        &.unread {
-            border-bottom: 1px solid $unreadColor;
-            box-shadow: 0 8px 15px rgba(34, 197, 94, 0.4);
-        }
+        // &.unread {
+        //     border-bottom: 1px solid $unreadColor;
+        // }
     }
 }
 
@@ -432,8 +413,8 @@ $chatColor: rgba(27, 27, 27, 0.8);
     }
     &.at-me {
         background-color: #ffffff0f;
-        outline: 2px groove #21c85f;
-        background: linear-gradient(to right, #21c85e6d, #ffffff00, #ffffff00);
+        outline: 2px groove $atMeColor;
+        background: linear-gradient(to right, $atMeBgColor, #ffffff00, #ffffff00);
     }
     &.text {
         word-break: break-all;
@@ -456,13 +437,14 @@ $chatColor: rgba(27, 27, 27, 0.8);
 }
 
 .chat-input {
+    padding: 0 8px;
     display: flex;
     align-items: baseline;
     background-color: #000000;
 }
 
 .chat-input .target {
-    padding: 4px 8px;
+    padding: 4px 0;
     font-weight: bold;
     font-size: 13px;
 }
@@ -476,5 +458,18 @@ $chatColor: rgba(27, 27, 27, 0.8);
 
 .chat-input button:hover {
     background-color: #555;
+}
+
+.shortcut-hint {
+    opacity: 0.5;
+    display: flex;
+    gap: 2px;
+    span {
+        padding: 0 3px;
+        font-size: 10px;
+        border: 2px groove #44444480;
+        border-radius: 3px;
+        background-color: #444;
+    }
 }
 </style>
