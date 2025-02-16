@@ -5,7 +5,7 @@
         @focusin="expandChat"
         @focusout="collapseChat"
     >
-        <span class="main-unread-messages-dot" :class="{ active: hasUnreadMessages }">⬤</span>
+        <span class="main-unread-messages-dot" :class="{ active: hasUnreadMessages }">◼</span>
         <div ref="tabs" class="tabs">
             <div
                 class="tab"
@@ -24,7 +24,7 @@
                     @click="clickTab(chatRoom)"
                     @mousedown.prevent
                 >
-                    <span class="unread-messages-dot" :class="{ active: chatRoom.unreadMessages > 0 }">⬤</span>
+                    <span class="unread-messages-dot" :class="{ active: chatRoom.unreadMessages > 0 }">◼</span>
                     {{ chatRoom.name }}
                     <span class="close-button" v-if="chatRoom.closeable" @click="(e) => closeChatRoom(e, chatRoom)">
                         <Icon :icon="closeThick" />
@@ -190,7 +190,7 @@ onKeyDown(
 </script>
 
 <style lang="scss" scoped>
-$unreadColor: #22c55e;
+$unreadColor: #46ea2b;
 $chatColor: rgba(27, 27, 27, 0.8);
 
 .time-divider {
@@ -225,10 +225,9 @@ $chatColor: rgba(27, 27, 27, 0.8);
 
 .unread-messages-dot {
     position: absolute;
-    left: 8px;
+    left: 6px;
     display: none;
-    font-size: 8px;
-    margin-right: 8px;
+    font-size: 12px;
     color: $unreadColor;
     text-shadow: 0 0 12px $unreadColor;
     &.active {

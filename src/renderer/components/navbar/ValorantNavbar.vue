@@ -24,7 +24,7 @@
         </div>
 
         <!-- Separator line -->
-        <div class="separator"></div>
+        <!-- <div class="separator"></div> -->
 
         <!-- Bottom row with menu items -->
         <div class="menu-container">
@@ -72,9 +72,10 @@ $accentColor: #22c55e;
 .play-container {
     margin-bottom: 1rem;
     width: 100%;
-    background: linear-gradient(to left, transparent, rgba(0, 0, 0, 0.357), transparent);
+    background: linear-gradient(to left, transparent, rgba(0, 0, 0, 0.6), transparent);
     display: flex;
     justify-content: center;
+    border-bottom: 1px solid rgba(rgb(0, 0, 0), 0.1);
 }
 
 .logo {

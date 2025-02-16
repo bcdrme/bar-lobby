@@ -44,7 +44,7 @@ defineProps<{
     width: 250px;
     height: 100%;
     transition: all 0.3s ease;
-    clip-path: polygon(calc(100% - 15px) 0, 100% 15px, 100% 100%, 0 100%, 0 15px, 15px 0);
+    clip-path: polygon(calc(100% - 6px) 0, 100% 6px, 100% 100%, 0 100%, 0 6px, 6px 0);
 
     &.empty {
         opacity: 0.5;
@@ -68,10 +68,6 @@ defineProps<{
 }
 
 .banner {
-    // border-radius: 2px;
-    // border-top: 2px solid rgba(0, 0, 0, 0.2);
-    border-left: 1px solid rgba(0, 0, 0, 0.2);
-    border-right: 1px solid rgba(0, 0, 0, 0.2);
     position: absolute;
     z-index: -1;
     top: 0;
@@ -85,6 +81,7 @@ defineProps<{
     &.empty {
         background-image: none;
         background-color: rgba(11, 11, 11, 0.63);
+        border: 1px solid rgba(0, 0, 0, 0.2);
     }
 }
 

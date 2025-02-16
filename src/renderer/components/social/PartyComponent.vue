@@ -44,7 +44,7 @@ const meUser = useDexieLiveQuery(() => db.users.get(me.userId));
 }
 
 .party-info {
-    clip-path: polygon(100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 0);
+    clip-path: polygon(100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 0);
     border-radius: 2px;
     background: rgba(11, 11, 11, 0.63);
     opacity: 0.8;
@@ -52,7 +52,7 @@ const meUser = useDexieLiveQuery(() => db.users.get(me.userId));
     box-shadow: inset 0px 4px 25px rgba(0, 0, 0, 0.33);
     backdrop-filter: blur(10px);
     padding: 10px 20px;
-    font-size: 1.5rem;
+    font-size: 1rem;
 }
 
 .party-members {
