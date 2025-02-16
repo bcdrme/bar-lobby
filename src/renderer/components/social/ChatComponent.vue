@@ -47,7 +47,7 @@
                     <div class="message-content" :class="{ me: message.userId === me.userId, 'at-me': isAtMe(message) }">
                         <span class="username" :style="{ color: chatStore.selectedChatRoom.color }">{{ message.userName }}:</span>
                         <span class="text">{{ message.text }}</span>
-                    <span class="failed" v-if="message.failed">failed to deliver</span>
+                        <span class="failed" v-if="message.failed">failed to deliver</span>
                     </div>
                 </div>
             </div>

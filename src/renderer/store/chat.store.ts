@@ -123,6 +123,7 @@ export function initChatStore() {
                 name: source.userId, //TODO change this with the user name we have in db maybe
                 color: "#ff6347",
                 type: "player",
+                members: [],
                 messages: [newMessage],
                 unreadMessages: 1,
                 closeable: true,

@@ -17,6 +17,7 @@ export const me = reactive<
     status: "offline",
     isAuthenticated: false,
     username: "Player",
+    rank: 1,
     battleRoomState: {},
     outgoingFriendRequestUserIds: new Set<number>(),
     incomingFriendRequestUserIds: new Set<number>(),

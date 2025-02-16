@@ -28,6 +28,10 @@ const user: User = {
     displayName: "Test User",
     partyId: "123",
     status: "lobby",
+    rank: 1,
+    isFriend: 0,
+    isMe: 0,
+    lastSeen: 0,
 };
 
 // const user = api.session.getUserById(props.message.senderUserId);

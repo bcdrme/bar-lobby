@@ -1,5 +1,4 @@
 import { MapData } from "@main/content/maps/map-data";
-import { User } from "@main/model/user";
 import { StartBox } from "tachyon-protocol/types";
 
 export interface Battle {
@@ -100,7 +99,11 @@ export type Restriction = {
 export type Player = {
     id: number;
     name: string;
-    user: User;
+    user: {
+        userId: string;
+        username: string;
+        countryCode: string;
+    };
     contentSyncState: {
         engine: number;
         game: number;
