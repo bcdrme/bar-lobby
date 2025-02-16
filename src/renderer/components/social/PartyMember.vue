@@ -59,20 +59,16 @@ defineProps<{
             height: 100%;
             font-size: 60px;
             text-shadow: none;
-            color: rgba(255, 255, 255, 0.5);
-            &:hover {
-                background: rgba(255, 255, 255, 0.2);
-                transform: scale(1.02);
-                color: #fff;
-            }
+            color: rgba(255, 255, 255, 0.1);
         }
     }
 }
 
 .banner {
-    border-top: 2px solid rgb(255, 255, 255);
-    border-left: 1px solid rgb(255, 255, 255);
-    border-right: 1px solid rgb(255, 255, 255);
+    border-radius: 2px;
+    border-top: 2px solid rgba(0, 0, 0, 0.2);
+    border-left: 1px solid rgba(0, 0, 0, 0.2);
+    border-right: 1px solid rgba(0, 0, 0, 0.2);
     position: absolute;
     z-index: -1;
     top: 0;
@@ -85,7 +81,7 @@ defineProps<{
     mask-image: linear-gradient(rgba(0, 0, 0, 1), rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
     &.empty {
         background-image: none;
-        background-color: rgba(255, 255, 255, 0.1);
+        background-color: rgba(11, 11, 11, 0.63);
     }
 }
 
@@ -116,14 +112,13 @@ defineProps<{
 }
 
 .ribbon {
-    padding: 0 10px;
     position: absolute;
     bottom: 200px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    font-size: 20px;
+    height: 40px;
     background: rgb(255, 203, 107);
     border-top: 2px double rgba(255, 255, 255, 0.5);
     border-bottom: 2px double rgb(255, 255, 255, 0.5);
@@ -134,14 +129,14 @@ defineProps<{
         gap: 8px;
         color: black;
         text-shadow: none;
+        font-family: "Exo2";
+        font-weight: bold;
         .state {
             position: absolute;
             bottom: -30px;
             font-size: 16px;
             color: rgb(255, 255, 255);
-            text-transform: uppercase;
-            // font-weight: bold;
-            text-shadow: 1px 1px 0 rgba(0, 0, 0, 1);
+            filter: drop-shadow(0 0 5px #000);
         }
     }
     .rank {

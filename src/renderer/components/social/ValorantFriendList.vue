@@ -99,7 +99,7 @@ const recentPlayers = useDexieLiveQuery(() => {
 </script>
 
 <style lang="scss" scoped>
-$background-color: #82828272;
+$background-color: rgba(11, 11, 11, 0.63);
 $accent-color: #22c55e;
 
 .friends-sidebar {
@@ -110,31 +110,43 @@ $accent-color: #22c55e;
     height: 100vh;
     width: 300px;
     transform: translate(248px, 0);
-    // background: $background-color;
-    // backdrop-filter: blur(10px);
     transition: transform 0.3s ease;
     color: #f9f9f9;
-    overflow: hidden;
-    // border-top: 1px solid rgba(255, 255, 255, 0.938);
-    // box-shadow: -5px 0 10px rgba(0, 0, 0, 0.4);
+
+    .tag {
+        position: absolute;
+        transform: rotate(-90deg);
+        top: 200px;
+        left: -140px;
+        width: 100%;
+        height: 52px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: $background-color;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    }
 
     .friends-users-container {
         overflow-y: scroll;
         background: $background-color;
-        border-top: 1px solid rgba(255, 255, 255, 0.938);
-        box-shadow: -5px 0 10px rgba(0, 0, 0, 0.4);
+        box-shadow: inset 0px 4px 25px rgba(0, 0, 0, 0.33);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        border-top: 2px solid rgba(0, 0, 0, 0.2);
+        opacity: 0.8;
         height: 2000px;
     }
 
     .footer {
         background: $background-color;
-        // border-top: 1px solid rgba(255, 255, 255, 0.938);
-        box-shadow: -5px 0 10px rgba(0, 0, 0, 0.4);
         position: absolute;
         bottom: 0;
         .invitations-carousel {
             padding-left: 52px;
-            // padding: 10px 20px;
             background: rgba(255, 255, 255, 0.1);
             font-size: 14px;
             text-align: center;

@@ -11,6 +11,9 @@
 
 <template>
     <div class="overview-container">
+        <div class="crumbles">
+            <img src="/src/renderer/assets/images/crumbles.svg" />
+        </div>
         <div class="header">
             <img class="logo" src="/src/renderer/assets/images/BARLogoFull.png" />
         </div>
@@ -49,6 +52,17 @@ watch(
 </script>
 
 <style lang="scss" scoped>
+.crumbles {
+    img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        z-index: -1;
+        rotate: -90deg;
+    }
+}
+
 .overview-container {
     display: flex;
     flex-direction: column;

@@ -2,23 +2,23 @@
     <nav class="navbar">
         <!-- Top row with play button -->
         <div class="play-container">
-            <button class="side-button txt-outlined">
+            <button class="side-button">
                 <span>home</span>
             </button>
-            <button class="side-button txt-outlined">
+            <button class="side-button">
                 <span>profile</span>
             </button>
-            <!-- <button class="main-button txt-outlined">
+            <!-- <button class="main-button">
                 <span>Play</span>
             </button> -->
             <div class="logo">
-                <img src="/src/renderer/assets/images/BAR-Beyond-All-Reason-Logo-22-BAR-NoGlow.png" class="logo" />
+                <img src="/src/renderer/assets/images/BAR-Beyond-All-Reason-Logo-22-BAR-NoGlow.png" />
             </div>
 
-            <button class="side-button txt-outlined">
+            <button class="side-button">
                 <span>arcade</span>
             </button>
-            <button class="side-button txt-outlined">
+            <button class="side-button">
                 <span>watch</span>
             </button>
         </div>
@@ -31,7 +31,7 @@
             <button
                 v-for="item in menuItems"
                 :key="item"
-                class="menu-item txt-outlined"
+                class="menu-item"
                 :class="{ active: activeItem === item, locked: item === 'DUEL' }"
                 @click="activeItem = item"
                 :disabled="item === 'DUEL'"
@@ -78,30 +78,15 @@ $accentColor: #22c55e;
 }
 
 .logo {
-    // opacity: 0.8;
-    align-self: center;
-    align-content: center;
-    justify-content: center;
     width: 240px;
     height: 52px;
-    text-transform: uppercase;
-    font-weight: bold;
-    font-size: 38px;
-    color: #fff;
-    border: none;
-    text-align: center;
-    cursor: pointer;
     position: relative;
-    // overflow: hidden;
-    // filter: saturate(0.1);
     img {
         width: 100%;
         height: 100%;
         object-fit: contain;
     }
-    transition:
-        transform 0.3s ease,
-        box-shadow 0.3s ease;
+    filter: drop-shadow(0 0 8px rgba(0, 0, 0, 1));
 }
 
 .main-button {
@@ -147,7 +132,7 @@ $accentColor: #22c55e;
     opacity: 0.8;
     width: 120px;
     text-transform: uppercase;
-    // font-weight: bold;
+    font-weight: bold;
     font-size: 20px;
     color: #fff;
     border: none;
@@ -200,10 +185,10 @@ $accentColor: #22c55e;
     position: relative;
     background: none;
     border: none;
-    // color: #999;
+    color: #ffffff7e;
     font-size: 16px;
-    // font-weight: 500;
-    // letter-spacing: 0.05em;
+    font-weight: 500;
+    letter-spacing: 0.05em;
     padding: 0.25rem 0;
     cursor: pointer;
     transition: color 0.2s;
