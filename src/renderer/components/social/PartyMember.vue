@@ -44,10 +44,13 @@ defineProps<{
     width: 250px;
     height: 100%;
     transition: all 0.3s ease;
+    clip-path: polygon(calc(100% - 15px) 0, 100% 15px, 100% 100%, 0 100%, 0 15px, 15px 0);
 
     &.empty {
+        opacity: 0.5;
         &:hover {
-            background: rgba(255, 255, 255, 0.2);
+            // background: rgba(255, 255, 255, 0.2);
+            opacity: 0.8;
             transform: scale(1.02);
             color: #fff;
         }
@@ -57,16 +60,16 @@ defineProps<{
             align-items: center;
             width: 100%;
             height: 100%;
-            font-size: 60px;
+            font-size: 30px;
             text-shadow: none;
-            color: rgba(255, 255, 255, 0.1);
+            // color: rgba(255, 255, 255, 0.1);
         }
     }
 }
 
 .banner {
-    border-radius: 2px;
-    border-top: 2px solid rgba(0, 0, 0, 0.2);
+    // border-radius: 2px;
+    // border-top: 2px solid rgba(0, 0, 0, 0.2);
     border-left: 1px solid rgba(0, 0, 0, 0.2);
     border-right: 1px solid rgba(0, 0, 0, 0.2);
     position: absolute;

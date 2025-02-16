@@ -16,6 +16,7 @@
                 :key="chatRoom.id"
             >
                 <Button
+                    class="txt-secondary"
                     :class="{
                         active: chatStore.selectedChatRoom.id === chatRoom.id,
                         unread: chatRoom.unreadMessages > 0,
@@ -190,7 +191,7 @@ onKeyDown(
 
 <style lang="scss" scoped>
 $unreadColor: #22c55e;
-$chatColor: #82828272;
+$chatColor: rgba(27, 27, 27, 0.8);
 
 .time-divider {
     display: flex;
@@ -277,8 +278,10 @@ $chatColor: #82828272;
     &.expanded {
         mask-image: none;
         height: 400px;
-        // outline: 2px solid rgb(34, 34, 34);
-        box-shadow: 0 0 8px 1px rgba(0, 0, 0, 0.7);
+        // box-shadow: 0 0 8px 1px rgba(0, 0, 0, 0.7);
+        border-top-right-radius: 4px;
+        backdrop-filter: blur(10px);
+        outline: 1px solid rgb(0, 0, 0);
     }
     &.translated {
         left: 900px;
@@ -293,7 +296,7 @@ $chatColor: #82828272;
     opacity: 0.3;
     mix-blend-mode: overlay; // doesn't support transition
     z-index: -1;
-    outline: 1px solid black;
+    // outline: 1px solid black;
 }
 
 // tabs are fading out when chat is collapsed
@@ -302,37 +305,38 @@ $chatColor: #82828272;
 }
 
 .tabs {
+    position: absolute;
+    top: -42px;
     transition: all 0.4s ease-in-out;
     flex-direction: row;
-    background: rgba(0, 0, 0, 0.9);
     width: 100%;
     display: flex;
-    font-size: 14px;
     overflow-x: hidden;
     .tab {
         text-wrap: none;
-        padding-left: 8px;
         padding-top: 8px;
+        margin-right: 2px;
         &.unread {
             z-index: 1;
         }
+        clip-path: polygon(calc(100% - 15px) 0, 100% 15px, 100% 100%, 0 100%, 0 0);
     }
     .button {
+        font-size: 10px;
         text-wrap-mode: nowrap;
         border: none;
-        background: #000000;
+        background: rgba(0, 0, 0, 0.6);
         border-bottom: 1px solid #000000;
-        color: rgba(255, 255, 255, 0.5);
         flex-grow: 0;
         :deep(> button) {
-            padding: 0 20px;
+            padding: 0 18px;
         }
         &:hover,
         &.active {
             border-bottom: 1px solid $chatColor;
             color: #fff;
             background-color: $chatColor;
-            box-shadow: 0 0 16px rgba(0, 0, 0, 0.7);
+            // box-shadow: 0 0 16px rgba(0, 0, 0, 0.7);
         }
         &.unread {
             border-bottom: 1px solid $unreadColor;
@@ -408,7 +412,14 @@ $chatColor: #82828272;
 }
 
 .chat-message {
-    font-size: 13px;
+    font-size: 12px;
+    color: #dadada;
+    font-family: "Poppins";
+    font-style: normal;
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    color: #dadada;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.65);
 }
 
 .message-content {
