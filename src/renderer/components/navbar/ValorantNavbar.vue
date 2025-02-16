@@ -8,9 +8,13 @@
             <button class="side-button txt-outlined">
                 <span>profile</span>
             </button>
-            <button class="main-button txt-outlined">
+            <!-- <button class="main-button txt-outlined">
                 <span>Play</span>
-            </button>
+            </button> -->
+            <div class="logo">
+                <img src="/src/renderer/assets/images/BAR-Beyond-All-Reason-Logo-22-BAR-NoGlow.png" class="logo" />
+            </div>
+
             <button class="side-button txt-outlined">
                 <span>arcade</span>
             </button>
@@ -27,7 +31,7 @@
             <button
                 v-for="item in menuItems"
                 :key="item"
-                class="menu-item"
+                class="menu-item txt-outlined"
                 :class="{ active: activeItem === item, locked: item === 'DUEL' }"
                 @click="activeItem = item"
                 :disabled="item === 'DUEL'"
@@ -73,6 +77,33 @@ $accentColor: #22c55e;
     justify-content: center;
 }
 
+.logo {
+    // opacity: 0.8;
+    align-self: center;
+    align-content: center;
+    justify-content: center;
+    width: 240px;
+    height: 52px;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 38px;
+    color: #fff;
+    border: none;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    // overflow: hidden;
+    // filter: saturate(0.1);
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
 .main-button {
     opacity: 0.8;
     align-self: center;
@@ -116,7 +147,7 @@ $accentColor: #22c55e;
     opacity: 0.8;
     width: 120px;
     text-transform: uppercase;
-    font-weight: bold;
+    // font-weight: bold;
     font-size: 20px;
     color: #fff;
     border: none;
@@ -169,10 +200,10 @@ $accentColor: #22c55e;
     position: relative;
     background: none;
     border: none;
-    color: #999;
+    // color: #999;
     font-size: 16px;
-    font-weight: 500;
-    letter-spacing: 0.05em;
+    // font-weight: 500;
+    // letter-spacing: 0.05em;
     padding: 0.25rem 0;
     cursor: pointer;
     transition: color 0.2s;
@@ -186,7 +217,7 @@ $accentColor: #22c55e;
         color: white;
     }
     &.locked {
-        opacity: 0.4;
+        opacity: 0.5;
     }
     .locked {
         position: absolute;

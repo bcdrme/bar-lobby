@@ -26,10 +26,10 @@
             <PartyComponent />
             <div class="footer">
                 <div>
-                    <button class="cancel-button">Map pool</button>
+                    <button class="cancel-button txt-outlined">Map pool</button>
                     <button
                         v-if="matchmakingStore.status === MatchmakingStatus.Idle"
-                        class="quick-play-button"
+                        class="quick-play-button txt-outlined"
                         :class="{
                             disabled: !matchmakingStore.selectedQueue,
                         }"
@@ -54,10 +54,10 @@
                     <button v-else-if="matchmakingStore.status === MatchmakingStatus.MatchAccepted" class="quick-play-button" disabled>
                         Accepted
                     </button>
-                    <button class="cancel-button">Leave party</button>
+                    <button class="cancel-button txt-outlined">Leave party</button>
                 </div>
                 <button
-                    class="cancel-button"
+                    class="cancel-button txt-outlined"
                     :class="{
                         disabled: matchmakingStore.status === MatchmakingStatus.Idle,
                     }"
@@ -131,7 +131,7 @@ $back-button-font-size: 24px;
     backdrop-filter: blur(100px) brightness(1.8);
     transition: all 1s ease;
     z-index: -1;
-    animation: pulse 10s infinite ease-in-out;
+    // animation: pulse 10s infinite ease-in-out;
 }
 
 @keyframes pulse {
@@ -206,28 +206,39 @@ $back-button-font-size: 24px;
 
 .quick-play-button {
     align-self: center;
-    text-transform: uppercase;
-    font-family: Rajdhani;
-    font-weight: bold;
-    font-size: 2rem;
-    width: 200px;
-    padding: 10px 0;
-    color: #fff;
-    background: linear-gradient(90deg, #22c55e, #16a34a);
-    border: none;
+    // text-transform: uppercase;
+    // font-family: Rajdhani;
+    // font-weight: bold;
+
+    /* Rectangle 4.8 */
+
+    box-sizing: border-box;
+
+    background: linear-gradient(180deg, #313131 18.23%, #141414 73.48%);
+    /* Button Stroke */
+    border: 1px solid rgba(200, 200, 200, 0.34);
+    box-shadow: inset 0px 0px 3.06553px rgba(0, 0, 0, 0.43);
     border-radius: 2px;
-    box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
-    text-align: center;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
+
+    font-size: 2rem;
+    // width: 200px;
+    padding: 10px 20px;
+    color: #fff;
+    // background: linear-gradient(90deg, #22c55e, #16a34a);
+    // border: none;
+    // border-radius: 2px;
+    // box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
+    // text-align: center;
+    // cursor: pointer;
+    // position: relative;
+    // overflow: hidden;
     transition:
         transform 0.3s ease,
         box-shadow 0.3s ease;
 }
 
 .quick-play-button:hover {
-    box-shadow: 0 0 25px rgba(34, 197, 94, 0.6);
+    box-shadow: 0 0 25px rgba(162, 162, 162, 0.6);
 }
 
 .quick-play-button::before {
@@ -249,9 +260,9 @@ $back-button-font-size: 24px;
 .cancel-button {
     width: 250px;
     align-self: center;
-    text-transform: uppercase;
-    font-family: Rajdhani;
-    font-weight: bold;
+    // text-transform: uppercase;
+    // font-family: Rajdhani;
+    // font-weight: bold;
     font-size: 1.5rem;
     padding: 20px 40px;
     color: #fff;

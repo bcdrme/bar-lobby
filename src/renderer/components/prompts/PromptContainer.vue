@@ -71,7 +71,7 @@ export default {
 }
 .modal-panel {
     flex-grow: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.85);
 }
 .title {
     padding: 5px 10px;

@@ -68,3 +68,15 @@ h6 {
 .txt-error {
     color: rgb(255, 100, 100);
 }
+
+.txt-outlined {
+    text-shadow: none;
+    /* Unit special commands */
+    font-family: "Poppins";
+    font-style: normal;
+    font-weight: 900;
+    letter-spacing: -0.05em;
+    text-transform: uppercase;
+    /* Text Stroke */
+    -webkit-text-stroke: 1px #000;
+}

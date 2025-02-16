@@ -140,7 +140,7 @@ defineProps<{
             font-size: 16px;
             color: rgb(255, 255, 255);
             text-transform: uppercase;
-            font-weight: bold;
+            // font-weight: bold;
             text-shadow: 1px 1px 0 rgba(0, 0, 0, 1);
         }
     }
