@@ -1,3 +1,4 @@
+import { initChatStore } from "@renderer/store/chat.store";
 import { initDownloadsStore } from "@renderer/store/downloads.store";
 import { initEnginesStore } from "@renderer/store/engine.store";
 import { initGameStore } from "@renderer/store/game.store";
@@ -20,5 +21,6 @@ export async function initPreMountStores() {
         initializeMatchmakingStore(),
         initUsersStore(),
         initMeStore(),
+        initChatStore(),
     ]);
 }

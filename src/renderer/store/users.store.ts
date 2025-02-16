@@ -2,15 +2,7 @@ import { User } from "@main/model/user";
 import { db } from "@renderer/store/db";
 import { reactive } from "vue";
 
-export const usersStore = reactive<{
-    isInitialized: boolean;
-    isFriendListOpen: boolean;
-    invites: User[];
-}>({
-    isInitialized: false,
-    isFriendListOpen: false,
-    invites: [],
-});
+export const usersStore = reactive<{ isInitialized: boolean; isFriendListOpen: boolean; invites: User[] }>({ isInitialized: false, isFriendListOpen: false, invites: [] });
 
 function insertFakeUsers() {
     const users = [

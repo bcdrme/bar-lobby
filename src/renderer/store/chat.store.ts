@@ -30,14 +30,7 @@ const defaultChatRooms: ChatRoom[] = [
         name: "General",
         color: "#87ceeb",
         type: "room",
-        messages: [
-            {
-                userId: "System",
-                userName: "System",
-                text: "Welcome to the chat!",
-                timestamp: Date.now(),
-            },
-        ],
+        messages: [{ userId: "System", userName: "System", text: "Welcome to the chat!", timestamp: Date.now() }],
         members: [],
         unreadMessages: 0,
         closeable: false,
@@ -48,30 +41,10 @@ const defaultChatRooms: ChatRoom[] = [
         color: "#87ceeb",
         type: "room",
         messages: [
-            {
-                userId: "System",
-                userName: "System",
-                text: "Welcome to the lobby!",
-                timestamp: Date.now() - 1000 * 60 * 60,
-            },
-            {
-                userId: "System",
-                userName: "System",
-                text: "This is a place to chat with other players.",
-                timestamp: Date.now() - 1000 * 60 * 60,
-            },
-            {
-                userId: "System",
-                userName: "System",
-                text: "Please be respectful and follow the rules.",
-                timestamp: Date.now() - 1000 * 60,
-            },
-            {
-                userId: "System",
-                userName: "System",
-                text: "Enjoy your stay!",
-                timestamp: Date.now(),
-            },
+            { userId: "System", userName: "System", text: "Welcome to the lobby!", timestamp: Date.now() - 1000 * 60 * 60 },
+            { userId: "System", userName: "System", text: "This is a place to chat with other players.", timestamp: Date.now() - 1000 * 60 * 60 },
+            { userId: "System", userName: "System", text: "Please be respectful and follow the rules.", timestamp: Date.now() - 1000 * 60 },
+            { userId: "System", userName: "System", text: "Enjoy your stay!", timestamp: Date.now() },
         ],
         members: ["smile2", "Banana", "Apple", "Grape", "Kiwi", "Pineapple"],
         unreadMessages: 4,
@@ -82,55 +55,29 @@ const defaultChatRooms: ChatRoom[] = [
         name: "Melon",
         color: "#ff6347",
         type: "player",
-        messages: [
-            {
-                userId: "101",
-                userName: "Melon",
-                text: "Welcome to the Melon chat!",
-                timestamp: Date.now(),
-            },
-        ],
+        messages: [{ userId: "101", userName: "Melon", text: "Welcome to the Melon chat!", timestamp: Date.now() }],
         members: [],
         unreadMessages: 1,
         closeable: true,
     },
 ];
 
-export const chatStore = reactive<{
-    chatRooms: ChatRoom[];
-    selectedChatRoom: ChatRoom;
-    isInitialized?: boolean;
-}>({
+export const chatStore = reactive<{ chatRooms: ChatRoom[]; selectedChatRoom: ChatRoom; isInitialized?: boolean }>({
     chatRooms: defaultChatRooms,
     selectedChatRoom: defaultChatRooms.at(0),
     isInitialized: false,
 });
 
 export function initChatStore() {
-    window.tachyon.onEvent("messaging/received", (data) => {
+    window.tachyon.onEvent("messaging/received", async (data) => {
         console.debug(`Received message: ${JSON.stringify(data)}`);
-        const { message, source, timestamp } = data;
-        const newMessage: ChatMessage = {
-            userId: source.userId,
-            userName: source.userId,
-            text: message,
-            timestamp,
-        };
-        const chatRoom = chatStore.chatRooms.find((room) => room.id === source.userId);
+        const { message, source } = data;
+        const newMessage: ChatMessage = { userId: source.userId, userName: source.userId, text: message, timestamp: new Date().getTime() };
+        let chatRoom = chatStore.chatRooms.find((room) => room.id === source.userId);
         if (chatRoom === undefined) {
-            chatActions.openChatRoom({
-                id: source.userId,
-                name: source.userId, //TODO change this with the user name we have in db maybe
-                color: "#ff6347",
-                type: "player",
-                members: [],
-                messages: [newMessage],
-                unreadMessages: 1,
-                closeable: true,
-            });
-        } else {
-            chatRoom.messages.push(newMessage);
+            chatRoom = await chatActions.openDMChatRoom(source.userId);
         }
+        chatRoom.messages.push(newMessage);
     });
     chatStore.isInitialized = true;
 }
@@ -143,13 +90,7 @@ export const chatActions = {
     async sendMessage(message: ChatMessage) {
         //TODO change this when we have room support in protocol
         if (chatStore.selectedChatRoom.type === "player") {
-            const repsonse = await window.tachyon.request("messaging/send", {
-                message: message.text,
-                target: {
-                    type: chatStore.selectedChatRoom.type,
-                    userId: chatStore.selectedChatRoom.id,
-                },
-            });
+            const repsonse = await window.tachyon.request("messaging/send", { message: message.text, target: { type: chatStore.selectedChatRoom.type, userId: chatStore.selectedChatRoom.id } });
             if (repsonse.status === "success") {
                 message.failed = false;
             } else {
@@ -170,7 +111,22 @@ export const chatActions = {
     closeChatRoom(id: string) {
         chatStore.chatRooms = chatStore.chatRooms.filter((room) => room.id !== id);
     },
-    openChatRoom(room: ChatRoom) {
+    async openDMChatRoom(userId: string) {
+        window.tachyon.request("user/subscribeUpdates", { userIds: [userId] });
+        const room: ChatRoom = {
+            id: userId,
+            name: userId, //TODO change this with the user name we have in db maybe
+            color: "#ff6347",
+            type: "player",
+            members: [],
+            messages: [],
+            unreadMessages: 1,
+            closeable: true,
+        };
         chatStore.chatRooms.push(room);
+        return room;
     },
 };
+
+// For debugging purposes
+// window.chatActions = chatActions;

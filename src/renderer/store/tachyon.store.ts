@@ -35,6 +35,7 @@ export async function initTachyonStore() {
     window.tachyon.onConnected(() => {
         console.debug("Connected to Tachyon server");
         tachyonStore.isConnected = true;
+        window.tachyon.request("messaging/subscribeReceived", {});
     });
 
     window.tachyon.onDisconnected(() => {
