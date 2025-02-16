@@ -29,7 +29,7 @@ const props = defineProps<Props>();
 </script>
 
 <style lang="scss" scoped>
-.quick-play-button {
+.menu-item {
     align-self: center;
     text-transform: uppercase;
     font-family: Rajdhani;

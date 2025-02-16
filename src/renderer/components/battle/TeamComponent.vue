@@ -21,22 +21,33 @@
             </Button>
             <!-- <Button v-if="showJoin" class="slim black" @click="onJoinClicked(teamId)">Join</Button> -->
         </div>
-        <div
-            v-for="member in battleWithMetadataStore.teams[teamId]"
-            :key="member.id"
-            :draggable="!isRaptorTeam(teamId) && !isScavengerTeam(teamId)"
-            @dragstart="onDragStart($event, member)"
-            @dragend="onDragEnd()"
-            class="participant"
-        >
-            <PlayerParticipant v-if="isPlayer(member)" :player="member" />
-            <BotParticipant v-else-if="isBot(member)" :bot="member" :team-id="teamId" />
+        <div class="team-members">
+            <div
+                v-for="member in battleWithMetadataStore.teams[teamId]"
+                :key="member.id"
+                :draggable="!isRaptorTeam(teamId) && !isScavengerTeam(teamId)"
+                @dragstart="onDragStart($event, member)"
+                @dragend="onDragEnd()"
+                class="join-button"
+            >
+                <PlayerParticipant v-if="isPlayer(member)" :player="member" />
+                <BotParticipant v-else-if="isBot(member)" :bot="member" :team-id="teamId" />
+            </div>
+            <button
+                class="join-button"
+                :class="{ first: i === 0 }"
+                @click="onJoinClicked(teamId)"
+                v-for="(_, i) in maxPlayersPerTeam > 0 ? maxPlayersPerTeam - memberCount : 1"
+                :key="i"
+            >
+                Join
+            </button>
         </div>
-        <div v-if="!isRaptorTeam(teamId) && !isScavengerTeam(teamId)">
+        <!-- <div v-if="!isRaptorTeam(teamId) && !isScavengerTeam(teamId)">
             <div v-for="(_, i) in maxPlayersPerTeam > 0 ? maxPlayersPerTeam - memberCount : 1" :key="i">
                 <button class="join-button" :class="{ first: i === 0 }" @click="onJoinClicked(teamId)">Join</button>
             </div>
-        </div>
+        </div> -->
     </div>
 </template>
 
@@ -169,18 +180,16 @@ function onDrop(event: DragEvent, teamId: number) {
 }
 
 .team-members {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-rows: repeat(4, 1fr);
+    column-gap: 4px;
     flex-wrap: wrap;
     margin-top: 5px;
 }
 
 .join-button {
     height: 46px;
-    &.first {
-        border-top: none;
-    }
     border-top: 1px solid rgba(255, 255, 255, 0.05);
     padding: 8px;
     width: 100%;
@@ -196,5 +205,10 @@ function onDrop(event: DragEvent, teamId: number) {
         color: rgba(255, 255, 255, 0.9);
         background-color: rgba(255, 255, 255, 0.05);
     }
+}
+
+.join-button:nth-child(1),                    /* First item overall */
+.join-button:nth-child(5) {
+    border-top: none;
 }
 </style>

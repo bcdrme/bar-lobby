@@ -6,6 +6,7 @@ export interface ChatRoom {
     color: string;
     type: "room" | "player";
     messages: ChatMessage[];
+    members: string[];
     unreadMessages: number;
     closeable: boolean;
 }
@@ -37,6 +38,7 @@ const defaultChatRooms: ChatRoom[] = [
                 timestamp: Date.now(),
             },
         ],
+        members: [],
         unreadMessages: 0,
         closeable: false,
     },
@@ -50,19 +52,19 @@ const defaultChatRooms: ChatRoom[] = [
                 userId: "System",
                 userName: "System",
                 text: "Welcome to the lobby!",
-                timestamp: Date.now(),
+                timestamp: Date.now() - 1000 * 60 * 60,
             },
             {
                 userId: "System",
                 userName: "System",
                 text: "This is a place to chat with other players.",
-                timestamp: Date.now(),
+                timestamp: Date.now() - 1000 * 60 * 60,
             },
             {
                 userId: "System",
                 userName: "System",
                 text: "Please be respectful and follow the rules.",
-                timestamp: Date.now(),
+                timestamp: Date.now() - 1000 * 60,
             },
             {
                 userId: "System",
@@ -71,6 +73,7 @@ const defaultChatRooms: ChatRoom[] = [
                 timestamp: Date.now(),
             },
         ],
+        members: ["smile2", "Banana", "Apple", "Grape", "Kiwi", "Pineapple"],
         unreadMessages: 4,
         closeable: false,
     },
@@ -87,6 +90,7 @@ const defaultChatRooms: ChatRoom[] = [
                 timestamp: Date.now(),
             },
         ],
+        members: [],
         unreadMessages: 1,
         closeable: true,
     },

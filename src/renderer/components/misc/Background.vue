@@ -1,6 +1,7 @@
 <template>
     <div class="fullsize background">
         <div class="fullsize background__overlay" :class="{ active: blur }" />
+        <div class="fullscreen-effect"></div>
     </div>
 </template>
 
@@ -21,15 +22,16 @@ defineProps<{
     z-index: -1;
     transition: 1s ease-in-out;
     &__overlay {
-        background-color: rgba(0, 0, 0, 0.65);
-        backdrop-filter: blur(0px);
+        background: radial-gradient(transparent, #00000040, rgba(0, 0, 0));
+        // background-color: rgba(0, 0, 0, 0.65);
+        // backdrop-filter: blur(0px);
         z-index: -1;
         transition:
             background-color,
-            backdrop-filter 0.4s ease-in-out;
+            backdrop-filter 1s ease-in-out;
         &.active {
             background-color: rgba(0, 0, 0, 0.45);
-            backdrop-filter: blur(7px) saturate(90%);
+            backdrop-filter: blur(100px) saturate(90%);
         }
     }
 }

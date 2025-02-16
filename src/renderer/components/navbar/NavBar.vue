@@ -13,25 +13,6 @@
                     </Button>
                 </div>
                 <div class="primary-right">
-                    <Button
-                        v-if="false"
-                        v-tooltip.bottom="'Direct Messages'"
-                        v-click-away:messages="() => (messagesOpen = false)"
-                        :class="['icon', { active: messagesOpen }]"
-                        @click="messagesOpen = true"
-                    >
-                        <Icon :icon="messageIcon" :height="40" />
-                        <div v-if="messagesUnread" class="unread-dot"></div>
-                    </Button>
-                    <Button
-                        v-if="me.isAuthenticated"
-                        v-tooltip.bottom="'Friends'"
-                        v-click-away:friends="() => (friendsOpen = false)"
-                        :class="['icon', { active: friendsOpen }]"
-                        @click="friendsOpen = true"
-                    >
-                        <Icon :icon="accountMultiple" :height="40" />
-                    </Button>
                     <DownloadsButton
                         v-tooltip.bottom="'Downloads'"
                         v-click-away:downloads="() => (downloadsOpen = false)"
@@ -53,20 +34,14 @@
                     </Button>
                 </div>
                 <div class="secondary-right flex-row flex-right">
-                    <ServerStatus v-if="me.isAuthenticated" />
-                    <Button v-if="me.isAuthenticated" class="user" to="/profile">
-                        <div class="flex-row flex-center gap-sm">
-                            <Icon :icon="account" :height="20" />
-                            <div>{{ me.username }}</div>
-                        </div>
-                    </Button>
+                    <ServerStatus v-if="me.isAuthenticated" v-tooltip.bottom="'Server Status'" />
+                    <SocialButton v-if="me.isAuthenticated" />
                 </div>
             </div>
         </div>
 
         <TransitionGroup name="slide-right">
             <Messages v-show="messagesOpen" key="messages" v-model="messagesOpen" v-click-away:messages="() => (messagesOpen = false)" />
-            <Friends v-show="friendsOpen" key="friends" v-model="friendsOpen" v-click-away:friends="() => (friendsOpen = false)" />
             <Downloads
                 v-show="downloadsOpen"
                 key="downloads"
@@ -81,9 +56,6 @@
 
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
-import account from "@iconify-icons/mdi/account";
-import accountMultiple from "@iconify-icons/mdi/account-multiple";
-import messageIcon from "@iconify-icons/mdi/chat";
 import closeThick from "@iconify-icons/mdi/close-thick";
 import cog from "@iconify-icons/mdi/cog";
 import { computed, inject, Ref, ref } from "vue";
@@ -92,12 +64,12 @@ import Button from "@renderer/components/controls/Button.vue";
 import Downloads from "@renderer/components/navbar/Downloads.vue";
 import DownloadsButton from "@renderer/components/navbar/DownloadsButton.vue";
 import Exit from "@renderer/components/navbar/Exit.vue";
-import Friends from "@renderer/components/navbar/Friends.vue";
 import Messages from "@renderer/components/navbar/Messages.vue";
 import { useRouter } from "vue-router";
 import { settingsStore } from "@renderer/store/settings.store";
 import { me } from "@renderer/store/me.store";
 import ServerStatus from "@renderer/components/navbar/ServerStatus.vue";
+import SocialButton from "@renderer/components/navbar/SocialButton.vue";
 
 defineProps<{
     hidden?: boolean;
@@ -128,22 +100,9 @@ const secondaryRoutes = computed(() => {
         .sort((a, b) => (a.meta.order ?? 99) - (b.meta.order ?? 99));
 });
 const messagesOpen = ref(false);
-const friendsOpen = ref(false);
 const downloadsOpen = ref(false);
 const settingsOpen = inject<Ref<boolean>>("settingsOpen")!;
 const exitOpen = inject<Ref<boolean>>("exitOpen")!;
-
-const messagesUnread = computed(() => {
-    //TODO dmStores
-    // for (const [, messages] of api.session.directMessages) {
-    //     for (const message of messages) {
-    //         if (!message.read) {
-    //             return true;
-    //         }
-    //     }
-    // }
-    return false;
-});
 </script>
 
 <style lang="scss" scoped>
@@ -314,17 +273,5 @@ const messagesUnread = computed(() => {
         0 1px 0 rgba(255, 47, 47, 0.418),
         7px -3px 10px rgba(0, 0, 0, 0.5),
         -7px -3px 10px rgba(0, 0, 0, 0.5) !important;
-}
-.user {
-    text-transform: unset;
-}
-.unread-dot {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    border-radius: 100%;
-    right: 17px;
-    bottom: 17px;
-    background: red;
 }
 </style>

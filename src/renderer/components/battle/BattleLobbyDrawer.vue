@@ -1,16 +1,21 @@
 <template>
     <div class="lobby-drawer" :class="{ 'is-open': battleStore.isLobbyOpened }">
         <Panel class="panel" no-padding>
-            <OfflineBattleComponent />
+            <OfflineBattleComponent v-if="drawerStore.state === 'custom'" />
+            <RankedComponent v-else-if="drawerStore.state === 'ranked'" />
+            <MainComponent v-else />
         </Panel>
     </div>
     <div class="backdrop" @click="battleStore.isLobbyOpened = false" v-if="battleStore.isLobbyOpened"></div>
 </template>
 
 <script lang="ts" setup>
+import MainComponent from "@renderer/components/battle/MainComponent.vue";
 import OfflineBattleComponent from "@renderer/components/battle/OfflineBattleComponent.vue";
+import RankedComponent from "@renderer/components/battle/RankedComponent.vue";
 import Panel from "@renderer/components/common/Panel.vue";
 import { battleStore } from "@renderer/store/battle.store";
+import { drawerStore } from "@renderer/store/drawer.store";
 import { onKeyDown } from "@vueuse/core";
 
 onKeyDown(

@@ -1,7 +1,7 @@
 <route lang="json5">
 {
     meta: {
-        redirect: "/home/overview",
+        redirect: "/home/overview2",
         title: "Home",
         order: 0,
     },

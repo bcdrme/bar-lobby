@@ -14,6 +14,7 @@ export type Info = {
         numOfDisplays: number;
         currentDisplayIndex: number;
     };
+    locale: string;
 };
 
 function getInfo() {
@@ -35,6 +36,7 @@ function getInfo() {
             numOfDisplays: displayIds.length,
             currentDisplayIndex: displayIds.indexOf(currentDisplayId),
         },
+        locale: app.getLocale(),
     };
     return info;
 }

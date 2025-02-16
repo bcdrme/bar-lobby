@@ -28,6 +28,7 @@ console.debug(`Loading ${Object.values(backgroundImages).length} background imag
 const randomBackgroundImage = randomFromArray(Object.values(backgroundImages));
 console.debug("Setting background image:", randomBackgroundImage);
 document.documentElement.style.setProperty("--background", `url(${randomBackgroundImage})`);
+// document.documentElement.style.setProperty("--background", `url("/src/renderer/assets/images/backgrounds/start_screen_nocom.avif")`);
 
 onMounted(async () => {
     try {

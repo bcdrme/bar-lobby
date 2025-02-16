@@ -1,5 +1,5 @@
 <route lang="json5">
-{ meta: { title: "Ranked", order: 0, onlineOnly: true, transition: { name: "slide-left" } } }
+{ meta: { title: "Ranked", order: 1, onlineOnly: true, transition: { name: "slide-left" } } }
 </route>
 
 <template>
@@ -186,7 +186,7 @@ import Button from "primevue/button";
     box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.5);
 }
 
-.button-container {
+.main-menu {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -195,7 +195,7 @@ import Button from "primevue/button";
     flex-grow: 1;
 }
 
-.quick-play-button {
+.menu-item {
     align-self: center;
     width: 500px;
     text-transform: uppercase;

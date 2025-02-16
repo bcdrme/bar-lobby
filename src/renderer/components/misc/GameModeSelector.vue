@@ -104,7 +104,7 @@ defineEmits(["selected"]);
     box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.5);
 }
 
-.quick-play-button {
+.menu-item {
     height: 120px;
     width: 100%;
     align-self: center;

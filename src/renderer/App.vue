@@ -6,21 +6,21 @@
         <Suspense>
             <DebugSidebar v-if="settingsStore.devMode" />
         </Suspense>
-        <StickyBattle v-if="state === 'default'" />
+        <!-- <StickyBattle v-if="state === 'default'" /> -->
         <Background :blur="blurBg" />
         <Notifications v-if="state === 'default'" />
         <PromptContainer v-if="state === 'default'" />
-        <NavBar :class="{ hidden: empty || state === 'preloader' || state === 'initial-setup' }" />
+        <!-- <NavBar :class="{ hidden: empty || state === 'preloader' || state === 'initial-setup' }" /> -->
         <div class="lobby-version">
             {{ infosStore.lobby.version }}
         </div>
         <div v-if="empty" class="splash-options">
             <div class="option" @click="settingsOpen = true">
-                <Icon :icon="cog" height="21" />
+                <Icon :icon="cog" />
             </div>
-            <div class="option" @click="exitOpen = true">
-                <Icon :icon="closeThick" height="21" />
-            </div>
+            <!-- <div class="option" @click="exitOpen = true">
+                <Icon :icon="closeThick" height="36" />
+            </div> -->
         </div>
         <Transition mode="out-in" name="fade">
             <Preloader v-if="state === 'preloader'" @complete="onPreloadDone" />
@@ -45,6 +45,8 @@
         <Settings v-model="settingsOpen" />
         <Error />
         <ChatComponent v-if="state === 'default' && me.isAuthenticated && tachyonStore.isConnected" />
+        <!-- <FriendListComponent v-if="state === 'default' && me.isAuthenticated && tachyonStore.isConnected" /> -->
+        <ValorantFriendList v-if="state === 'default' && me.isAuthenticated && tachyonStore.isConnected" />
         <FullscreenGameModeSelector v-if="state === 'default'" :visible="battleStore.isSelectingGameMode" />
     </div>
 </template>
@@ -79,6 +81,8 @@ import FullscreenGameModeSelector from "@renderer/components/battle/FullscreenGa
 import { useGlobalKeybindings } from "@renderer/composables/useGlobalKeybindings";
 import { me } from "@renderer/store/me.store";
 import { tachyonStore } from "@renderer/store/tachyon.store";
+import FriendListComponent from "@renderer/components/social/FriendListComponent.vue";
+import ValorantFriendList from "@renderer/components/social/ValorantFriendList.vue";
 
 const router = useRouter();
 const videoVisible = toRef(!toValue(settingsStore.skipIntro));
@@ -151,7 +155,7 @@ function onInitialSetupDone() {
 
 .lobby-version {
     position: absolute;
-    left: 3px;
+    right: 60px;
     bottom: 1px;
     font-size: 12px;
     color: rgba(255, 255, 255, 0.3);
@@ -159,15 +163,20 @@ function onInitialSetupDone() {
 
 .splash-options {
     position: fixed;
-    display: flex;
-    flex-direction: row;
-    gap: 5px;
     right: 0;
     top: 0;
-    padding: 10px;
     z-index: 5;
     .option {
+        display: flex;
+        height: 52px;
+        width: 52px;
+        place-items: center;
+        place-content: center;
         opacity: 0.8;
+        svg {
+            height: 36px;
+            width: 36px;
+        }
         &:hover {
             opacity: 1;
         }

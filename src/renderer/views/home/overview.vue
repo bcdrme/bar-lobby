@@ -16,8 +16,8 @@
                         Welcome to the new BAR lobby public testing alpha 1 commander !<br />This version only supports singleplayer game
                         modes.
                     </div>
-                    <div class="button-container">
-                        <button class="quick-play-button" @click="battleStore.isSelectingGameMode = true">Quick play</button>
+                    <div class="main-menu">
+                        <button class="menu-item" @click="battleStore.isSelectingGameMode = true">Quick play</button>
                     </div>
                 </div>
                 <div class="right-column">
@@ -78,14 +78,14 @@ watch(
     align-self: center;
 }
 
-.button-container {
+.main-menu {
     display: flex;
     justify-content: center;
     margin-top: 40px;
     flex-grow: 1;
 }
 
-.quick-play-button {
+.menu-item {
     align-self: center;
     width: 500px;
     text-transform: uppercase;
@@ -107,11 +107,11 @@ watch(
         box-shadow 0.3s ease;
 }
 
-.quick-play-button:hover {
+.menu-item:hover {
     box-shadow: 0 0 25px rgba(34, 197, 94, 0.6);
 }
 
-.quick-play-button::before {
+.menu-item::before {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -123,7 +123,7 @@ watch(
     transition: transform 0.4s ease;
 }
 
-.quick-play-button:hover::before {
+.menu-item:hover::before {
     box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
 }
 

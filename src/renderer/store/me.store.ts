@@ -22,7 +22,6 @@ export const me = reactive<
     incomingFriendRequestUserIds: new Set<number>(),
     friendUserIds: new Set<number>(),
     ignoreUserIds: new Set<number>(),
-    permissions: new Set<string>(),
 });
 
 async function login() {

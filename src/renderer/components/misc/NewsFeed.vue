@@ -13,9 +13,8 @@ const { entries } = await window.misc.getNewsRssFeed(3);
 
 <style lang="scss" scoped>
 .news {
-    height: 100%;
     width: 100%;
     display: grid;
-    grid-gap: 15px;
+    grid-gap: 4px;
 }
 </style>

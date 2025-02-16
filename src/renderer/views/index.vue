@@ -4,18 +4,23 @@
 
 <template>
     <div class="container">
-        <img ref="logo" class="logo" src="/src/renderer/assets/images/BARLogoFull.png" />
-        <Transition mode="out-in" name="fade">
-            <div v-if="connecting" class="relative">
-                <Loader></Loader>
-            </div>
-            <div v-else class="buttons-container">
-                <button class="login-button" @click="login">Login</button>
-                <div v-if="hasCredentials" class="play-offline" @click="changeAccount">Change account</div>
-                <div v-if="error" class="txt-error">{{ error }}</div>
-                <div class="play-offline" @click="playOffline">Play Offline</div>
-            </div>
-        </Transition>
+        <div class="middle-section">
+            <img ref="logo" class="logo" src="/src/renderer/assets/images/BARLogoFull.png" />
+            <Transition mode="out-in" name="fade">
+                <div v-if="connecting" class="relative">
+                    <Loader></Loader>
+                </div>
+                <div v-else class="buttons-container">
+                    <button class="login-button" @click="login">
+                        Login
+                        <Icon :icon="popout" />
+                    </button>
+                    <div v-if="error" class="txt-error">{{ error }}</div>
+                    <div v-if="hasCredentials" class="play-offline" @click="changeAccount">Change account</div>
+                    <div class="play-offline" @click="playOffline">Play Offline</div>
+                </div>
+            </Transition>
+        </div>
     </div>
 </template>
 
@@ -27,20 +32,23 @@ import { useRouter } from "vue-router";
 import { auth } from "@renderer/store/me.store";
 import { settingsStore } from "@renderer/store/settings.store";
 import { tachyon } from "@renderer/store/tachyon.store";
+import { Icon } from "@iconify/vue/dist/iconify.js";
+import popout from "@iconify-icons/mdi/external-link";
 
 const router = useRouter();
 
 const connecting = ref(false);
-const error = ref<string>();
+const error = ref<string | null>(null);
 
 const hasCredentials = await window.auth.hasCredentials();
 
 async function login() {
     try {
+        error.value = null;
         connecting.value = true;
         await auth.login();
         await tachyon.connect();
-        router.push("/home/overview");
+        router.push("/home/overview2");
     } catch (e) {
         console.error(e);
         error.value = (e as Error).message;
@@ -59,7 +67,7 @@ async function changeAccount() {
 
 async function playOffline() {
     auth.playOffline();
-    router.push("/home/overview");
+    router.push("/home/overview2");
 }
 
 if (hasCredentials && settingsStore.loginAutomatically) {
@@ -70,15 +78,18 @@ if (hasCredentials && settingsStore.loginAutomatically) {
 
 <style lang="scss" scoped>
 .container {
-    position: relative;
+    position: absolute;
+    top: 20%;
+    left: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    margin-top: calc((100vh - 900px) / 2);
+}
+
+.middle-section {
     width: 500px;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 .logo {
@@ -98,7 +109,9 @@ if (hasCredentials && settingsStore.loginAutomatically) {
 }
 
 .login-button {
-    align-self: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 500px;
     text-transform: uppercase;
     font-family: Rajdhani;
@@ -117,6 +130,11 @@ if (hasCredentials && settingsStore.loginAutomatically) {
     transition:
         transform 0.3s ease,
         box-shadow 0.3s ease;
+    svg {
+        position: relative;
+        left: 8px;
+        color: rgba(0, 0, 0, 0.15);
+    }
 }
 
 .login-button:hover {
