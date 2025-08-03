@@ -246,9 +246,35 @@ $top-bar-height: 96px;
             padding: 12px 8px;
             background: rgba(249, 115, 22, 0.05);
             border-bottom: 1px solid rgba(249, 115, 22, 0.1);
+            border: 2px solid rgba(249, 115, 22, 0.4);
             font-size: 14px;
             text-align: left;
             position: relative;
+            overflow: hidden;
+            animation: pulse-outline 3s ease-in-out infinite;
+
+            // Shining animation overlay
+            &::before {
+                content: "";
+                position: absolute;
+                top: -100%;
+                left: -100%;
+                width: 200%;
+                height: 200%;
+                background: linear-gradient(
+                    135deg,
+                    transparent,
+                    transparent 48%,
+                    rgba(255, 255, 255, 0.8) 49%,
+                    rgba(255, 255, 255, 0.8) 50%,
+                    rgba(255, 255, 255, 0.8) 51%,
+                    transparent 52%,
+                    transparent
+                );
+                animation: shine 4s ease-in-out infinite;
+                pointer-events: none;
+                z-index: 1;
+            }
 
             .invitation-counter {
                 position: absolute;
@@ -461,5 +487,34 @@ $top-bar-height: 96px;
     display: flex;
     flex-direction: column;
     content: "";
+}
+
+// Shining animation keyframes
+@keyframes shine {
+    0% {
+        left: -100%;
+        top: -100%;
+    }
+    15% {
+        left: 100%;
+        top: 100%;
+    }
+    100% {
+        left: 100%;
+        top: 100%;
+    }
+}
+
+// Pulsing outline animation
+@keyframes pulse-outline {
+    0%,
+    100% {
+        border-color: rgba(249, 115, 22, 0.4);
+        box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.3);
+    }
+    50% {
+        border-color: rgba(249, 115, 22, 0.8);
+        box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1);
+    }
 }
 </style>
