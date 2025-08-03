@@ -30,6 +30,7 @@ import { spadsBoxToStartBox } from "@renderer/utils/start-boxes";
 import { StartBox } from "tachyon-protocol/types";
 import { reactive, readonly, watch } from "vue";
 import { startBattle as startGame } from "@renderer/store/game.store";
+import { User } from "@main/model/user";
 
 let participantId = 0;
 interface BattleLobby {
@@ -346,7 +347,7 @@ function defaultOfflineBattle(engine?: EngineVersion, game?: GameVersion, map?: 
 
     const mePlayer: Player = {
         id: participantId++,
-        user: me,
+        user: me as User,
         name: me.username,
         contentSyncState: {
             engine: 1,

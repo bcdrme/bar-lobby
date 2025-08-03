@@ -8,6 +8,7 @@ import { auth, me } from "@renderer/store/me.store";
 import { SystemServerStatsOkResponseData } from "tachyon-protocol/types";
 import { reactive } from "vue";
 import { fetchAvailableQueues } from "@renderer/store/matchmaking.store";
+import { friends } from "@renderer/store/users.store";
 
 export const tachyonStore = reactive({
     isInitialized: false,
@@ -77,6 +78,8 @@ export async function initTachyonStore() {
 
         // Fetch matchmaking queues when connected
         fetchAvailableQueues();
+        friends.fetchFriends();
+        window.tachyon.request("messaging/subscribeReceived", {});
     });
 
     window.tachyon.onDisconnected(() => {

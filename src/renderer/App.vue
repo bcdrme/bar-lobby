@@ -51,6 +51,7 @@ SPDX-License-Identifier: MIT
         <Settings v-model="settingsOpen" />
         <ServerSettings v-model="serverSettingsOpen" />
         <ChatComponent v-if="state === 'default' && me.isAuthenticated && tachyonStore.isConnected" />
+        <FriendList v-if="state === 'default' && me.isAuthenticated && tachyonStore.isConnected" />
         <FullscreenGameModeSelector v-if="state === 'default'" :visible="battleStore.isSelectingGameMode" />
     </div>
     <Error />
@@ -88,6 +89,7 @@ import { useGlobalKeybindings } from "@renderer/composables/useGlobalKeybindings
 import { me } from "@renderer/store/me.store";
 import { tachyonStore } from "@renderer/store/tachyon.store";
 import { auth } from "@renderer/store/me.store";
+import FriendList from "@renderer/components/social/FriendList.vue";
 
 const router = useRouter();
 const videoVisible = toRef(!toValue(settingsStore.skipIntro));
@@ -174,7 +176,7 @@ if (!settingsStore.devMode) {
 
 .lobby-version {
     position: absolute;
-    left: 3px;
+    left: 8px;
     bottom: 1px;
     font-size: 12px;
     color: rgba(255, 255, 255, 0.3);

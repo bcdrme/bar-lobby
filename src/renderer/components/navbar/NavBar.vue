@@ -20,25 +20,6 @@ SPDX-License-Identifier: MIT
                 </div>
                 <div class="drag-window-area"></div>
                 <div class="primary-right">
-                    <Button
-                        v-if="false"
-                        v-tooltip.bottom="t('lobby.navbar.tooltips.directMessages')"
-                        v-click-away:messages="() => (messagesOpen = false)"
-                        :class="['icon', { active: messagesOpen }]"
-                        @click="messagesOpen = true"
-                    >
-                        <Icon :icon="messageIcon" :height="40" />
-                        <div v-if="messagesUnread" class="unread-dot"></div>
-                    </Button>
-                    <Button
-                        v-if="me.isAuthenticated"
-                        v-tooltip.bottom="t('lobby.navbar.tooltips.friends')"
-                        v-click-away:friends="() => (friendsOpen = false)"
-                        :class="['icon', { active: friendsOpen }]"
-                        @click="friendsOpen = true"
-                    >
-                        <Icon :icon="accountMultiple" :height="40" />
-                    </Button>
                     <DownloadsButton
                         v-tooltip.bottom="t('lobby.navbar.tooltips.downloads')"
                         v-click-away:downloads="() => (downloadsOpen = false)"
@@ -80,13 +61,15 @@ SPDX-License-Identifier: MIT
                             <div>{{ me.username }}</div>
                         </div>
                     </Button>
+                    <Button v-if="me.isAuthenticated" class="icon search-user">
+                        <Icon :icon="accountSearch" :height="20" />
+                    </Button>
                 </div>
             </div>
         </div>
 
         <TransitionGroup name="slide-right">
             <Messages v-show="messagesOpen" key="messages" v-model="messagesOpen" v-click-away:messages="() => (messagesOpen = false)" />
-            <Friends v-show="friendsOpen" key="friends" v-model="friendsOpen" v-click-away:friends="() => (friendsOpen = false)" />
             <Downloads
                 v-show="downloadsOpen"
                 key="downloads"
@@ -102,8 +85,7 @@ SPDX-License-Identifier: MIT
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue";
 import account from "@iconify-icons/mdi/account";
-import accountMultiple from "@iconify-icons/mdi/account-multiple";
-import messageIcon from "@iconify-icons/mdi/chat";
+import accountSearch from "@iconify-icons/mdi/account-search";
 import closeThick from "@iconify-icons/mdi/close-thick";
 import windowMinimize from "@iconify-icons/mdi/window-minimize";
 import fullscreen from "@iconify-icons/mdi/fullscreen";
@@ -118,7 +100,6 @@ import Button from "@renderer/components/controls/Button.vue";
 import Downloads from "@renderer/components/navbar/Downloads.vue";
 import DownloadsButton from "@renderer/components/navbar/DownloadsButton.vue";
 import Exit from "@renderer/components/navbar/Exit.vue";
-import Friends from "@renderer/components/navbar/Friends.vue";
 import Messages from "@renderer/components/navbar/Messages.vue";
 import { useRouter } from "vue-router";
 import { settingsStore } from "@renderer/store/settings.store";
@@ -154,22 +135,9 @@ const secondaryRoutes = computed(() => {
         .sort((a, b) => (a.meta.order ?? 99) - (b.meta.order ?? 99));
 });
 const messagesOpen = ref(false);
-const friendsOpen = ref(false);
 const downloadsOpen = ref(false);
 const settingsOpen = inject<Ref<boolean>>("settingsOpen")!;
 const exitOpen = inject<Ref<boolean>>("exitOpen")!;
-
-const messagesUnread = computed(() => {
-    //TODO dmStores
-    // for (const [, messages] of api.session.directMessages) {
-    //     for (const message of messages) {
-    //         if (!message.read) {
-    //             return true;
-    //         }
-    //     }
-    // }
-    return false;
-});
 
 function minimizeWindow() {
     window.mainWindow?.minimize();
@@ -339,6 +307,11 @@ function toggleFullscreen() {
             padding: 0;
         }
     }
+    .search-user {
+        :deep(> button) {
+            padding: 0 19px;
+        }
+    }
 }
 .button.close:hover {
     background: rgba(255, 0, 0, 0.2);
@@ -348,18 +321,6 @@ function toggleFullscreen() {
         0 1px 0 rgba(255, 47, 47, 0.418),
         7px -3px 10px rgba(0, 0, 0, 0.5),
         -7px -3px 10px rgba(0, 0, 0, 0.5) !important;
-}
-.user {
-    text-transform: unset;
-}
-.unread-dot {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    border-radius: 100%;
-    right: 17px;
-    bottom: 17px;
-    background: red;
 }
 
 .drag-window-area {

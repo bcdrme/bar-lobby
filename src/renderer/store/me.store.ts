@@ -21,12 +21,15 @@ export const me = reactive<
     status: "offline",
     isAuthenticated: false,
     username: "Player",
+    rank: 1,
     battleRoomState: {},
     outgoingFriendRequestUserIds: new Set<number>(),
     incomingFriendRequestUserIds: new Set<number>(),
     friendUserIds: new Set<number>(),
     ignoreUserIds: new Set<number>(),
-    permissions: new Set<string>(),
+    isFriend: 0,
+    isMe: 1,
+    lastSeen: Date.now(),
 });
 
 async function login() {
@@ -63,6 +66,8 @@ window.tachyon.onEvent("user/self", async (event) => {
         db.users.put({
             ...toRaw(me),
             isMe: 1,
+            isFriend: 0,
+            lastSeen: Date.now(),
         });
     }
 });
