@@ -16,8 +16,15 @@
     overflow: hidden;
 }
 
+// media queries to add padding left for larger screens (more than 16:9 aspect ratio)
+@media (min-aspect-ratio: 16/9) {
+    .view {
+        padding-left: 200px;
+    }
+}
+
 .view-title {
-    margin-bottom: 24px;
+    margin-bottom: 36px;
     h1 {
         filter: drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.8));
     }

@@ -175,8 +175,8 @@ async function launch() {
     display: flex;
     flex-direction: column;
     height: 100%;
-    align-self: center;
     width: 1600px;
+    padding: 20px 100px;
 }
 
 .scenarios-main-panel {

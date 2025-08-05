@@ -61,10 +61,9 @@ watch(
 .overview-container {
     display: flex;
     flex-direction: column;
-    align-self: center;
-    width: 100%;
     height: 100%;
-    padding: 20px 60px;
+    width: 1600px;
+    padding: 0 60px;
 }
 
 .logo {
@@ -150,7 +149,6 @@ watch(
 
 .left-column,
 .right-column {
-    width: 460px;
     height: 100%;
 }
 
@@ -158,6 +156,7 @@ watch(
     display: flex;
     flex-grow: 1;
     flex-direction: column;
+    padding: 0 120px;
 }
 
 .column-loader {

@@ -95,7 +95,6 @@ const openTournaments = () => {
 .game-menu-container {
     display: flex;
     flex-direction: column;
-    align-self: center;
     width: 100%;
     height: 100%;
     padding: 40px 60px;
@@ -108,7 +107,6 @@ const openTournaments = () => {
     gap: 20px;
     height: 100%;
     max-width: 1400px;
-    margin: 0 auto;
     flex: 1;
 }
 

@@ -48,10 +48,9 @@ async function onMapSelected(map: MapData) {
 .maps-container {
     display: flex;
     flex-direction: column;
-    align-self: center;
     width: 1600px;
     height: 100%;
-    padding-left: 40px;
+    padding: 0 60px;
 }
 
 .layout {

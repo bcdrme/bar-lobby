@@ -1,5 +1,5 @@
 <template>
-    <div class="friends-sidebar" :class="{ expanded: isExpanded }" @mouseenter="expand" @mouseleave="collapse">
+    <div class="friends-sidebar" :class="{ expanded: isExpanded || isUltraWideScreen }" @mouseenter="expand" @mouseleave="collapse">
         <div class="friends-users-container">
             <div class="party-section">
                 <span class="main-text">
@@ -50,8 +50,8 @@
                 <div class="invitation">
                     <span class="invitation-text">Protar has invited you to party.</span>
                     <div class="buttons-row">
-                        <button>Accept</button>
-                        <button>Decline</button>
+                        <button @click="acceptPartyInvitation">Accept</button>
+                        <button @click="declinePartyInvitation">Decline</button>
                     </div>
                 </div>
             </div>
@@ -63,8 +63,8 @@
                 <div class="invitation">
                     <span class="invitation-text">Melon wants to add you.</span>
                     <div class="buttons-row">
-                        <button>Accept</button>
-                        <button>Decline</button>
+                        <button @click="acceptFriendRequest">Accept</button>
+                        <button @click="declineFriendRequest">Decline</button>
                     </div>
                 </div>
             </div>
@@ -81,8 +81,11 @@ import User from "@renderer/components/social/User.vue";
 import { useDexieLiveQuery } from "@renderer/composables/useDexieLiveQuery";
 import { db } from "@renderer/store/db";
 import { me } from "@renderer/store/me.store";
+import { chatActions } from "@renderer/store/chat.store";
 import { ref } from "vue";
+import { useMediaQuery } from "@vueuse/core";
 
+const isUltraWideScreen = useMediaQuery("(min-aspect-ratio: 16/9)");
 const isExpanded = ref(false);
 
 const expand = () => {
@@ -91,6 +94,24 @@ const expand = () => {
 
 const collapse = () => {
     isExpanded.value = false;
+};
+
+const acceptPartyInvitation = () => {
+    // Create party chat room when accepting party invitation
+    console.log("Accepting party invitation and creating party chat...");
+    chatActions.openPartyChatRoom();
+};
+
+const declinePartyInvitation = () => {
+    console.log("Declining party invitation");
+};
+
+const acceptFriendRequest = () => {
+    console.log("Accepting friend request");
+};
+
+const declineFriendRequest = () => {
+    console.log("Declining friend request");
 };
 
 const onlineFriends = useDexieLiveQuery(() => {
@@ -129,14 +150,15 @@ const recentPlayers = useDexieLiveQuery(() => {
 $background-color: rgb(11, 11, 11);
 $accent-color: #22c55e;
 $top-bar-height: 96px;
+$friends-list-width: 300px;
 
 .friends-sidebar {
     position: fixed;
     right: 0;
     top: $top-bar-height;
     height: calc(100vh - #{$top-bar-height});
-    width: 350px;
-    transform: translate(292px, 0);
+    width: $friends-list-width;
+    transform: translate(calc(#{$friends-list-width} - 58px), 0);
     transition: transform 0.3s ease;
     color: #f9f9f9;
     z-index: 3;

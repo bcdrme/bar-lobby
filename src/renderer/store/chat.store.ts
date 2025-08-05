@@ -30,28 +30,17 @@ export enum WellKnownChatRooms {
 
 const defaultChatRooms: ChatRoom[] = [
     {
-        id: WellKnownChatRooms.General,
-        name: "General",
-        color: "#87ceeb",
-        type: "room",
-        messages: [{ userId: "System", userName: "System", text: "Welcome to the chat!", timestamp: Date.now() }],
-        members: [],
-        unreadMessages: 0,
-        closeable: false,
-    },
-    {
-        id: WellKnownChatRooms.Lobby,
-        name: "Lobby",
-        color: "#87ceeb",
-        type: "room",
+        id: "party",
+        name: "Party",
+        color: "#f97316",
+        type: "party",
         messages: [
-            { userId: "System", userName: "System", text: "Welcome to the lobby!", timestamp: Date.now() - 1000 * 60 * 60 },
-            { userId: "System", userName: "System", text: "This is a place to chat with other players.", timestamp: Date.now() - 1000 * 60 * 60 },
-            { userId: "System", userName: "System", text: "Please be respectful and follow the rules.", timestamp: Date.now() - 1000 * 60 },
-            { userId: "System", userName: "System", text: "Enjoy your stay!", timestamp: Date.now() },
+            { userId: "System", userName: "System", text: "Welcome to party chat!", timestamp: Date.now() - 1000 * 30 },
+            { userId: "Protar", userName: "Protar", text: "Ready to play?", timestamp: Date.now() - 1000 * 15 },
+            { userId: "Charlie", userName: "Charlie", text: "Let's do this! 🎮", timestamp: Date.now() },
         ],
-        members: ["smile1037", "Banana", "Apple", "Grape", "Kiwi", "Pineapple"],
-        unreadMessages: 4,
+        members: ["Protar", "Charlie"],
+        unreadMessages: 0,
         closeable: false,
     },
     {
@@ -59,9 +48,32 @@ const defaultChatRooms: ChatRoom[] = [
         name: "Melon",
         color: "#ff6347",
         type: "player",
-        messages: [{ userId: "101", userName: "Melon", text: "Welcome to the Melon chat!", timestamp: Date.now() }],
+        messages: [{ userId: "101", userName: "Melon", text: "Hey, wanna play a match?", timestamp: Date.now() }],
         members: [],
         unreadMessages: 1,
+        closeable: true,
+    },
+    {
+        id: "102",
+        name: "Apple",
+        color: "#32cd32",
+        type: "player",
+        messages: [
+            { userId: "102", userName: "Apple", text: "Good game last time!", timestamp: Date.now() - 1000 * 60 },
+            { userId: "102", userName: "Apple", text: "Up for another?", timestamp: Date.now() - 1000 * 30 },
+        ],
+        members: [],
+        unreadMessages: 2,
+        closeable: true,
+    },
+    {
+        id: "103",
+        name: "Banana",
+        color: "#ffd700",
+        type: "player",
+        messages: [{ userId: "103", userName: "Banana", text: "Thanks for the tips!", timestamp: Date.now() - 1000 * 120 }],
+        members: [],
+        unreadMessages: 0,
         closeable: true,
     },
 ];
@@ -168,6 +180,36 @@ export const chatActions = {
         };
         chatStore.chatRooms.push(room);
         return room;
+    },
+    openPartyChatRoom() {
+        // Check if party chat already exists
+        const existingPartyChat = chatStore.chatRooms.find((room) => room.type === "party");
+        if (existingPartyChat) {
+            return existingPartyChat;
+        }
+
+        const partyRoom: ChatRoom = {
+            id: "party",
+            name: "Party",
+            color: "#f97316",
+            type: "party",
+            members: [],
+            messages: [
+                {
+                    userId: "System",
+                    userName: "System",
+                    text: "Welcome to party chat! Use this to coordinate with your party members.",
+                    timestamp: Date.now(),
+                },
+            ],
+            unreadMessages: 0,
+            closeable: false,
+        };
+        chatStore.chatRooms.push(partyRoom);
+        return partyRoom;
+    },
+    closePartyChatRoom() {
+        chatStore.chatRooms = chatStore.chatRooms.filter((room) => room.type !== "party");
     },
 };
 

@@ -95,11 +95,9 @@ const availableQueueIds = computed(() => {
 .ranked-container {
     display: flex;
     flex-direction: column;
-    align-self: center;
-    gap: 20px;
     height: 100%;
-    width: 1000px;
-    overflow: visible;
+    width: 1600px;
+    padding: 0 60px;
 }
 
 .join-queue {
