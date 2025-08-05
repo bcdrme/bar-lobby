@@ -16,22 +16,38 @@ SPDX-License-Identifier: MIT
                 <p>{{ t("lobby.singleplayer.scenarios.description") }}</p>
             </div>
             <div class="main-section-container">
-                <div class="scenarios">
-                    <TransitionGroup name="fade">
-                        <ScenarioTile
-                            v-for="scenario in scenarios"
-                            :key="scenario.title"
-                            :scenario="scenario"
-                            :class="{ selected: selectedScenario.scenarioid === scenario.scenarioid }"
-                            @click="selectedScenario = scenario"
-                        />
-                    </TransitionGroup>
+                <div class="scenarios-wrapper">
+                    <div class="scenarios-navigation">
+                        <div class="scenarios" :key="currentPage">
+                            <ScenarioTile
+                                v-for="scenario in paginatedScenarios"
+                                :key="scenario.title"
+                                :scenario="scenario"
+                                :class="{ selected: selectedScenario.scenarioid === scenario.scenarioid }"
+                                @click="selectedScenario = scenario"
+                            />
+                        </div>
+                        <button class="page-arrow side-arrow next" @click="nextPage" v-if="totalPages > 1">›</button>
+                    </div>
+                    <div class="page-dots-container" v-if="totalPages > 1">
+                        <div class="page-dots">
+                            <div
+                                v-for="(_, index) in totalPages"
+                                :key="index"
+                                class="page-dot"
+                                :class="{ active: currentPage === index }"
+                                @click="goToPage(index)"
+                            ></div>
+                        </div>
+                    </div>
                 </div>
                 <Panel class="scenarios-main-panel" noPadding>
-                    <div class="scenario-preview flex-col gap-md">
-                        <!-- <h4>{{ selectedScenario.title }}</h4> -->
-                        <div class="scroll-container flex-grow">
+                    <div class="scenario-preview">
+                        <h4>{{ selectedScenario.title }}</h4>
+                        <div>
                             <Markdown :source="selectedScenario.summary" />
+                        </div>
+                        <div>
                             <Markdown :source="selectedScenario.briefing" />
                         </div>
                         <div class="gridform">
@@ -104,6 +120,45 @@ const loadedScenarios = gameVersion ? await window.game.getScenarios(gameVersion
 const scenarios = ref<Scenario[]>(loadedScenarios);
 const selectedScenario = ref<Scenario>(scenarios.value[0]);
 
+// Pagination logic
+const SCENARIOS_PER_PAGE = 4;
+const currentPage = ref(0);
+const slideDirection = ref("slide-right");
+
+const totalPages = computed(() => Math.ceil(scenarios.value.length / SCENARIOS_PER_PAGE));
+
+const paginatedScenarios = computed(() => {
+    const start = currentPage.value * SCENARIOS_PER_PAGE;
+    const end = start + SCENARIOS_PER_PAGE;
+    return scenarios.value.slice(start, end);
+});
+
+const nextPage = () => {
+    slideDirection.value = "slide-left";
+    // Loop to first page if at the end
+    if (currentPage.value >= totalPages.value - 1) {
+        currentPage.value = 0;
+    } else {
+        currentPage.value++;
+    }
+    // Select first scenario of new page if current selection is not visible
+    if (!paginatedScenarios.value.some((s) => s.scenarioid === selectedScenario.value?.scenarioid)) {
+        selectedScenario.value = paginatedScenarios.value[0];
+    }
+};
+
+const goToPage = (pageIndex: number) => {
+    if (pageIndex >= 0 && pageIndex < totalPages.value) {
+        // Determine slide direction based on page movement
+        slideDirection.value = pageIndex > currentPage.value ? "slide-left" : "slide-right";
+        currentPage.value = pageIndex;
+        // Select first scenario of new page if current selection is not visible
+        if (!paginatedScenarios.value.some((s) => s.scenarioid === selectedScenario.value?.scenarioid)) {
+            selectedScenario.value = paginatedScenarios.value[0];
+        }
+    }
+};
+
 const map = useDexieLiveQueryWithDeps([selectedScenario], async () => {
     let selected = selectedScenario.value;
     if (!selected) return;
@@ -134,6 +189,7 @@ watch(
     async (selectedVersion) => {
         const loadedScenarios = selectedVersion ? await window.game.getScenarios(selectedVersion) : [];
         scenarios.value = loadedScenarios;
+        currentPage.value = 0; // Reset to first page
         selectedScenario.value = scenarios.value[0];
     }
 );
@@ -141,6 +197,15 @@ watch(
 watch(selectedScenario, (newScenario) => {
     selectedDifficulty.value = difficulties.value.find((dif) => dif.name === newScenario.defaultdifficulty);
     selectedFaction.value = factions.value[0] ?? "Armada";
+
+    // Ensure the selected scenario is on the current page
+    const scenarioIndex = scenarios.value.findIndex((s) => s.scenarioid === newScenario.scenarioid);
+    if (scenarioIndex !== -1) {
+        const requiredPage = Math.floor(scenarioIndex / SCENARIOS_PER_PAGE);
+        if (currentPage.value !== requiredPage) {
+            currentPage.value = requiredPage;
+        }
+    }
 });
 
 async function launch() {
@@ -183,47 +248,143 @@ async function launch() {
     flex-direction: column;
     height: 100%;
     width: 1420px;
-    height: 780px;
+    height: 720px; // Reduced height
 }
 
 .main-section-container {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    gap: 20px;
+    gap: 16px; // Reduced gap
     overflow: visible;
+    justify-content: space-around;
+}
+
+.scenarios-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.scenarios-navigation {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+}
+
+.scenarios-container-animated {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
 }
 
 .action-container {
-    padding: 20px 0;
+    padding: 16px 0; // Reduced padding
     display: flex;
     flex-direction: row;
     gap: 24px;
 }
 
 .scenarios-main-panel {
-    padding: 30px;
-    padding-left: 0;
-    padding-bottom: 0;
+    width: 1352px;
+    padding: 8px;
     height: 300px;
 }
 
 .scenarios {
     overflow: visible;
-    // padding: 16px;
-    height: 500px;
     width: 100%;
     display: grid;
-    grid-gap: 15px;
-    // grid of tiles that are 200px x 200px
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    padding-right: 10px;
+    grid-gap: 12px; // Reduced gap
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); // Smaller tiles
+}
+
+.page-arrow {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9));
+    backdrop-filter: blur(10px) brightness(0.7) saturate(2);
+    border: 2px solid #22c55e;
+    color: #22c55e;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+        0 0 15px rgba(34, 197, 94, 0.3),
+        inset 0 0 20px rgba(255, 255, 255, 0.05);
+    text-shadow: 0 0 10px rgba(34, 197, 94, 0.8);
+
+    &:hover:not(:disabled) {
+        background: linear-gradient(rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.3));
+        border-color: #16a34a;
+        color: #ffffff;
+        box-shadow:
+            0 0 25px rgba(34, 197, 94, 0.6),
+            inset 0 0 30px rgba(255, 255, 255, 0.1);
+        transform: scale(1.05);
+    }
+
+    &:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+        border-color: rgba(34, 197, 94, 0.3);
+        color: rgba(34, 197, 94, 0.3);
+        box-shadow: none;
+    }
+
+    &.side-arrow {
+        position: relative;
+        z-index: 10;
+        flex-shrink: 0;
+    }
+}
+
+.page-dots-container {
+    display: flex;
+    justify-content: center;
+    padding: 12px 0; // Reduced padding
+}
+
+.page-dots {
+    display: flex;
+    gap: 10px; // Reduced gap
+    align-items: center;
+
+    .page-dot {
+        width: 10px; // Smaller dots
+        height: 10px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &:hover {
+            background: rgba(34, 197, 94, 0.4);
+            border-color: rgba(34, 197, 94, 0.6);
+            box-shadow: 0 0 8px rgba(34, 197, 94, 0.4);
+        }
+
+        &.active {
+            background: #22c55e;
+            border-color: #16a34a;
+            box-shadow:
+                0 0 12px rgba(34, 197, 94, 0.8),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            transform: scale(1.15); // Slightly smaller scaling
+        }
+    }
 }
 
 .scenario-preview {
-    width: 600px;
+    width: 100%;
     height: 100%;
-    padding-bottom: 30px;
+    background-color: black;
 }
 
 .launch-button {
