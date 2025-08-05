@@ -12,26 +12,24 @@ SPDX-License-Identifier: MIT
     <div class="view">
         <div class="scenarios-container">
             <div class="view-title">
-                <h1>{{ t("lobby.singleplayer.scenarios.title") }}</h1>
+                <h3>{{ t("lobby.singleplayer.scenarios.title") }}</h3>
                 <p>{{ t("lobby.singleplayer.scenarios.description") }}</p>
             </div>
-            <Panel class="scenarios-main-panel" noPadding>
-                <div class="flex-row gap-lg fullheight">
-                    <div class="fullwidth flex-col">
-                        <div class="scenarios scroll-container">
-                            <TransitionGroup name="fade">
-                                <ScenarioTile
-                                    v-for="scenario in scenarios"
-                                    :key="scenario.title"
-                                    :scenario="scenario"
-                                    :class="{ selected: selectedScenario.scenarioid === scenario.scenarioid }"
-                                    @click="selectedScenario = scenario"
-                                />
-                            </TransitionGroup>
-                        </div>
-                    </div>
+            <div class="main-section-container">
+                <div class="scenarios">
+                    <TransitionGroup name="fade">
+                        <ScenarioTile
+                            v-for="scenario in scenarios"
+                            :key="scenario.title"
+                            :scenario="scenario"
+                            :class="{ selected: selectedScenario.scenarioid === scenario.scenarioid }"
+                            @click="selectedScenario = scenario"
+                        />
+                    </TransitionGroup>
+                </div>
+                <Panel class="scenarios-main-panel" noPadding>
                     <div class="scenario-preview flex-col gap-md">
-                        <h4>{{ selectedScenario.title }}</h4>
+                        <!-- <h4>{{ selectedScenario.title }}</h4> -->
                         <div class="scroll-container flex-grow">
                             <Markdown :source="selectedScenario.summary" />
                             <Markdown :source="selectedScenario.briefing" />
@@ -39,33 +37,42 @@ SPDX-License-Identifier: MIT
                         <div class="gridform">
                             <div>{{ t("lobby.singleplayer.scenarios.victoryCondition") }}</div>
                             <div>{{ selectedScenario.victorycondition }}</div>
-
                             <div>{{ t("lobby.singleplayer.scenarios.loseCondition") }}</div>
                             <div>{{ selectedScenario.losscondition }}</div>
                         </div>
-                        <div>
-                            <Select v-model="selectedFaction" :label="t('lobby.singleplayer.scenarios.faction')" :options="factions" />
-                        </div>
-                        <div>
-                            <Select
-                                v-model="selectedDifficulty"
-                                :label="t('lobby.singleplayer.scenarios.difficulty')"
-                                :options="difficulties"
-                                optionLabel="name"
-                            />
-                        </div>
-                        <DownloadContentButton
-                            v-if="map"
-                            :map="map"
-                            class="fullwidth green"
-                            :disabled="gameStore.status !== GameStatus.CLOSED"
-                            @click="launch"
-                            >{{ t("lobby.singleplayer.scenarios.launch") }}</DownloadContentButton
-                        >
-                        <Button v-else class="fullwidth green" disabled>{{ t("lobby.singleplayer.scenarios.launch") }}</Button>
                     </div>
-                </div>
-            </Panel>
+                </Panel>
+            </div>
+        </div>
+        <div class="action-container">
+            <div class="launch-button">
+                <DownloadContentButton
+                    v-if="map"
+                    :map="map"
+                    class="green"
+                    :disabled="gameStore.status !== GameStatus.CLOSED"
+                    @click="launch"
+                    >{{ t("lobby.singleplayer.scenarios.launch") }}</DownloadContentButton
+                >
+                <Button v-else class="green" disabled>{{ t("lobby.singleplayer.scenarios.launch") }}</Button>
+            </div>
+            <div class="faction-select">
+                <Select
+                    v-model="selectedFaction"
+                    :label="t('lobby.singleplayer.scenarios.faction')"
+                    :options="factions"
+                    :style="{ height: '48px' }"
+                />
+            </div>
+            <div class="difficulty-select">
+                <Select
+                    v-model="selectedDifficulty"
+                    :label="t('lobby.singleplayer.scenarios.difficulty')"
+                    :options="difficulties"
+                    optionLabel="name"
+                    :style="{ height: '48px' }"
+                />
+            </div>
         </div>
     </div>
 </template>
@@ -175,25 +182,41 @@ async function launch() {
     display: flex;
     flex-direction: column;
     height: 100%;
-    width: 1600px;
-    padding: 20px 100px;
+    width: 1420px;
+    height: 780px;
+}
+
+.main-section-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 20px;
+    overflow: visible;
+}
+
+.action-container {
+    padding: 20px 0;
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
 }
 
 .scenarios-main-panel {
     padding: 30px;
     padding-left: 0;
     padding-bottom: 0;
-    height: 100%;
+    height: 300px;
 }
 
 .scenarios {
-    padding-left: 30px;
-    padding-bottom: 30px;
-    margin-bottom: 30px;
+    overflow: visible;
+    // padding: 16px;
+    height: 500px;
     width: 100%;
     display: grid;
     grid-gap: 15px;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    // grid of tiles that are 200px x 200px
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     padding-right: 10px;
 }
 
@@ -204,6 +227,14 @@ async function launch() {
 }
 
 .launch-button {
-    flex-grow: 0;
+    width: 300px;
+}
+
+.faction-select {
+    width: 300px;
+}
+
+.difficulty-select {
+    width: 300px;
 }
 </style>

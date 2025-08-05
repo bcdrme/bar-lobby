@@ -8,7 +8,8 @@
     height: 100%;
     width: 100%;
     padding-top: 30px;
-    padding-bottom: 140px;
+    // padding-bottom: 140px;
+    padding-left: 100px;
     display: flex;
     flex-direction: column;
     flex-grow: 1;
@@ -25,8 +26,10 @@
 
 .view-title {
     margin-bottom: 36px;
-    h1 {
+    h3 {
         filter: drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.8));
+        margin: 0;
+        text-transform: uppercase;
     }
     p {
         filter: drop-shadow(3px 3px 5px rgba(0, 0, 0, 0.8));
