@@ -41,7 +41,7 @@ SPDX-License-Identifier: MIT
         border-color 0.1s ease-out;
 }
 
-.main-button:hover {
+.main-button:hover:not(:disabled) {
     box-shadow:
         inset 1px -1px 2px #1111118e,
         inset -1px 1px 2px #1111118e,
@@ -51,5 +51,9 @@ SPDX-License-Identifier: MIT
 
 .main-button:hover::before {
     box-shadow: 0 8px 15px rgba(34, 197, 94, 0.4);
+}
+
+.main-button:disabled {
+    filter: brightness(0.5);
 }
 </style>

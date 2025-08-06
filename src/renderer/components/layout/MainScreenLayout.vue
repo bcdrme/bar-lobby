@@ -29,15 +29,12 @@ $padding: 8px;
     width: 100%;
     padding-top: 24px;
     padding-left: 96px;
-    flex-grow: 1;
-    gap: 16px;
-    // overflow: hidden;
 }
 
 // media queries to add padding left for larger screens (more than 16:9 aspect ratio)
 @media (min-aspect-ratio: 16/9) {
     .main-screen-layout {
-        padding-left: 200px;
+        padding-left: 192px;
     }
 }
 
