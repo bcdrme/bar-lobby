@@ -63,8 +63,7 @@ SPDX-License-Identifier: MIT
             </div>
         </template>
         <template #actions>
-            <div class="launch-button">
-                <!-- <DownloadContentButton
+            <!-- <DownloadContentButton
                     v-if="map"
                     :map="map"
                     class="green"
@@ -73,13 +72,11 @@ SPDX-License-Identifier: MIT
                     >{{ t("lobby.singleplayer.scenarios.launch") }}</DownloadContentButton
                 >
                 <Button v-else class="green" disabled>{{ t("lobby.singleplayer.scenarios.launch") }}</Button> -->
-                <MainButton>
-                    <template #default>
-                        <!-- {{ t("lobby.singleplayer.scenarios.launch") }} -->
-                        A long string to test the button
-                    </template>
-                </MainButton>
-            </div>
+            <MainButton class="launch-button">
+                <template #default>
+                    {{ t("lobby.singleplayer.scenarios.launch") }}
+                </template>
+            </MainButton>
             <div class="faction-select">
                 <Select
                     v-model="selectedFaction"

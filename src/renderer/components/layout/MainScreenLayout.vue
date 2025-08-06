@@ -52,11 +52,13 @@ $padding: 8px;
     font-size: 24px;
     font-weight: bold;
     text-transform: uppercase;
+    text-shadow: 0 0 8px rgb(102, 159, 98);
 }
 
 .subtitle {
     font-size: 16px;
-    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.8);
 }
 
 .content {

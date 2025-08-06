@@ -62,8 +62,9 @@ const backgroundImageCss = ref(`url('bar://${encodeURIComponent(props.scenario.i
             filter: saturate(1) brightness(1.1) contrast(1.1);
         }
         outline: 2px solid #22c55e;
-        box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
-        overflow: visible;
+        border-radius: 1px;
+        box-shadow: 0 0 25px rgba(34, 197, 94, 0.4);
+        overflow: hidden;
     }
 }
 .title {

@@ -21,7 +21,7 @@ SPDX-License-Identifier: MIT
     line-height: 1rem;
     padding: 0 32px;
     color: #fff;
-    background: linear-gradient(90deg, #22c55e, #16a34a);
+    background: radial-gradient(circle at 50% 50%, #34c65a, #1f7d3d);
     border-radius: 1px;
     border: 3px solid #289951;
     box-shadow:
@@ -36,12 +36,17 @@ SPDX-License-Identifier: MIT
     text-transform: uppercase;
     position: relative;
     transition:
-        transform 0.3s ease,
-        box-shadow 0.3s ease;
+        transform 0.1s ease-out,
+        box-shadow 0.1s ease-out,
+        border-color 0.1s ease-out;
 }
 
 .main-button:hover {
-    box-shadow: 0 0 25px rgba(34, 197, 94, 0.6);
+    box-shadow:
+        inset 1px -1px 2px #1111118e,
+        inset -1px 1px 2px #1111118e,
+        0 0 25px rgba(34, 197, 94, 0.6);
+    border: 3px solid #2ead5d;
 }
 
 .main-button:hover::before {
