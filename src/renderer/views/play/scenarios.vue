@@ -9,12 +9,14 @@ SPDX-License-Identifier: MIT
 </route>
 
 <template>
-    <div class="view">
-        <div class="scenarios-container">
-            <div class="view-title">
-                <h3>{{ t("lobby.singleplayer.scenarios.title") }}</h3>
-                <p>{{ t("lobby.singleplayer.scenarios.description") }}</p>
-            </div>
+    <MainScreenLayout>
+        <template #title>
+            {{ t("lobby.singleplayer.scenarios.title") }}
+        </template>
+        <template #subtitle>
+            {{ t("lobby.singleplayer.scenarios.description") }}
+        </template>
+        <template #content>
             <div class="main-section-container">
                 <div class="scenarios-wrapper">
                     <div class="scenarios-navigation">
@@ -59,10 +61,10 @@ SPDX-License-Identifier: MIT
                     </div>
                 </Panel>
             </div>
-        </div>
-        <div class="action-container">
+        </template>
+        <template #actions>
             <div class="launch-button">
-                <DownloadContentButton
+                <!-- <DownloadContentButton
                     v-if="map"
                     :map="map"
                     class="green"
@@ -70,7 +72,13 @@ SPDX-License-Identifier: MIT
                     @click="launch"
                     >{{ t("lobby.singleplayer.scenarios.launch") }}</DownloadContentButton
                 >
-                <Button v-else class="green" disabled>{{ t("lobby.singleplayer.scenarios.launch") }}</Button>
+                <Button v-else class="green" disabled>{{ t("lobby.singleplayer.scenarios.launch") }}</Button> -->
+                <MainButton>
+                    <template #default>
+                        <!-- {{ t("lobby.singleplayer.scenarios.launch") }} -->
+                        A long string to test the button
+                    </template>
+                </MainButton>
             </div>
             <div class="faction-select">
                 <Select
@@ -89,8 +97,8 @@ SPDX-License-Identifier: MIT
                     :style="{ height: '48px' }"
                 />
             </div>
-        </div>
-    </div>
+        </template>
+    </MainScreenLayout>
 </template>
 
 <script lang="ts" setup>
@@ -114,6 +122,8 @@ import { useTypedI18n } from "@renderer/i18n";
 const { t } = useTypedI18n();
 
 import { enginesStore } from "@renderer/store/engine.store";
+import MainButton from "@renderer/components/controls/MainButton.vue";
+import MainScreenLayout from "@renderer/components/layout/MainScreenLayout.vue";
 
 const gameVersion = gameStore?.selectedGameVersion?.gameVersion;
 const loadedScenarios = gameVersion ? await window.game.getScenarios(gameVersion) : [];
@@ -243,20 +253,12 @@ async function launch() {
 </script>
 
 <style lang="scss" scoped>
-.scenarios-container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    width: 1420px;
-    height: 720px; // Reduced height
-}
-
 .main-section-container {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
     gap: 16px; // Reduced gap
-    overflow: visible;
+    // overflow: visible;
     justify-content: space-around;
 }
 
@@ -276,13 +278,6 @@ async function launch() {
     flex: 1;
     overflow: hidden;
     position: relative;
-}
-
-.action-container {
-    padding: 16px 0; // Reduced padding
-    display: flex;
-    flex-direction: row;
-    gap: 24px;
 }
 
 .scenarios-main-panel {
