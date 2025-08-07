@@ -53,6 +53,7 @@ SPDX-License-Identifier: MIT
         <ChatComponent v-if="state === 'default' && me.isAuthenticated && tachyonStore.isConnected" />
         <FriendList v-if="state === 'default' && me.isAuthenticated && tachyonStore.isConnected" />
         <FullscreenGameModeSelector v-if="state === 'default'" :visible="battleStore.isSelectingGameMode" />
+        <MatchMakingIndicator v-if="state === 'default'" />
     </div>
     <Error />
 </template>
@@ -90,6 +91,7 @@ import { me } from "@renderer/store/me.store";
 import { tachyonStore } from "@renderer/store/tachyon.store";
 import { auth } from "@renderer/store/me.store";
 import FriendList from "@renderer/components/social/FriendList.vue";
+import MatchMakingIndicator from "@renderer/components/indicators/MatchMakingIndicator.vue";
 
 const router = useRouter();
 const videoVisible = toRef(!toValue(settingsStore.skipIntro));

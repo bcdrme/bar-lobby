@@ -27,7 +27,7 @@ $padding: 8px;
     flex-direction: column;
     height: 100%;
     width: 100%;
-    padding-top: 24px;
+    // padding-top: 32px;
     padding-left: 96px;
 }
 
@@ -42,11 +42,14 @@ $padding: 8px;
     display: flex;
     flex-direction: column;
     padding: $padding;
+    padding-top: 42px;
+    padding-bottom: 42px;
     color: white;
+    font-family: Rajdhani, sans-serif;
 }
 
 .title {
-    font-size: 24px;
+    font-size: 36px;
     font-weight: bold;
     text-transform: uppercase;
     text-shadow: 0 0 8px rgb(102, 159, 98);
@@ -54,13 +57,13 @@ $padding: 8px;
 
 .subtitle {
     font-size: 16px;
-    font-weight: 500;
+    font-weight: 600;
     color: rgba(255, 255, 255, 0.8);
 }
 
 .content {
     width: 1420px;
-    height: 720px;
+    height: 640px;
     padding: $padding;
 }
 

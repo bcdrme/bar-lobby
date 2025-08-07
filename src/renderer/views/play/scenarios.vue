@@ -72,6 +72,9 @@ SPDX-License-Identifier: MIT
                     >{{ t("lobby.singleplayer.scenarios.launch") }}</DownloadContentButton
                 >
                 <Button v-else class="green" disabled>{{ t("lobby.singleplayer.scenarios.launch") }}</Button> -->
+            <!-- <MainButton>Accept</MainButton>
+            <MainButton variant="neutral">Cancel</MainButton>
+            <MainButton variant="orange">Join Party</MainButton> -->
             <MainButton class="launch-button">
                 <template #default>
                     {{ t("lobby.singleplayer.scenarios.launch") }}
@@ -257,7 +260,7 @@ async function launch() {
     flex-grow: 1;
     gap: 16px; // Reduced gap
     // overflow: visible;
-    justify-content: space-around;
+    justify-content: space-evenly;
 }
 
 .scenarios-wrapper {
