@@ -532,11 +532,11 @@ $friends-list-width: 300px;
     0%,
     100% {
         border-color: rgba(249, 115, 22, 0.4);
-        box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.3);
+        // box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.3);
     }
     50% {
         border-color: rgba(249, 115, 22, 0.8);
-        box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1);
+        // box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1);
     }
 }
 </style>

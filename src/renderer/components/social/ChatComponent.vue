@@ -23,7 +23,7 @@ import PartyChatComponent from "./PartyChatComponent.vue";
 .dm-component {
     position: absolute;
     right: 96px;
-    bottom: 20px;
+    bottom: 0px;
 }
 
 @media (min-aspect-ratio: 16/9) {

@@ -59,7 +59,7 @@ const downloadPercent = computed(() => {
         background-position: 0 100%;
     }
     &.pulse:before {
-        animation: pulse 1s infinite;
+        animation: pulse 1s steps(30) infinite;
     }
 }
 
