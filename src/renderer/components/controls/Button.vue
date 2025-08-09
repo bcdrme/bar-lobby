@@ -45,6 +45,7 @@ async function onClick() {
 <style lang="scss" scoped>
 .button {
     padding: 0;
+    border-radius: 0px;
     align-self: unset;
     &.inline {
         align-self: flex-start;
@@ -57,7 +58,7 @@ async function onClick() {
     &.slim {
         min-height: unset;
         align-self: center;
-        border-radius: 2px;
+        border-radius: 0px;
         font-size: 14px;
         font-weight: 300;
     }
@@ -68,6 +69,7 @@ async function onClick() {
     display: flex;
     justify-content: center;
     padding: 0 8px;
+    border-radius: 0px;
 }
 
 $btnColors: (
